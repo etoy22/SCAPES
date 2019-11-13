@@ -134,7 +134,7 @@ bool Program::checkSyntax(){
 		valid = false;
 	}
 	//Adds all decleration of varriables and labels to there sets
-    for(int j = 0; j < int(input.size()) &&valid;j++){
+    	for(int j = 0; j < int(input.size()) &&valid;j++){
 		if(input[j].find('#') != std::string::npos){}
 		else if(input[j].find_first_not_of(" \t") != std::string::npos){
 			std::string s = input[j];
@@ -241,7 +241,8 @@ bool Program::checkSyntax(){
 						throw message;
 					}
 				}
-				else if(result[0] == "jmr" || result[0] == "jmp"||result[0] == "end"||result[0]== "prt"){}
+				//Checks that all the following are counted as an error but has no 
+				else if(result[0] == "jmr" || result[0] == "jmp"||result[0] == "end"){}
 				else{
 					valid = false;
 					message = "invalid call on line ";
@@ -254,6 +255,7 @@ bool Program::checkSyntax(){
 		}
 			
 	}
+	
 	//second loop to see all labels
     	for(int j = 0; j < int(input.size()) &&valid;j++){
 		if(input[j].find_first_not_of(" \t") != std::string::npos){
@@ -272,6 +274,7 @@ bool Program::checkSyntax(){
 			}
 		}
 	}
+	//Loops to check if a statement is used as a label
 	for(int i = 0; i < 12;i++){
 		if(label.count(unavalible[i])){
 		    valid = false;
@@ -279,14 +282,14 @@ bool Program::checkSyntax(){
 		   throw message;
 		} 
 	}
+	
+	//Iterates through label to check if label and end are the same
 	std::set<std::string>::iterator it = label.begin();
-
-
 	while (it != label.end())
 	{
 		if(var.count(*it)){
 			valid = false;
-		    message = "a varriable and  a label have the same name";
+		    	message = "a varriable and a label have the same name";
 		   	throw message;
 		}
 		it++;
