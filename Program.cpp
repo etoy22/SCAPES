@@ -246,7 +246,7 @@ bool Program::checkSyntax(){
 						throw message;
 					}
 				}
-				else if(result[0] == "jmr" || result[0] == "jmp"||result[0] == "end"||result[0]== "prt"){}
+				else if(result[0] == "jmr" || result[0] == "jmp"||result[0] == "end"){}
 				else{
 					valid = false;
 					message = "invalid call on line ";
