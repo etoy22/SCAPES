@@ -20,7 +20,7 @@ private:
     std::string fileName;
     std::vector<std::string> source;
     std::vector<Statement*> statements;
-    std::vector<std::pair<Identifier*,int>>;
+    std::vector<std::pair<Identifier*,int>> pairs;
     QJsonArray out;
     QJsonObject program;
     bool checkSyntax();
