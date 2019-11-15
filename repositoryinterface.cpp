@@ -56,3 +56,22 @@ void RepositoryInterface::storeCompiled(QString fileName, QJsonObject* vec){
     QJsonDocument doc(*vec);
     saveFile.write(doc.toJson());
 }
+
+
+void RepositoryInterface::getCompiled(QString fileName, QJsonObject& program){
+    QJsonDocument doc;
+    QFile jsonFile(fileName+"-Compiled.json");
+    if(jsonFile.open(QIODevice::ReadOnly))
+        std::cout << "could not open compiled file" << std::endl;
+    QByteArray savedProgram = jsonFile.readAll();
+    doc.fromJson(savedProgram);
+    program = doc.object();
+}
+
+
+
+
+
+
+
+
