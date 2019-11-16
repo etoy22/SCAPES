@@ -35,7 +35,9 @@ public:
 
     // constructor
     Program(std::string, std::vector<std::string>&);
-    Program(QJsonObject&);
+    Program(std::string, QJsonObject&);
+	Program(QJsonObject&);
+	~Program();
 
 	//Executables
     bool compile();

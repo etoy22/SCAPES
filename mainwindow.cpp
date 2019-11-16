@@ -126,10 +126,10 @@ void MainWindow::on_actionRun_triggered()
     //TODO: run compiled program
     ExecutionController executor;
     try { 
-    	executor.run(currentFile);
+    	executor.Run(currentFile);
     } catch(std::string error){
-	QString result = "Program: " + currentFile + "has runtime error: " + QString::fromStdString(error);
-	QMessageBox::information(this, tr("Execution Terminated"),result)
+		QString result = "Program: " + currentFile + "has runtime error: " + QString::fromStdString(error);
+		QMessageBox::information(this, tr("Execution Terminated"), result);
     } 
 }
 

@@ -17,17 +17,92 @@
 #include "JEqStmt.h"
 #include "JLessStmt.h"
 #include "MovStmt.h"
+#include "Identifier.h"
 #include <QJsonObject>
+
+// TODO: remove later
+#include <QDebug>
 
 Program::Program(std::string name, std::vector<std::string>& code){
     setName(name);
     source = code;
 };
 
+// TODO: removed compile = code for now
 Program::Program(std::string name, QJsonObject& code){
     setName(name);
-    compile = code;
+	code = code;
 };
+
+Program::Program(QJsonObject& code) {
+	int i = 0;
+	QJsonArray array = code.value("Program").toArray();
+
+	foreach(const QJsonValue & v, array) {
+		QJsonObject obj = v.toObject();		
+		
+		if (obj.contains("Label")) {
+			QJsonValue name = (obj.value("Label")).toObject().value("name");
+			std::string instr = name.toString().toUtf8().constData();
+			std::cout << "Value = " << instr << std::endl;
+
+			// TODO: somehow improve this process?
+			if (!instr.compare("dci")) {
+				DeclIntStmt* dci = new DeclIntStmt();
+				dci->read(obj);
+				statements.push_back(dci);
+			}
+			else if (!instr.compare("rdi")) {
+				ReadStmt* rdi = new ReadStmt();
+				rdi->read(obj);
+				statements.push_back(rdi);
+			}
+			else if (!instr.compare("prt")) {
+				PrintStmt* prt = new PrintStmt();
+				prt->read(obj);
+				statements.push_back(prt);
+			}
+
+		}
+		else {
+			QJsonObject id = obj.value("Identifier").toObject();
+			Label* label = new Label();
+			label->read(id);
+
+			pairs.push_back(std::make_pair(label, i));
+		}
+		i++;
+	}
+
+	// just for debugging purposes
+	std::cout << std::endl;
+	for (unsigned int k = 0; k < pairs.size(); k++) {
+		std::cout << pairs.at(k).first->toString() << " | index (from 0) :" << pairs.at(k).second << std::endl;
+	}
+	// just for debugging purposes
+	std::cout << std::endl;
+	for (unsigned int l = 0; l < statements.size(); l++) {
+		std::cout << statements.at(l)->toString() << std::endl;
+	}
+
+};
+
+Program::~Program() {
+	if (statements.size() > 0) {
+		for (unsigned i = 0; i < statements.size(); i++) {
+			if (statements.at(i) != nullptr) {
+				delete statements.at(i);
+			}
+		}
+	}
+	if (pairs.size() > 0) {
+		for (unsigned i = 0; i < pairs.size(); i++) {
+			if (pairs.at(i).first != nullptr) {
+				delete pairs.at(i).first;
+			}
+		}
+	}
+}
 
 void Program::setName(std::string name){
 	fileName = name;

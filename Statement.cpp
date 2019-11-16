@@ -43,8 +43,10 @@ int Statement::getNumOperands() {
          label = new Label();
          label->read(json["Label"].toObject());
      }
+
      if(json.contains("Operands") && json["Operands"].isArray()){
          QJsonArray ops = json["Operands"].toArray();
+		 operands = new Operand* [ops.size()];
 
          for(int i=0; i<ops.size(); i++){
             QJsonObject operandObj = ops[i].toObject();
@@ -99,4 +101,23 @@ int Statement::getNumOperands() {
          return instr.substr(instr.find(':') + 2, instr.length());
      }
      return instr;
+ }
+
+ std::string Statement::toString() {
+	 std::string output = "About the PrintStmt object: <";
+
+	 if (label != nullptr) {
+		 output += label->toString();
+	 }
+	 else {
+		 output += "Instruction doesn't have label. ";
+	 }
+
+	 for (int i = 0; i < numOperands && operands != nullptr; i++) {
+		 output += " | " + operands[i]->toString();
+	 }
+
+	 output += ">";
+
+	 return output;
  }

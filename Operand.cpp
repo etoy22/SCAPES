@@ -41,7 +41,7 @@ std::string Operand::toString(){
 void Operand::read(const QJsonObject &json){
     if(json.contains("Identifier") && json["Identifier"].isString()){
         identifier = new Identifier();
-        identifier->read(json["Label"].toObject());
+        identifier->read(json["Identifier"].toObject());
     }
 }
 void Operand::write(QJsonObject &json) const{

@@ -43,7 +43,7 @@ public:
     Operand* getOperand(int);
     Operand** getOperands();
 	int getNumOperands();
-
+	virtual std::string toString();
 };
 
 #endif
