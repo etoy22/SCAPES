@@ -11,6 +11,12 @@
 #include "JumpMoreStmt.h"
 #include "Variable.h"
 #include "Program.h"
+
+#include "AddStmt.h"
+#include "DeclArrStmt.h"
+#include "JEqStmt.h"
+#include "JLessStmt.h"
+#include "MovStmt.h"
 #include <QJsonObject>
 
 Program::Program(std::string name, std::vector<std::string>& code){
