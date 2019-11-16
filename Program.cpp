@@ -21,7 +21,12 @@
 
 Program::Program(std::string name, std::vector<std::string>& code){
     setName(name);
-    input = code;
+    source = code;
+};
+
+Program::Program(std::string name, QJsonObject& code){
+    setName(name);
+    compile = code;
 };
 
 void Program::setName(std::string name){
@@ -40,8 +45,8 @@ bool Program::compile(){
     if (result){
         //scan source
         
-        for (unsigned long i =0; i<input.size(); i++) {
-		std::string in = input.at(i); //line 1-n
+        for (unsigned long i =0; i<source.size(); i++) {
+        std::string in = source.at(i); //line 1-n
 		std::string temp = "x";
 		std::string line = "";
              	int l=in.length();
@@ -136,14 +141,14 @@ bool Program::checkSyntax(){
 	bool valid = true;
 	std::string message ="";
     	std::string unavalible[12] = {"dci","dca","rdi","prt","mov","add","cmp", "jls", "jmr", "jeq", "jmp", "end"};
-	if(input.size() == 0){
+    if(source.size() == 0){
 		valid = false;
 	}
 	//Adds all decleration of varriables and labels to there sets
-    	for(int j = 0; j < int(input.size()) &&valid;j++){
-		if(input[j].find('#') != std::string::npos){}
-		else if(input[j].find_first_not_of(" \t") != std::string::npos){
-			std::string s = input[j];
+    for(int j = 0; j < int(source.size()) &&valid;j++){
+        if(source[j].find('#') != std::string::npos){}
+        else if(source[j].find_first_not_of(" \t") != std::string::npos){
+            std::string s = source[j];
 			std::istringstream iss(s);
 			std::vector<std::string> result{
 			    std::istream_iterator<std::string>(iss), {}
@@ -197,7 +202,7 @@ bool Program::checkSyntax(){
 				message += std::to_string(j+1);
 					throw message;
 			}
-					else if(j == int(input.size())-1 && result[0] != "end"){
+                    else if(j == int(source.size())-1 && result[0] != "end"){
 				valid = false;
 				message = "the last statement isn't end";
 				throw message;
@@ -247,7 +252,6 @@ bool Program::checkSyntax(){
 						throw message;
 					}
 				}
-				//Checks that all the following are counted as an error but has no 
 				else if(result[0] == "jmr" || result[0] == "jmp"||result[0] == "end"){}
 				else{
 					valid = false;
@@ -261,11 +265,10 @@ bool Program::checkSyntax(){
 		}
 			
 	}
-	
 	//second loop to see all labels
-    	for(int j = 0; j < int(input.size()) &&valid;j++){
-		if(input[j].find_first_not_of(" \t") != std::string::npos){
-			std::string s = input[j];
+        for(int j = 0; j < int(source.size()) &&valid;j++){
+        if(source[j].find_first_not_of(" \t") != std::string::npos){
+            std::string s = source[j];
 			std::istringstream iss(s);
 			std::vector<std::string> result{
 			    std::istream_iterator<std::string>(iss), {}
@@ -280,7 +283,6 @@ bool Program::checkSyntax(){
 			}
 		}
 	}
-	//Loops to check if a statement is used as a label
 	for(int i = 0; i < 12;i++){
 		if(label.count(unavalible[i])){
 		    valid = false;
@@ -288,14 +290,14 @@ bool Program::checkSyntax(){
 		   throw message;
 		} 
 	}
-	
-	//Iterates through label to check if label and end are the same
 	std::set<std::string>::iterator it = label.begin();
+
+
 	while (it != label.end())
 	{
 		if(var.count(*it)){
 			valid = false;
-		    	message = "a varriable and a label have the same name";
+		    message = "a varriable and  a label have the same name";
 		   	throw message;
 		}
 		it++;
