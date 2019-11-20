@@ -3,10 +3,6 @@
 #include <iterator>
 #include <iomanip>
 #include "DeclIntStmt.h"
-#include "AddStmt.h"
-#include "DeclArrStmt.h"
-#include "JEqStmt.h"
-#include "JLessStmt.h"
 #include "EndStmt.h"
 #include "JumpStmt.h"
 #include "CompStmt.h"
@@ -196,42 +192,7 @@ bool Program::compile(){
                 QJsonObject stmt;
                 jmr.write(stmt);
                 out.push_back(stmt);
-            }
-            else if (line.find("dca") != std::string::npos) {
-		DeclArrStmt dca;
-		dca.compile(line)
-		QJsonObject stmt;
-                dca.write(stmt);
-                out.push_back(stmt);
-	    }    
-	    else if (line.find("mov") != std::string::npos) {
-		MovStmt mov;
-		mov.compile(line)
-		QJsonObject stmt;
-                mov.write(stmt);
-                out.push_back(stmt);
-	    }  
-	    else if (line.find("jls") != std::string::npos) {
-		JLessStmt jls;
-		jls.compile(line)
-		QJsonObject stmt;
-                jls.write(stmt);
-                out.push_back(stmt);
-	    } 
-	    else if (line.find("jeq") != std::string::npos) {
-		JEqStmt jeq;
-		jeq.compile(line)
-		QJsonObject stmt;
-                jeq.write(stmt);
-                out.push_back(stmt);
-	    } 
-	    else if (line.find("add") != std::string::npos) {
-		AddStmt add;
-		add.compile(line)
-		QJsonObject stmt;
-                add.write(stmt);
-                out.push_back(stmt);
-	    } 
+            }           
         }
         return true;
     }
@@ -329,25 +290,6 @@ bool Program::checkSyntax(){
 				message += std::to_string(j+1);
 				throw message;
 			}
-			else if (result[0] == "mov" && result.size != 3){
-				valid = false;
-				message = "mov error on line ";
-				message += std::to_string(j+1);
-					throw message;
-			}
-			else if (result[0] == "dca" && result.size != 3){
-				valid = false;
-				message = "dca error on line ";
-				message += std::to_string(j+1);
-					throw message;
-			}
-			else if (result[0] == "add" && result.size != 3){
-				valid = false;
-				message = "add error on line ";
-				message += std::to_string(j+1);
-					throw message;
-			}
-			
 			//Checking there are no errors
 			if(valid){
 				//Downloading into sets
@@ -365,21 +307,7 @@ bool Program::checkSyntax(){
 						var.insert(result[1]);
 					}
 				}
-				if(result[0] == "dca"){
-					if(var.size()==0){
-						var.insert(result[1]);
-					}	
-					else if(var.count(result[1])){
-						valid = false;
-						message = "multiple of the same varriable declaired line ";
-						message += std::to_string(j+1);
-						throw message;
-					}
-					else{
-						var.insert(result[1]);
-					}
-				}
-				else if (result[0] == "rdi" || result[0] == "prt""){
+				else if (result[0] == "rdi" || result[0] == "prt"){
 					if(var.count(result[1])== 0){
 						valid = false;
 						message = "undeclaired varraible called line ";
@@ -387,7 +315,7 @@ bool Program::checkSyntax(){
 						throw message;
 					}
 				}
-				else if(result[0] == "cmp"||result[0] == "add"||result[0] == "mov){
+				else if(result[0] == "cmp"){
 					if(var.count(result[1])== 0){
 						valid = false;
 						message = "undeclaired varraible 1 called line ";
@@ -403,7 +331,8 @@ bool Program::checkSyntax(){
 				}
 
 				//Checks that all the following are counted as an error but has no 
-				else if(result[0] == "jmr" || result[0] == "jmp"||result[0] == "end" ||result[0] = "jeq" || result[0] = 'jls'){}
+
+				else if(result[0] == "jmr" || result[0] == "jmp"||result[0] == "end"){}
 
 				else{
 					valid = false;
@@ -425,7 +354,7 @@ bool Program::checkSyntax(){
 			std::vector<std::string> result{
 			    std::istream_iterator<std::string>(iss), {}
 			};
-			if(result[0] == "jmr" || result[0] == "jmp" || result[0] == "jeq"||result[0] = 'jls'){
+			if(result[0] == "jmr" || result[0] == "jmp"){
 				if(label.count(result[1]) ==0){
 					valid = false;
 					message = "undeclaired label on line ";
