@@ -1,7 +1,7 @@
 #--------------------------------------------------------------------------------------------#
 #		         COMP 3004 Software Engineering Project 			     #
 #											     #
-#				   SCAPES PROJECT D1 					     #
+#				   SCAPES PROJECT D2 					     #
 #											     #
 #			            BY: SCAPE GOAT					     #
 #											     #
@@ -22,8 +22,8 @@ DESCRIPTION:	SCAPES
 
 BUILDING INSTRUCTIONS: 
 
-	1. download the "D1.tar" file containing the project 
-	2. extract the file using command "tar -xvf D1.tar" (in same directory as tar) 
+	1. download the "D2.tar" file containing the project 
+	2. extract the file using command "tar -xvf D2.tar" (in same directory as tar) 
 	3. change directory into the SCAPES/ folder, "cd SCAPES/" (untar-ed folder)
 	4. run command "make"
 	5. lauch application using ./SCAPES

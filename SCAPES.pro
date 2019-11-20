@@ -29,12 +29,18 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
         repositoryinterface.cpp \
+		executioncontroller.cpp \
+	AddStmt.cpp \
 	CompStmt.cpp \
+	DeclArrStmt.cpp \
 	DeclIntStmt.cpp \
 	EndStmt.cpp \
+	JEqStmt.cpp \
+	JLessStmt.cpp \
 	JumpStmt.cpp \
 	Identifier.cpp \
 	Label.cpp \
+	MovStmt.cpp \
 	Operand.cpp \
 	Statement.cpp \
 	Variable.cpp \
@@ -48,12 +54,18 @@ HEADERS += \
     compilercontroller.h \
         mainwindow.h \
         repositoryinterface.h \
+		executioncontroller.h \
+	AddStmt.h \
 	CompStmt.h \
+	DeclArrStmt.cpp \
 	DeclIntStmt.h \
 	EndStmt.h \
+	JEqStmt.h \
+	JLessStmt.h \
 	JumpStmt.h \
 	Identifier.h \
 	Label.h \
+	MovStmt.h \
 	Operand.h \
 	Statement.h \
 	Variable.h \
