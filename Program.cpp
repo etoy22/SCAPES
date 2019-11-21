@@ -15,7 +15,6 @@
 #include "JumpMoreStmt.h"
 #include "Variable.h"
 #include "Program.h"
-
 #include "AddStmt.h"
 #include "DeclArrStmt.h"
 #include "JEqStmt.h"
@@ -34,16 +33,15 @@ void Program::setName(std::string name){
 
 bool Program::compile(){
     bool result;
-    
     try {
         result = checkSyntax();
     } catch (std::string error) {
         std::string errMsg =  "ERROR: " + error;
         throw errMsg;
+	result = false;
     }
     if (result){
         //scan source
-        
         for (unsigned long i =0; i<input.size(); i++) {
 		std::string in = input.at(i); //line 1-n
 		std::string temp = "x";
@@ -119,35 +117,35 @@ bool Program::compile(){
             }
             else if (line.find("dca") != std::string::npos) {
 		DeclArrStmt dca;
-		dca.compile(line)
+		dca.compile(line);
 		QJsonObject stmt;
                 dca.write(stmt);
                 out.push_back(stmt);
 	    }    
 	    else if (line.find("mov") != std::string::npos) {
 		MovStmt mov;
-		mov.compile(line)
+		mov.compile(line);
 		QJsonObject stmt;
                 mov.write(stmt);
                 out.push_back(stmt);
 	    }  
 	    else if (line.find("jls") != std::string::npos) {
 		JLessStmt jls;
-		jls.compile(line)
+		jls.compile(line);
 		QJsonObject stmt;
                 jls.write(stmt);
                 out.push_back(stmt);
 	    } 
 	    else if (line.find("jeq") != std::string::npos) {
 		JEqStmt jeq;
-		jeq.compile(line)
+		jeq.compile(line);
 		QJsonObject stmt;
                 jeq.write(stmt);
                 out.push_back(stmt);
 	    } 
 	    else if (line.find("add") != std::string::npos) {
 		AddStmt add;
-		add.compile(line)
+		add.compile(line);
 		QJsonObject stmt;
                 add.write(stmt);
                 out.push_back(stmt);
@@ -162,7 +160,6 @@ void Program::read(const QJsonObject &json){
     if(json.contains("Program") && json["Program"].isArray()){
         out = json["Program"].toArray();
     }
-    
 }
 
 void Program::write(QJsonObject &json) const{
@@ -172,15 +169,19 @@ void Program::write(QJsonObject &json) const{
 bool Program::checkSyntax(){
 	std::set <std::string> var;
 	std::set <std::string> label;
-	bool valid = true;
 	std::string message ="";
     	std::string unavalible[12] = {"dci","dca","rdi","prt","mov","add","cmp", "jls", "jmr", "jeq", "jmp", "end"};
 	if(input.size() == 0){
-		valid = false;
+		message = "no code";
+		throw message;
 	}
 	//Adds all decleration of varriables and labels to there sets
-    	for(int j = 0; j < int(input.size()) &&valid;j++){
+    	for(int j = 0; j < int(input.size());j++){
 		if(input[j].find('#') != std::string::npos){}
+		else if(input[j].find('$') != std::string::npos){
+			message = "invalide character on line "+ std::to_string(j+1);
+			throw message;	
+		}
 		else if(input[j].find_first_not_of(" \t") != std::string::npos){
 			std::string s = input[j];
 			std::istringstream iss(s);
@@ -199,7 +200,6 @@ bool Program::checkSyntax(){
 				    result.erase(result.begin());
 				}
 				else if(label.find(result[0].substr(0,result[0].find(':')))!= label.end()){
-				    valid = false;
 				    message = "two labels with the same name on line ";
 				    message += std::to_string(j+1);
 				    throw message;
@@ -209,142 +209,132 @@ bool Program::checkSyntax(){
 				    result.erase(result.begin());
 				}
 			}
-			
-			
 			//error checking
 			if(result[0] == "dci" && result.size() != 2){
-				valid = false;
 				message = "dci error on line ";
 				message += std::to_string(j+1);
 				throw message;
 			}
 			else if(result[0] == "rdi" && result.size() != 2){
-				valid = false;
 				message = "rdi error on line ";
 				message += std::to_string(j+1);
 				throw message;
 			}
 			else if(result[0] == "prt" && result.size() != 2){
-				valid = false;
 				message = "prt error on line ";
 				message += std::to_string(j+1);
 				throw message;
 			}
 			else if(result[0] == "cmp" && result.size() != 3){
-				valid = false;
 				message = "cmp error on line ";
 				message += std::to_string(j+1);
 					throw message;
 			}
 			else if(j == int(input.size())-1 && result[0] != "end"){
-				valid = false;
 				message = "the last statement isn't end";
 				throw message;
 			}
 			else if(result[0] == "end" && result.size() != 1){
-				valid = false;
 				message = "end error on line ";
 				message += std::to_string(j+1);
 				throw message;
 			}
-			else if (result[0] == "mov" && result.size != 3){
-				valid = false;
+			else if (result[0] == "mov" && result.size() != 3){
 				message = "mov error on line ";
 				message += std::to_string(j+1);
-					throw message;
+				throw message;
 			}
-			else if (result[0] == "dca" && result.size != 3){
-				valid = false;
+			else if (result[0] == "dca" && result.size() != 3){
 				message = "dca error on line ";
 				message += std::to_string(j+1);
-					throw message;
+				throw message;
 			}
-			else if (result[0] == "add" && result.size != 3){
-				valid = false;
+			else if (result[0] == "add" && result.size() != 3){
 				message = "add error on line ";
 				message += std::to_string(j+1);
-					throw message;
+				throw message;
 			}
-			
-			//Checking there are no errors
-			if(valid){
-				//Downloading into sets
-				if(result[0] == "dci"){
-					if(var.size()==0){
-						var.insert(result[1]);
-						}	
-					else if(var.count(result[1])){
-						valid = false;
-						message = "multiple of the same varriable declaired line ";
-						message += std::to_string(j+1);
-						throw message;
-					}
-					else{
-						var.insert(result[1]);
-					}
-				}
-				if(result[0] == "dca"){
-					if(var.size()==0){
-						var.insert(result[1]);
-					}	
-					else if(var.count(result[1])){
-						valid = false;
-						message = "multiple of the same varriable declaired line ";
-						message += std::to_string(j+1);
-						throw message;
-					}
-					else{
-						var.insert(result[1]);
-					}
-				}
-				else if (result[0] == "rdi" || result[0] == "prt""){
-					if(var.count(result[1])== 0){
-						valid = false;
-						message = "undeclaired varraible called line ";
-						message += std::to_string(j+1);
-						throw message;
-					}
-				}
-				else if(result[0] == "cmp"||result[0] == "add"||result[0] == "mov){
-					if(var.count(result[1])== 0){
-						valid = false;
-						message = "undeclaired varraible 1 called line ";
-						message += std::to_string(j+1);
-						throw message;
-					}
-					if(var.count(result[2])== 0){
-						valid = false;
-						message = "undeclaired varraible 2 called line ";
-						message += std::to_string(j+1);
-						throw message;
-					}
-				}
-				//Checks that all the following are counted as an error but has no 
-				else if(result[0] == "jmr" || result[0] == "jmp"||result[0] == "end" ||result[0] = "jeq" || result[0] = 'jls'){}
-				else{
-					valid = false;
-					message = "invalid call on line ";
+			//Downloading into sets
+			if(result[0] == "dci"){
+				if(var.size()==0){
+					var.insert(result[1]);
+				}	
+				else if(var.count(result[1])){
+					message = "multiple of the same varriable declaired line ";
 					message += std::to_string(j+1);
 					throw message;
-					
 				}
-						
+				else{
+					var.insert(result[1]);
+				}
+			}
+			else if(result[0] == "dca"){
+				if(var.count(result[1])){
+					message = "multiple of the same varriable declaired line ";
+					message += std::to_string(j+1);
+					throw message;
+				}
+				else{
+					bool test = false;
+					try{
+						for(int i = 0; i< stoi(result[2]);i++){
+							std::string temp = "$"+result[1]+"+"+std::to_string(i);
+							var.insert(temp);
+						}
+					}
+					catch(std::invalid_argument& e)
+					{
+						test = true;
+					}
+					catch(std::out_of_range& e)
+					{
+						test = true;
+					}
+					if(test){
+						message = "error with dca ";
+						message += std::to_string(j+1);
+						throw message;
+					}
+				}
+			}
+			else if (result[0] == "rdi" || result[0] == "prt"){
+				if(var.count(result[1])== 0){
+					message = "undeclaired varraible called line ";
+					message += std::to_string(j+1);
+					throw message;
+				}
+			}
+			else if(result[0] == "cmp"||result[0] == "add"||result[0] == "mov"){
+					if(var.count(result[1])== 0){
+					message = "undeclaired varraible 1 called line ";
+					message += std::to_string(j+1);
+					throw message;
+				}
+				if(var.count(result[2])== 0){					
+					message = "undeclaired varraible 2 called line ";
+					message += std::to_string(j+1);
+					throw message;
+				}
+			}
+			//Checks that all the following are counted as an error but has no 
+			else if(result[0] == "jmr"|| result[0] == "jmp"||result[0] == "end"||result[0] == "jeq"||result[0] == "jls"){}
+			else{
+				message = "invalid call on line ";
+				message += std::to_string(j+1);
+				throw message;	
 			}
 		}
-			
 	}
-	
 	//second loop to see all labels
-    	for(int j = 0; j < int(input.size()) &&valid;j++){
+    	for(int j = 0; j < int(input.size());j++){
 		if(input[j].find_first_not_of(" \t") != std::string::npos){
 			std::string s = input[j];
 			std::istringstream iss(s);
 			std::vector<std::string> result{
 			    std::istream_iterator<std::string>(iss), {}
 			};
-			if(result[0] == "jmr" || result[0] == "jmp" || result[0] == "jeq"||result[0] = 'jls'){
+			if(result[0] == "jmr"|| result[0] == "jmp"||result[0] == "jeq"||result[0] == "jls"){
 				if(label.count(result[1]) ==0){
-					valid = false;
 					message = "undeclaired label on line ";
 					message += std::to_string(j+1);
 					throw message;
@@ -355,25 +345,21 @@ bool Program::checkSyntax(){
 	//Loops to check if a statement is used as a label
 	for(int i = 0; i < 12;i++){
 		if(label.count(unavalible[i])){
-		    valid = false;
 		    message = "used a statement as a label ";
 		   throw message;
 		} 
 	}
-	
 	//Iterates through label to check if label and end are the same
 	std::set<std::string>::iterator it = label.begin();
 	while (it != label.end())
 	{
 		if(var.count(*it)){
-			valid = false;
 		    	message = "a varriable and a label have the same name";
 		   	throw message;
 		}
 		it++;
 	}
-	
-    return valid;
+	return true;
 }
 
 void Program::execute(){
