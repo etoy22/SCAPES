@@ -26,10 +26,10 @@ CONFIG += c++11
 
 SOURCES += \
     compilercontroller.cpp \
+    executioncontroller.cpp \
         main.cpp \
         mainwindow.cpp \
         repositoryinterface.cpp \
-		executioncontroller.cpp \
 	AddStmt.cpp \
 	CompStmt.cpp \
 	DeclArrStmt.cpp \
@@ -52,9 +52,9 @@ SOURCES += \
 
 HEADERS += \
     compilercontroller.h \
+    executioncontroller.h \
         mainwindow.h \
         repositoryinterface.h \
-		executioncontroller.h \
 	AddStmt.h \
 	CompStmt.h \
 	DeclArrStmt.cpp \

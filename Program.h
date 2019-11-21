@@ -18,7 +18,7 @@ private:
 
 	int comparisonFlag;
     std::string fileName;
-    std::vector<std::string> source;
+    std::vector<std::string> input;
     std::vector<Statement*> statements;
     std::vector<std::pair<Identifier*,int>> pairs;
 	std::set<Variable*> variables;
