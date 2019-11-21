@@ -4,7 +4,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include<set> 
+#include <set> 
 #include <sstream>
 #include <QVariant>
 #include "Statement.h"
@@ -12,6 +12,8 @@
 #include <QObject>
 #include <QJsonArray>
 #include <QJsonObject>
+#include "ui_mainwindow.h"
+#include <QMainWindow>
 
 class Program {
 private:
@@ -21,9 +23,11 @@ private:
     std::vector<std::string> input;
     std::vector<Statement*> statements;
     std::vector<std::pair<Identifier*,int>> pairs;
-	std::set<Variable*> variables;
+    std::set<Variable*> variables;
     QJsonArray out;
     QJsonObject program;
+    Ui::MainWindow* ui;
+    QMainWindow* win;
     bool checkSyntax();
 
 protected:
@@ -52,7 +56,7 @@ public:
 	std::string getFileName();
 	int getComparisonFlag();
 	void setName(std::string);
-	
-
+	void setUIPointer(Ui::MainWindow&);
+	void setWindowPointer(QMainWindow*);
 };
 #endif

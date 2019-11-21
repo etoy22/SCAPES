@@ -456,25 +456,37 @@ bool Program::checkSyntax(){
 void Program::execute(){
 
 	for (unsigned int i = 0; i < statements.size(); i++) {
-		if (typeid(*(statements.at(i))) == typeid(DeclIntStmt)) {
+		if (typeid(*(statements.at(i))) == typeid(DeclIntStmt)) 
 			statements.at(i)->run(variables);
-		}
-		else if (typeid(*(statements.at(i))) == typeid(DeclArrStmt)) {
+		
+		else if (typeid(*(statements.at(i))) == typeid(DeclArrStmt)) 
 			statements.at(i)->run(variables);
-		}
+		
+		else if (typeid(*(statements.at(i))) == typeid(ReadStmt)) 
+			statements.at(i)->run(variables, ui, win);
+		
+		
 	}
 
 	// debugging: remove later
 	std::cout << std::endl;
 	std::cout << "Variable objects: " << std::endl;
 	for (Variable* v : variables) {
-		std::cout << "Variable: " + v->getName() << std::endl;
+		std::cout << "Variable: " + v->getName() + "   Value: " + std::to_string(v->getValue()) << std::endl;
 	}
 
 	
 }
 
 void Program::print(){
+}
+
+void Program::setUIPointer(Ui::MainWindow& ptr){
+	ui = &ptr;
+}
+
+void Program::setWindowPointer(QMainWindow* window){
+	win = window;
 }
 
 std::string Program::getFileName(){

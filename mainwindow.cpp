@@ -124,7 +124,7 @@ void MainWindow::on_actionCompile_triggered()
 void MainWindow::on_actionRun_triggered()
 {
     //TODO: run compiled program
-    ExecutionController executor;
+    ExecutionController executor(ui,this);
     try { 
     	executor.Run(currentFile);
     } catch(std::string error){

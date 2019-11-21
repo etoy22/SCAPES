@@ -11,6 +11,9 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include "ui_mainwindow.h"
+#include <QMainWindow>
+
 
 class Statement{
 private:
@@ -32,8 +35,10 @@ public:
 	// class diagram methods
 	virtual void compile(std::string) = 0;
 	virtual void run() = 0;
-	virtual void run(std::set<Variable*>&);
-
+	virtual void run(std::set<Variable*>&) = 0;
+	virtual void run(std::set<Variable*>&, Ui::MainWindow*&, QMainWindow*) = 0;
+	//virtual void run(std::set<Variable*>&);
+	//virtual void run(std::set<Variable*>&, Ui::MainWindow*&);
     void setLabel(Label*);
 
     void setOperand(Operand*, int);

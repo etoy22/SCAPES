@@ -59,6 +59,10 @@ void JumpMoreStmt::run() {
 	// nothing yet
 }
 
+void JumpMoreStmt::run(std::set<Variable*>&){}
+void JumpMoreStmt::run(std::set<Variable*>&, Ui::MainWindow*&, QMainWindow*){}
+
+
 std::string JumpMoreStmt::toString() {
     std::string output = "About the JumpMoreStmt object: <";
 
