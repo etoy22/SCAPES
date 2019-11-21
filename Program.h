@@ -19,6 +19,8 @@ private:
 	int comparisonFlag;
     std::string fileName;
     std::vector<std::string> input;
+    std::vector<Statement*> statements;
+    std::vector<std::pair<Identifier*,int>> pairs;
     QJsonArray out;
     QJsonObject program;
     bool checkSyntax();
@@ -37,7 +39,7 @@ public:
 
     // constructor
     Program(std::string, std::vector<std::string>&);
-
+    Program(std::string, QJsonObject&);
 	//Executables
     bool compile();
 	void execute();

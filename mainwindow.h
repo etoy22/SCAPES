@@ -1,6 +1,5 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
-
 #include <iostream>
 #include <QMainWindow>
 #include <QFile>
@@ -10,6 +9,7 @@
 #include <QMessageBox>
 #include "repositoryinterface.h"
 #include "compilercontroller.h"
+#include "executioncontroller.h"
 
 namespace Ui {
 class MainWindow;

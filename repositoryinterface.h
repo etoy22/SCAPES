@@ -19,6 +19,7 @@ class RepositoryInterface{
         QString openFile(QString);
         bool getSource(std::string, std::vector<std::string>&);
         void storeCompiled(QString,QJsonObject*);
+        void getCompiled(QString, QJsonObject&);
         
 
     private:
