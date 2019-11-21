@@ -57,6 +57,7 @@ void RepositoryInterface::storeCompiled(QString fileName, QJsonObject* vec){
     saveFile.write(doc.toJson());
 }
 
+
 void RepositoryInterface::getCompiled(QString fileName, QJsonObject& program){
     QJsonDocument doc;
     std::cout << "FileName: " << fileName.toUtf8().constData() << std::endl;
@@ -71,3 +72,4 @@ void RepositoryInterface::getCompiled(QString fileName, QJsonObject& program){
     //doc.fromJson(savedProgram);
     program = doc.object();
 }
+

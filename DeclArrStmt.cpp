@@ -65,6 +65,25 @@ void DeclArrStmt::run() {
 	// nothing yet
 }
 
+void DeclArrStmt::run(std::set<Variable*>& variableSet) {
+	bool variableExists = true;
+
+	for (int i = 0; i < numOperands; i++) {
+		if (operands[i] != nullptr && operands[i]->getIdentifier() != nullptr) {
+			std::set<Variable*>::iterator result = std::find_if(std::begin(variableSet), std::end(variableSet),
+				[&](Variable* const& v) { return v->getName() == operands[i]->getIdentifier()->getName();  });
+
+			if (result == variableSet.end()) {
+				variableExists = false;
+			}
+		}
+
+		if (!variableExists) {
+			variableSet.insert((Variable*)operands[i]->getIdentifier());
+		}
+	}
+}
+
 std::string DeclArrStmt::toString() {
 	std::string output = "About the DeclArrStmt object: <";
 

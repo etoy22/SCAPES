@@ -3,10 +3,6 @@
 #include <iterator>
 #include <iomanip>
 #include "DeclIntStmt.h"
-#include "AddStmt.h"
-#include "DeclArrStmt.h"
-#include "JEqStmt.h"
-#include "JLessStmt.h"
 #include "EndStmt.h"
 #include "JumpStmt.h"
 #include "CompStmt.h"
@@ -20,66 +16,24 @@
 #include "JEqStmt.h"
 #include "JLessStmt.h"
 #include "MovStmt.h"
+#include "Identifier.h"
 #include <QJsonObject>
+
+// TODO: remove later
+#include <QDebug>
 
 Program::Program(std::string name, std::vector<std::string>& code){
     setName(name);
     input = code;
 };
 
+Program::Program(QJsonObject& code) {
+	read(code);
+};
 
 Program::Program(std::string name, QJsonObject& code) {
-	setName(name);
-	int i = 0;
-	QJsonArray array = code.value("Program").toArray();
-
-	foreach(const QJsonValue & v, array) {
-		QJsonObject obj = v.toObject();		
-		
-		if (obj.contains("Label")) {
-			QJsonValue name = (obj.value("Label")).toObject().value("name");
-			std::string instr = name.toString().toUtf8().constData();
-			std::cout << "Value = " << instr << std::endl;
-
-			// TODO: somehow improve this process?
-			if (!instr.compare("dci")) {
-				DeclIntStmt* dci = new DeclIntStmt();
-				dci->read(obj);
-				statements.push_back(dci);
-			}
-			else if (!instr.compare("rdi")) {
-				ReadStmt* rdi = new ReadStmt();
-				rdi->read(obj);
-				statements.push_back(rdi);
-			}
-			else if (!instr.compare("prt")) {
-				PrintStmt* prt = new PrintStmt();
-				prt->read(obj);
-				statements.push_back(prt);
-			}
-
-		}
-		else {
-			QJsonObject id = obj.value("Identifier").toObject();
-			Label* label = new Label();
-			label->read(id);
-
-			pairs.push_back(std::make_pair(label, i));
-		}
-		i++;
-	}
-
-	// just for debugging purposes
-	std::cout << std::endl;
-	for (unsigned int k = 0; k < pairs.size(); k++) {
-		std::cout << pairs.at(k).first->toString() << " | index (from 0) :" << pairs.at(k).second << std::endl;
-	}
-	// just for debugging purposes
-	std::cout << std::endl;
-	for (unsigned int l = 0; l < statements.size(); l++) {
-		std::cout << statements.at(l)->toString() << std::endl;
-	}
-
+	setName(name);	
+	read(code);
 };
 
 Program::~Program() {
@@ -114,6 +68,7 @@ bool Program::compile(){
     }
     if (result){
         //scan source
+
         for (unsigned long i =0; i<input.size(); i++) {
 		std::string in = input.at(i); //line 1-n
 		std::string temp = "x";
@@ -229,9 +184,61 @@ bool Program::compile(){
 }
 
 void Program::read(const QJsonObject &json){
-    if(json.contains("Program") && json["Program"].isArray()){
-        out = json["Program"].toArray();
-    }
+	int i = 0;
+	QJsonArray array = json.value("Program").toArray();
+
+	foreach(const QJsonValue & v, array) {
+		QJsonObject obj = v.toObject();
+
+		if (obj.contains("Label")) {
+			QJsonValue name = (obj.value("Label")).toObject().value("name");
+			std::string instr = name.toString().toUtf8().constData();
+
+			// TODO: somehow improve this process?
+			if (!instr.compare("dci")) {
+				DeclIntStmt* dci = new DeclIntStmt();
+				dci->read(obj);
+				statements.push_back(dci);
+			}
+			else if (!instr.compare("dca")) {
+				DeclArrStmt* dca = new DeclArrStmt();
+				dca->read(obj);
+				statements.push_back(dca);
+			}
+			else if (!instr.compare("rdi")) {
+				ReadStmt* rdi = new ReadStmt();
+				rdi->read(obj);
+				statements.push_back(rdi);
+			}
+			else if (!instr.compare("prt")) {
+				PrintStmt* prt = new PrintStmt();
+				prt->read(obj);
+				statements.push_back(prt);
+			}
+			i++;
+		}
+		else {
+			QJsonObject id = obj.value("Identifier").toObject();
+			Label* label = new Label();
+			label->read(id);
+
+			pairs.push_back(std::make_pair(label, i));
+		}
+
+	}
+
+	// just for debugging purposes
+	std::cout << std::endl;
+	std::cout << "Label objects: " << std::endl;
+	for (unsigned int k = 0; k < pairs.size(); k++) {
+		std::cout << pairs.at(k).first->toString() << " | index (from 0) :" << pairs.at(k).second << std::endl;
+	}
+	// just for debugging purposes
+	std::cout << std::endl;
+	std::cout << "Instruction objects: " << std::endl;
+	for (unsigned int l = 0; l < statements.size(); l++) {
+		std::cout << statements.at(l)->toString() << std::endl;
+	}
 }
 
 void Program::write(QJsonObject &json) const{
@@ -243,6 +250,7 @@ bool Program::checkSyntax(){
 	std::set <std::string> label;
 	std::string message ="";
     	std::string unavalible[12] = {"dci","dca","rdi","prt","mov","add","cmp", "jls", "jmr", "jeq", "jmp", "end"};
+
 	if(input.size() == 0){
 		message = "no code";
 		throw message;
@@ -302,7 +310,9 @@ bool Program::checkSyntax(){
 				message += std::to_string(j+1);
 					throw message;
 			}
+
 			else if(j == int(input.size())-1 && result[0] != "end"){
+
 				message = "the last statement isn't end";
 				throw message;
 			}
@@ -311,6 +321,7 @@ bool Program::checkSyntax(){
 				message += std::to_string(j+1);
 				throw message;
 			}
+
 			else if (result[0] == "mov" && result.size() != 3){
 				message = "mov error on line ";
 				message += std::to_string(j+1);
@@ -368,6 +379,7 @@ bool Program::checkSyntax(){
 						throw message;
 					}
 				}
+
 			}
 			else if (result[0] == "rdi" || result[0] == "prt"){
 				if(var.count(result[1])== 0){
@@ -377,13 +389,16 @@ bool Program::checkSyntax(){
 				}
 			}
 			else if(result[0] == "cmp"||result[0] == "add"||result[0] == "mov"){
+
 					if(var.count(result[1])== 0){
 					message = "undeclaired varraible 1 called line ";
 					message += std::to_string(j+1);
 					throw message;
 				}
+
 				if(var.count(result[2])== 0){					
 					message = "undeclaired varraible 2 called line ";
+
 					message += std::to_string(j+1);
 					throw message;
 				}
@@ -401,10 +416,12 @@ bool Program::checkSyntax(){
     	for(int j = 0; j < int(input.size());j++){
 		if(input[j].find_first_not_of(" \t") != std::string::npos){
 			std::string s = input[j];
+
 			std::istringstream iss(s);
 			std::vector<std::string> result{
 			    std::istream_iterator<std::string>(iss), {}
 			};
+
 			if(result[0] == "jmr"|| result[0] == "jmp"||result[0] == "jeq"||result[0] == "jls"){
 				if(label.count(result[1]) ==0){
 					message = "undeclaired label on line ";
@@ -414,15 +431,17 @@ bool Program::checkSyntax(){
 			}
 		}
 	}
-	//Loops to check if a statement is used as a label
 	for(int i = 0; i < 12;i++){
 		if(label.count(unavalible[i])){
 		    message = "used a statement as a label ";
 		   throw message;
 		} 
 	}
+
 	//Iterates through label to check if label and end are the same
 	std::set<std::string>::iterator it = label.begin();
+
+
 	while (it != label.end())
 	{
 		if(var.count(*it)){
@@ -435,6 +454,24 @@ bool Program::checkSyntax(){
 }
 
 void Program::execute(){
+
+	for (unsigned int i = 0; i < statements.size(); i++) {
+		if (typeid(*(statements.at(i))) == typeid(DeclIntStmt)) {
+			statements.at(i)->run(variables);
+		}
+		else if (typeid(*(statements.at(i))) == typeid(DeclArrStmt)) {
+			statements.at(i)->run(variables);
+		}
+	}
+
+	// debugging: remove later
+	std::cout << std::endl;
+	std::cout << "Variable objects: " << std::endl;
+	for (Variable* v : variables) {
+		std::cout << "Variable: " + v->getName() << std::endl;
+	}
+
+	
 }
 
 void Program::print(){

@@ -1,5 +1,8 @@
 #include <iostream>
+#include <typeinfo>
 #include "Operand.h"
+#include "Variable.h"
+#include "Label.h"
 #include "Identifier.h"
 
 Operand::Operand() {
@@ -39,15 +42,35 @@ std::string Operand::toString(){
 
 
 void Operand::read(const QJsonObject &json){
-    if(json.contains("Identifier") && json["Identifier"].isString()){
+    if(json.contains("Identifier") ){
         identifier = new Identifier();
-        identifier->read(json["Label"].toObject());
+        identifier->read(json["Identifier"].toObject());
     }
+	else if (json.contains("Variable")) {
+		identifier = new Variable();
+		identifier->read(json["Variable"].toObject());
+	}
+	else  if (json.contains("Label")) {
+		identifier = new Label();
+		identifier->read(json["Label"].toObject());
+	}
 }
 void Operand::write(QJsonObject &json) const{
     QJsonObject id;
+
     if (identifier != nullptr){
         identifier->write(id);
     }
-    json["Identifier"] = id;
+	
+	if (typeid(*identifier) == typeid(Variable)) {
+		json["Variable"] = id;
+	}
+	else if (typeid(*identifier) == typeid(Label)) {
+		json["Label"] = id;
+	}
+	else {
+		json["Identifier"] = id;
+	}
+
+    
 }

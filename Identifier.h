@@ -26,7 +26,7 @@ public:
     void read(const QJsonObject &json);
     void write(QJsonObject &json) const;
 
-	std::string toString() ;
+	virtual std::string toString() ;
 };
 
 #endif

@@ -7,7 +7,7 @@
 #include<set> 
 #include <sstream>
 #include <QVariant>
-
+#include "Statement.h"
 #include "Identifier.h"
 #include <QObject>
 #include <QJsonArray>
@@ -21,6 +21,7 @@ private:
     std::vector<std::string> input;
     std::vector<Statement*> statements;
     std::vector<std::pair<Identifier*,int>> pairs;
+	std::set<Variable*> variables;
     QJsonArray out;
     QJsonObject program;
     bool checkSyntax();
@@ -33,13 +34,12 @@ protected:
 
 public:
 
-	
-	
-	
-
     // constructor
     Program(std::string, std::vector<std::string>&);
     Program(std::string, QJsonObject&);
+	Program(QJsonObject&);
+	~Program();
+
 	//Executables
     bool compile();
 	void execute();
