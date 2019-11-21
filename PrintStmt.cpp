@@ -57,6 +57,10 @@ void PrintStmt::run() {
 	// nothing yet
 }
 
+void PrintStmt::run(std::set<Variable*>&){}
+void PrintStmt::run(std::set<Variable*>&, Ui::MainWindow*&, QMainWindow*){}
+
+
 std::string PrintStmt::toString() {
     std::string output = "About the PrintStmt object: <";
 

@@ -60,6 +60,10 @@ void CompStmt::run() {
 	// nothing yet
 }
 
+void CompStmt::run(std::set<Variable*>&){}
+void CompStmt::run(std::set<Variable*>&, Ui::MainWindow*&, QMainWindow*){}
+
+
 std::string CompStmt::toString() {
     std::string output = "About the CompStmt object: <";
 

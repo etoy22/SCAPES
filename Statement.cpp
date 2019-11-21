@@ -9,8 +9,6 @@ Statement::Statement() {
 
 Statement::~Statement(){};
 
-void Statement::run(std::set<Variable*>&) {}
-
 void Statement::setLabel(Label* labelParam) {
 	label = labelParam;
 }

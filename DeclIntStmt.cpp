@@ -72,6 +72,7 @@ void DeclIntStmt::run(std::set<Variable*>& variableSet) {
 		variableSet.insert((Variable*)operands[0]->getIdentifier());
 	}
 }
+void DeclIntStmt::run(std::set<Variable*>& variableSet, Ui::MainWindow*& ui, QMainWindow* win){ }
 
 std::string DeclIntStmt::toString() {
     std::string output = "About the DeclIntStmt object: <";

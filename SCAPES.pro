@@ -57,7 +57,7 @@ HEADERS += \
         repositoryinterface.h \
 	AddStmt.h \
 	CompStmt.h \
-	DeclArrStmt.cpp \
+	DeclArrStmt.h \
 	DeclIntStmt.h \
 	EndStmt.h \
 	JEqStmt.h \

@@ -63,6 +63,8 @@ void AddStmt::run() {
 	// nothing yet
 }
 
+void AddStmt::run(std::set<Variable*>&){}
+void AddStmt::run(std::set<Variable*>&, Ui::MainWindow*&, QMainWindow*){}
 std::string AddStmt::toString() {
 	std::string output = "About the AddStmt object: <";
 

@@ -12,11 +12,11 @@ private:
 protected:
 public:
 	DeclIntStmt();
-    ~DeclIntStmt();
-    virtual void compile(std::string);
-	void run(std::set<Variable*>&);
+    	~DeclIntStmt();
+   	virtual void compile(std::string);
 	void run();
-
+	void run(std::set<Variable*>&);
+	void run(std::set<Variable*>&, Ui::MainWindow*&, QMainWindow*);
 	std::string toString();
 };
 

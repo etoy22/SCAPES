@@ -84,6 +84,9 @@ void DeclArrStmt::run(std::set<Variable*>& variableSet) {
 	}
 }
 
+void DeclArrStmt::run(std::set<Variable*>&, Ui::MainWindow*&, QMainWindow*){}
+
+
 std::string DeclArrStmt::toString() {
 	std::string output = "About the DeclArrStmt object: <";
 

@@ -29,3 +29,8 @@ void EndStmt::compile(std::string instr) {
 void EndStmt::run() {
 	// nothing yet
 }
+
+void EndStmt::run(std::set<Variable*>&){}
+void EndStmt::run(std::set<Variable*>&, Ui::MainWindow*&, QMainWindow*){}
+
+
