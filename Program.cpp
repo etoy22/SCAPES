@@ -44,13 +44,17 @@ Program::Program(QJsonObject& code) {
 		if (obj.contains("Label")) {
 			QJsonValue name = (obj.value("Label")).toObject().value("name");
 			std::string instr = name.toString().toUtf8().constData();
-			std::cout << "Value = " << instr << std::endl;
 
 			// TODO: somehow improve this process?
 			if (!instr.compare("dci")) {
 				DeclIntStmt* dci = new DeclIntStmt();
 				dci->read(obj);
 				statements.push_back(dci);
+			}
+			else if (!instr.compare("dca")) {
+				DeclArrStmt* dca = new DeclArrStmt();
+				dca->read(obj);
+				statements.push_back(dca);
 			}
 			else if (!instr.compare("rdi")) {
 				ReadStmt* rdi = new ReadStmt();
@@ -62,7 +66,7 @@ Program::Program(QJsonObject& code) {
 				prt->read(obj);
 				statements.push_back(prt);
 			}
-
+			i++;
 		}
 		else {
 			QJsonObject id = obj.value("Identifier").toObject();
@@ -71,16 +75,18 @@ Program::Program(QJsonObject& code) {
 
 			pairs.push_back(std::make_pair(label, i));
 		}
-		i++;
+		
 	}
 
 	// just for debugging purposes
 	std::cout << std::endl;
+	std::cout << "Label objects: " << std::endl;
 	for (unsigned int k = 0; k < pairs.size(); k++) {
 		std::cout << pairs.at(k).first->toString() << " | index (from 0) :" << pairs.at(k).second << std::endl;
 	}
 	// just for debugging purposes
 	std::cout << std::endl;
+	std::cout << "Instruction objects: " << std::endl;
 	for (unsigned int l = 0; l < statements.size(); l++) {
 		std::cout << statements.at(l)->toString() << std::endl;
 	}
@@ -192,7 +198,14 @@ bool Program::compile(){
                 QJsonObject stmt;
                 jmr.write(stmt);
                 out.push_back(stmt);
-            }           
+            }
+			else if (line.find("dca") != std::string::npos) {
+				DeclArrStmt dca;
+				dca.compile(line);
+				QJsonObject stmt;
+				dca.write(stmt);
+				out.push_back(stmt);
+			}
         }
         return true;
     }
@@ -277,8 +290,14 @@ bool Program::checkSyntax(){
 				message += std::to_string(j+1);
 					throw message;
 			}
+			else if (result[0] == "dca" && result.size() != 3) {
+				valid = false;
+				message = "dca error on line ";
+				message += std::to_string(j + 1);
+				throw message;
+			}
 
-			else if(j == int(input.size())-1 && result[0] != "end"){
+			else if(j == int(source.size())-1 && result[0] != "end"){
 
 				valid = false;
 				message = "the last statement isn't end";
@@ -306,6 +325,9 @@ bool Program::checkSyntax(){
 					else{
 						var.insert(result[1]);
 					}
+				}
+				else if (result[0] == "dca"){
+					//TODO: let Ethan handle it
 				}
 				else if (result[0] == "rdi" || result[0] == "prt"){
 					if(var.count(result[1])== 0){
@@ -388,6 +410,24 @@ bool Program::checkSyntax(){
 }
 
 void Program::execute(){
+
+	for (unsigned int i = 0; i < statements.size(); i++) {
+		if (typeid(*(statements.at(i))) == typeid(DeclIntStmt)) {
+			statements.at(i)->run(variables);
+		}
+		else if (typeid(*(statements.at(i))) == typeid(DeclArrStmt)) {
+			statements.at(i)->run(variables);
+		}
+	}
+
+	// debugging: remove later
+	std::cout << std::endl;
+	std::cout << "Variable objects: " << std::endl;
+	for (Variable* v : variables) {
+		std::cout << "Variable: " + v->getName() << std::endl;
+	}
+
+	
 }
 
 void Program::print(){

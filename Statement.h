@@ -3,7 +3,9 @@
 
 #include <iostream>
 #include <string>
+#include <set>
 #include "Label.h"
+#include "Variable.h"
 #include "Operand.h"
 #include <QObject>
 #include <QJsonArray>
@@ -30,6 +32,7 @@ public:
 	// class diagram methods
 	virtual void compile(std::string) = 0;
 	virtual void run() = 0;
+	virtual void run(std::set<Variable*>&);
 
     void setLabel(Label*);
 

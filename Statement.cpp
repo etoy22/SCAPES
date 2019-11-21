@@ -9,6 +9,8 @@ Statement::Statement() {
 
 Statement::~Statement(){};
 
+void Statement::run(std::set<Variable*>&) {}
+
 void Statement::setLabel(Label* labelParam) {
 	label = labelParam;
 }
@@ -47,13 +49,13 @@ int Statement::getNumOperands() {
      if(json.contains("Operands") && json["Operands"].isArray()){
          QJsonArray ops = json["Operands"].toArray();
 		 operands = new Operand* [ops.size()];
+		 numOperands = ops.size();
 
          for(int i=0; i<ops.size(); i++){
             QJsonObject operandObj = ops[i].toObject();
             Operand* op = new Operand();
             op->read(operandObj);
             operands[i] = op;
-            numOperands = i;
          }
      }
  }

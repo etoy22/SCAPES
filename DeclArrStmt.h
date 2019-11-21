@@ -13,6 +13,7 @@ public:
     ~DeclArrStmt();
     virtual void compile(std::string);
 	void run();
+	void run(std::set<Variable*>&);
 
 	std::string toString();
 };
