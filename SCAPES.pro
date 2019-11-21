@@ -29,7 +29,6 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
         repositoryinterface.cpp \
-		executioncontroller.cpp \
 	AddStmt.cpp \
 	CompStmt.cpp \
 	DeclArrStmt.cpp \
@@ -54,7 +53,6 @@ HEADERS += \
     compilercontroller.h \
         mainwindow.h \
         repositoryinterface.h \
-		executioncontroller.h \
 	AddStmt.h \
 	CompStmt.h \
 	DeclArrStmt.cpp \
