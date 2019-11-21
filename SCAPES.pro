@@ -26,6 +26,7 @@ CONFIG += c++11
 
 SOURCES += \
     compilercontroller.cpp \
+    executioncontroller.cpp \
         main.cpp \
         mainwindow.cpp \
         repositoryinterface.cpp \
@@ -51,6 +52,7 @@ SOURCES += \
 
 HEADERS += \
     compilercontroller.h \
+    executioncontroller.h \
         mainwindow.h \
         repositoryinterface.h \
 	AddStmt.h \
