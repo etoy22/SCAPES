@@ -274,21 +274,28 @@ bool Program::checkSyntax(){
 					result.erase(result.begin()+1);
 				}
 			}
-            		if (int(result[0].find(':')) != -1){
-		        	if(label.size() == 0){
-				    label.insert(result[0].substr(0,result[0].find(':')));
-				    result.erase(result.begin());
-				}
-				else if(label.find(result[0].substr(0,result[0].find(':')))!= label.end()){
-				    message = "two labels with the same name on line ";
-				    message += std::to_string(j+1);
-				    throw message;
-				}
-				else{
-				    label.insert(result[0].substr(0,result[0].find(':')));
-				    result.erase(result.begin());
-				}
+            		if(label.size() == 0){
+					bool test = false;
+					try{
+						if(stoi(result[0].substr(0,result[0].find(':')))==0){}
+					}
+					catch(std::invalid_argument& e)
+					{
+						test = true;
+					}
+					catch(std::out_of_range& e)
+					{
+						test = true;
+					}
+					if(!test){
+						message = "literal used as label on line ";
+				   		message += std::to_string(j+1);
+						throw message;
+					}
+				    	label.insert(result[0].substr(0,result[0].find(':')));
+				    	result.erase(result.begin());
 			}
+		
 			
 			//error checking
 			if(result[0] == "dci" && result.size() != 2){
