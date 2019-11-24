@@ -63,6 +63,10 @@ void MovStmt::run() {
 	// nothing yet
 }
 
+void MovStmt::run(std::set<Variable*>&){}
+void MovStmt::run(std::set<Variable*>&, Ui::MainWindow*&, QMainWindow*){}
+
+
 std::string MovStmt::toString() {
     std::string output = "About the MovStmt object: <";
 

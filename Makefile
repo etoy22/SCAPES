@@ -37,7 +37,7 @@ MOVE          = mv -f
 TAR           = tar -cf
 COMPRESS      = gzip -9f
 DISTNAME      = SCAPES1.0.0
-DISTDIR = /home/student/Desktop/SCAPES/.tmp/SCAPES1.0.0
+DISTDIR = /home/student/Desktop/SCAPES-master/.tmp/SCAPES1.0.0
 LINK          = g++
 LFLAGS        = -Wl,-rpath,/home/student/Qt/5.13.0/gcc_64/lib
 LIBS          = $(SUBLIBS) /home/student/Qt/5.13.0/gcc_64/lib/libQt5Widgets.so /home/student/Qt/5.13.0/gcc_64/lib/libQt5Gui.so /home/student/Qt/5.13.0/gcc_64/lib/libQt5Core.so -lGL -lpthread   
@@ -53,15 +53,21 @@ OBJECTS_DIR   = ./
 ####### Files
 
 SOURCES       = compilercontroller.cpp \
+		executioncontroller.cpp \
 		main.cpp \
 		mainwindow.cpp \
 		repositoryinterface.cpp \
+		AddStmt.cpp \
 		CompStmt.cpp \
+		DeclArrStmt.cpp \
 		DeclIntStmt.cpp \
 		EndStmt.cpp \
+		JEqStmt.cpp \
+		JLessStmt.cpp \
 		JumpStmt.cpp \
 		Identifier.cpp \
 		Label.cpp \
+		MovStmt.cpp \
 		Operand.cpp \
 		Statement.cpp \
 		Variable.cpp \
@@ -71,15 +77,21 @@ SOURCES       = compilercontroller.cpp \
 		Program.cpp moc_mainwindow.cpp \
 		moc_Identifier.cpp
 OBJECTS       = compilercontroller.o \
+		executioncontroller.o \
 		main.o \
 		mainwindow.o \
 		repositoryinterface.o \
+		AddStmt.o \
 		CompStmt.o \
+		DeclArrStmt.o \
 		DeclIntStmt.o \
 		EndStmt.o \
+		JEqStmt.o \
+		JLessStmt.o \
 		JumpStmt.o \
 		Identifier.o \
 		Label.o \
+		MovStmt.o \
 		Operand.o \
 		Statement.o \
 		Variable.o \
@@ -260,6 +272,7 @@ DIST          = ../../Qt/5.13.0/gcc_64/mkspecs/features/spec_pre.prf \
 		../../Qt/5.13.0/gcc_64/mkspecs/features/qt_config.prf \
 		../../Qt/5.13.0/gcc_64/mkspecs/linux-g++/qmake.conf \
 		../../Qt/5.13.0/gcc_64/mkspecs/features/spec_post.prf \
+		.qmake.stash \
 		../../Qt/5.13.0/gcc_64/mkspecs/features/exclusive_builds.prf \
 		../../Qt/5.13.0/gcc_64/mkspecs/features/toolchain.prf \
 		../../Qt/5.13.0/gcc_64/mkspecs/features/default_pre.prf \
@@ -280,14 +293,20 @@ DIST          = ../../Qt/5.13.0/gcc_64/mkspecs/features/spec_pre.prf \
 		../../Qt/5.13.0/gcc_64/mkspecs/features/yacc.prf \
 		../../Qt/5.13.0/gcc_64/mkspecs/features/lex.prf \
 		SCAPES.pro compilercontroller.h \
+		executioncontroller.h \
 		mainwindow.h \
 		repositoryinterface.h \
+		AddStmt.h \
 		CompStmt.h \
+		DeclArrStmt.h \
 		DeclIntStmt.h \
 		EndStmt.h \
+		JEqStmt.h \
+		JLessStmt.h \
 		JumpStmt.h \
 		Identifier.h \
 		Label.h \
+		MovStmt.h \
 		Operand.h \
 		Statement.h \
 		Variable.h \
@@ -295,15 +314,21 @@ DIST          = ../../Qt/5.13.0/gcc_64/mkspecs/features/spec_pre.prf \
 		ReadStmt.h \
 		PrintStmt.h \
 		Program.h compilercontroller.cpp \
+		executioncontroller.cpp \
 		main.cpp \
 		mainwindow.cpp \
 		repositoryinterface.cpp \
+		AddStmt.cpp \
 		CompStmt.cpp \
+		DeclArrStmt.cpp \
 		DeclIntStmt.cpp \
 		EndStmt.cpp \
+		JEqStmt.cpp \
+		JLessStmt.cpp \
 		JumpStmt.cpp \
 		Identifier.cpp \
 		Label.cpp \
+		MovStmt.cpp \
 		Operand.cpp \
 		Statement.cpp \
 		Variable.cpp \
@@ -493,6 +518,7 @@ Makefile: SCAPES.pro ../../Qt/5.13.0/gcc_64/mkspecs/linux-g++/qmake.conf ../../Q
 		../../Qt/5.13.0/gcc_64/mkspecs/features/qt_config.prf \
 		../../Qt/5.13.0/gcc_64/mkspecs/linux-g++/qmake.conf \
 		../../Qt/5.13.0/gcc_64/mkspecs/features/spec_post.prf \
+		.qmake.stash \
 		../../Qt/5.13.0/gcc_64/mkspecs/features/exclusive_builds.prf \
 		../../Qt/5.13.0/gcc_64/mkspecs/features/toolchain.prf \
 		../../Qt/5.13.0/gcc_64/mkspecs/features/default_pre.prf \
@@ -685,6 +711,7 @@ Makefile: SCAPES.pro ../../Qt/5.13.0/gcc_64/mkspecs/linux-g++/qmake.conf ../../Q
 ../../Qt/5.13.0/gcc_64/mkspecs/features/qt_config.prf:
 ../../Qt/5.13.0/gcc_64/mkspecs/linux-g++/qmake.conf:
 ../../Qt/5.13.0/gcc_64/mkspecs/features/spec_post.prf:
+.qmake.stash:
 ../../Qt/5.13.0/gcc_64/mkspecs/features/exclusive_builds.prf:
 ../../Qt/5.13.0/gcc_64/mkspecs/features/toolchain.prf:
 ../../Qt/5.13.0/gcc_64/mkspecs/features/default_pre.prf:
@@ -720,8 +747,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents ../../Qt/5.13.0/gcc_64/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents compilercontroller.h mainwindow.h repositoryinterface.h CompStmt.h DeclIntStmt.h EndStmt.h JumpStmt.h Identifier.h Label.h Operand.h Statement.h Variable.h JumpMoreStmt.h ReadStmt.h PrintStmt.h Program.h $(DISTDIR)/
-	$(COPY_FILE) --parents compilercontroller.cpp main.cpp mainwindow.cpp repositoryinterface.cpp CompStmt.cpp DeclIntStmt.cpp EndStmt.cpp JumpStmt.cpp Identifier.cpp Label.cpp Operand.cpp Statement.cpp Variable.cpp JumpMoreStmt.cpp ReadStmt.cpp PrintStmt.cpp Program.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents compilercontroller.h executioncontroller.h mainwindow.h repositoryinterface.h AddStmt.h CompStmt.h DeclArrStmt.h DeclIntStmt.h EndStmt.h JEqStmt.h JLessStmt.h JumpStmt.h Identifier.h Label.h MovStmt.h Operand.h Statement.h Variable.h JumpMoreStmt.h ReadStmt.h PrintStmt.h Program.h $(DISTDIR)/
+	$(COPY_FILE) --parents compilercontroller.cpp executioncontroller.cpp main.cpp mainwindow.cpp repositoryinterface.cpp AddStmt.cpp CompStmt.cpp DeclArrStmt.cpp DeclIntStmt.cpp EndStmt.cpp JEqStmt.cpp JLessStmt.cpp JumpStmt.cpp Identifier.cpp Label.cpp MovStmt.cpp Operand.cpp Statement.cpp Variable.cpp JumpMoreStmt.cpp ReadStmt.cpp PrintStmt.cpp Program.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents mainwindow.ui $(DISTDIR)/
 
 
@@ -882,10 +909,11 @@ moc_mainwindow.cpp: mainwindow.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qjsondocument.h \
 		compilercontroller.h \
 		DeclIntStmt.h \
-		Statement.h \
-		Label.h \
+		Variable.h \
 		Identifier.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QObject \
+		Statement.h \
+		Label.h \
 		Operand.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonArray \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qjsonarray.h \
@@ -897,9 +925,10 @@ moc_mainwindow.cpp: mainwindow.h \
 		JumpMoreStmt.h \
 		Program.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QVariant \
+		executioncontroller.h \
 		moc_predefs.h \
 		../../Qt/5.13.0/gcc_64/bin/moc
-	/home/student/Qt/5.13.0/gcc_64/bin/moc $(DEFINES) --include /home/student/Desktop/SCAPES/moc_predefs.h -I/home/student/Qt/5.13.0/gcc_64/mkspecs/linux-g++ -I/home/student/Desktop/SCAPES -I/home/student/Qt/5.13.0/gcc_64/include -I/home/student/Qt/5.13.0/gcc_64/include/QtWidgets -I/home/student/Qt/5.13.0/gcc_64/include/QtGui -I/home/student/Qt/5.13.0/gcc_64/include/QtCore -I/usr/include/c++/7 -I/usr/include/x86_64-linux-gnu/c++/7 -I/usr/include/c++/7/backward -I/usr/lib/gcc/x86_64-linux-gnu/7/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include mainwindow.h -o moc_mainwindow.cpp
+	/home/student/Qt/5.13.0/gcc_64/bin/moc $(DEFINES) --include /home/student/Desktop/SCAPES-master/moc_predefs.h -I/home/student/Qt/5.13.0/gcc_64/mkspecs/linux-g++ -I/home/student/Desktop/SCAPES-master -I/home/student/Qt/5.13.0/gcc_64/include -I/home/student/Qt/5.13.0/gcc_64/include/QtWidgets -I/home/student/Qt/5.13.0/gcc_64/include/QtGui -I/home/student/Qt/5.13.0/gcc_64/include/QtCore -I/usr/include/c++/7 -I/usr/include/x86_64-linux-gnu/c++/7 -I/usr/include/c++/7/backward -I/usr/lib/gcc/x86_64-linux-gnu/7/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include mainwindow.h -o moc_mainwindow.cpp
 
 moc_Identifier.cpp: Identifier.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QObject \
@@ -956,7 +985,7 @@ moc_Identifier.cpp: Identifier.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qobject_impl.h \
 		moc_predefs.h \
 		../../Qt/5.13.0/gcc_64/bin/moc
-	/home/student/Qt/5.13.0/gcc_64/bin/moc $(DEFINES) --include /home/student/Desktop/SCAPES/moc_predefs.h -I/home/student/Qt/5.13.0/gcc_64/mkspecs/linux-g++ -I/home/student/Desktop/SCAPES -I/home/student/Qt/5.13.0/gcc_64/include -I/home/student/Qt/5.13.0/gcc_64/include/QtWidgets -I/home/student/Qt/5.13.0/gcc_64/include/QtGui -I/home/student/Qt/5.13.0/gcc_64/include/QtCore -I/usr/include/c++/7 -I/usr/include/x86_64-linux-gnu/c++/7 -I/usr/include/c++/7/backward -I/usr/lib/gcc/x86_64-linux-gnu/7/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include Identifier.h -o moc_Identifier.cpp
+	/home/student/Qt/5.13.0/gcc_64/bin/moc $(DEFINES) --include /home/student/Desktop/SCAPES-master/moc_predefs.h -I/home/student/Qt/5.13.0/gcc_64/mkspecs/linux-g++ -I/home/student/Desktop/SCAPES-master -I/home/student/Qt/5.13.0/gcc_64/include -I/home/student/Qt/5.13.0/gcc_64/include/QtWidgets -I/home/student/Qt/5.13.0/gcc_64/include/QtGui -I/home/student/Qt/5.13.0/gcc_64/include/QtCore -I/usr/include/c++/7 -I/usr/include/x86_64-linux-gnu/c++/7 -I/usr/include/c++/7/backward -I/usr/lib/gcc/x86_64-linux-gnu/7/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include Identifier.h -o moc_Identifier.cpp
 
 compiler_moc_objc_header_make_all:
 compiler_moc_objc_header_clean:
@@ -1097,10 +1126,11 @@ compilercontroller.o: compilercontroller.cpp compilercontroller.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonDocument \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qjsondocument.h \
 		DeclIntStmt.h \
-		Statement.h \
-		Label.h \
+		Variable.h \
 		Identifier.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QObject \
+		Statement.h \
+		Label.h \
 		Operand.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonArray \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qjsonarray.h \
@@ -1113,6 +1143,135 @@ compilercontroller.o: compilercontroller.cpp compilercontroller.h \
 		Program.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QVariant
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o compilercontroller.o compilercontroller.cpp
+
+executioncontroller.o: executioncontroller.cpp executioncontroller.h \
+		repositoryinterface.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/QFile \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qfile.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qfiledevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qiodevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qglobal.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qconfig-bootstrapped.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qconfig.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qtcore-config.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsystemdetection.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qprocessordetection.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qcompilerdetection.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qtypeinfo.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsysinfo.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qlogging.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qflags.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qatomic.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qbasicatomic.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qatomic_bootstrap.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qgenericatomic.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qatomic_cxx11.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qatomic_msvc.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qglobalstatic.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qmutex.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qnumeric.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qversiontagging.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qobject.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qobjectdefs.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qnamespace.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qobjectdefs_impl.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qstring.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qchar.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qbytearray.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qrefcount.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qarraydata.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qstringliteral.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qstringalgorithms.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qstringview.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qstringbuilder.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qlist.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qalgorithms.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qiterator.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qhashfunctions.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qpair.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qvector.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qpoint.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qbytearraylist.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qstringlist.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qregexp.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qstringmatcher.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qcoreevent.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qscopedpointer.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qmetatype.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qvarlengtharray.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qcontainerfwd.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qobject_impl.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/QDir \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qdir.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qfileinfo.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qshareddata.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qhash.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QFileDialog \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qfiledialog.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtwidgetsglobal.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtguiglobal.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtgui-config.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtwidgets-config.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qurl.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qurlquery.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qdialog.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qwidget.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qwindowdefs.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qwindowdefs_win.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qmargins.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpaintdevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qrect.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsize.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpalette.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qcolor.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qrgb.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qrgba64.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qbrush.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qmatrix.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpolygon.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qregion.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qdatastream.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qline.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtransform.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpainterpath.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qimage.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpixelformat.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpixmap.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsharedpointer.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qfont.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qfontmetrics.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qfontinfo.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qsizepolicy.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qcursor.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qkeysequence.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qevent.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qvariant.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qmap.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qdebug.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qtextstream.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qlocale.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qset.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qcontiguouscache.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qvector2d.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtouchdevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/QTextStream \
+		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonObject \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qjsonobject.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qjsonvalue.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonDocument \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qjsondocument.h \
+		Program.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/QVariant \
+		Statement.h \
+		Label.h \
+		Identifier.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/QObject \
+		Variable.h \
+		Operand.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonArray \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qjsonarray.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o executioncontroller.o executioncontroller.cpp
 
 main.o: main.cpp mainwindow.h \
 		../../Qt/5.13.0/gcc_64/include/QtWidgets/QMainWindow \
@@ -1239,10 +1398,11 @@ main.o: main.cpp mainwindow.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qjsondocument.h \
 		compilercontroller.h \
 		DeclIntStmt.h \
-		Statement.h \
-		Label.h \
+		Variable.h \
 		Identifier.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QObject \
+		Statement.h \
+		Label.h \
 		Operand.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonArray \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qjsonarray.h \
@@ -1254,6 +1414,7 @@ main.o: main.cpp mainwindow.h \
 		JumpMoreStmt.h \
 		Program.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QVariant \
+		executioncontroller.h \
 		../../Qt/5.13.0/gcc_64/include/QtWidgets/QApplication \
 		../../Qt/5.13.0/gcc_64/include/QtWidgets/qapplication.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qcoreapplication.h \
@@ -1388,10 +1549,11 @@ mainwindow.o: mainwindow.cpp mainwindow.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qjsondocument.h \
 		compilercontroller.h \
 		DeclIntStmt.h \
-		Statement.h \
-		Label.h \
+		Variable.h \
 		Identifier.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QObject \
+		Statement.h \
+		Label.h \
 		Operand.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonArray \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qjsonarray.h \
@@ -1403,6 +1565,7 @@ mainwindow.o: mainwindow.cpp mainwindow.h \
 		JumpMoreStmt.h \
 		Program.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QVariant \
+		executioncontroller.h \
 		ui_mainwindow.h \
 		../../Qt/5.13.0/gcc_64/include/QtWidgets/QAction \
 		../../Qt/5.13.0/gcc_64/include/QtWidgets/qaction.h \
@@ -1552,6 +1715,73 @@ repositoryinterface.o: repositoryinterface.cpp repositoryinterface.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qjsondocument.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o repositoryinterface.o repositoryinterface.cpp
 
+AddStmt.o: AddStmt.cpp AddStmt.h \
+		Statement.h \
+		Label.h \
+		Identifier.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/QObject \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qobject.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qobjectdefs.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qnamespace.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qglobal.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qconfig-bootstrapped.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qconfig.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qtcore-config.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsystemdetection.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qprocessordetection.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qcompilerdetection.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qtypeinfo.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsysinfo.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qlogging.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qflags.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qatomic.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qbasicatomic.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qatomic_bootstrap.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qgenericatomic.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qatomic_cxx11.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qatomic_msvc.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qglobalstatic.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qmutex.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qnumeric.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qversiontagging.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qobjectdefs_impl.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qstring.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qchar.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qbytearray.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qrefcount.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qarraydata.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qstringliteral.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qstringalgorithms.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qstringview.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qstringbuilder.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qlist.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qalgorithms.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qiterator.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qhashfunctions.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qpair.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qvector.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qpoint.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qbytearraylist.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qstringlist.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qregexp.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qstringmatcher.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qcoreevent.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qscopedpointer.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qmetatype.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qvarlengtharray.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qcontainerfwd.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qobject_impl.h \
+		Variable.h \
+		Operand.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonObject \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qjsonobject.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qjsonvalue.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonArray \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qjsonarray.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonDocument \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qjsondocument.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o AddStmt.o AddStmt.cpp
+
 CompStmt.o: CompStmt.cpp CompStmt.h \
 		Statement.h \
 		Label.h \
@@ -1608,6 +1838,7 @@ CompStmt.o: CompStmt.cpp CompStmt.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qvarlengtharray.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qcontainerfwd.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qobject_impl.h \
+		Variable.h \
 		Operand.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonObject \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qjsonobject.h \
@@ -1615,11 +1846,10 @@ CompStmt.o: CompStmt.cpp CompStmt.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonArray \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qjsonarray.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonDocument \
-		../../Qt/5.13.0/gcc_64/include/QtCore/qjsondocument.h \
-		Variable.h
+		../../Qt/5.13.0/gcc_64/include/QtCore/qjsondocument.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o CompStmt.o CompStmt.cpp
 
-DeclIntStmt.o: DeclIntStmt.cpp DeclIntStmt.h \
+DeclArrStmt.o: DeclArrStmt.cpp DeclArrStmt.h \
 		Statement.h \
 		Label.h \
 		Identifier.h \
@@ -1675,6 +1905,7 @@ DeclIntStmt.o: DeclIntStmt.cpp DeclIntStmt.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qvarlengtharray.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qcontainerfwd.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qobject_impl.h \
+		Variable.h \
 		Operand.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonObject \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qjsonobject.h \
@@ -1682,8 +1913,74 @@ DeclIntStmt.o: DeclIntStmt.cpp DeclIntStmt.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonArray \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qjsonarray.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonDocument \
-		../../Qt/5.13.0/gcc_64/include/QtCore/qjsondocument.h \
-		Variable.h
+		../../Qt/5.13.0/gcc_64/include/QtCore/qjsondocument.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o DeclArrStmt.o DeclArrStmt.cpp
+
+DeclIntStmt.o: DeclIntStmt.cpp DeclIntStmt.h \
+		Variable.h \
+		Identifier.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/QObject \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qobject.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qobjectdefs.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qnamespace.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qglobal.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qconfig-bootstrapped.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qconfig.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qtcore-config.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsystemdetection.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qprocessordetection.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qcompilerdetection.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qtypeinfo.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsysinfo.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qlogging.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qflags.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qatomic.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qbasicatomic.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qatomic_bootstrap.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qgenericatomic.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qatomic_cxx11.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qatomic_msvc.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qglobalstatic.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qmutex.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qnumeric.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qversiontagging.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qobjectdefs_impl.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qstring.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qchar.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qbytearray.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qrefcount.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qarraydata.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qstringliteral.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qstringalgorithms.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qstringview.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qstringbuilder.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qlist.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qalgorithms.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qiterator.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qhashfunctions.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qpair.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qvector.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qpoint.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qbytearraylist.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qstringlist.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qregexp.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qstringmatcher.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qcoreevent.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qscopedpointer.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qmetatype.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qvarlengtharray.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qcontainerfwd.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qobject_impl.h \
+		Statement.h \
+		Label.h \
+		Operand.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonObject \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qjsonobject.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qjsonvalue.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonArray \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qjsonarray.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonDocument \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qjsondocument.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o DeclIntStmt.o DeclIntStmt.cpp
 
 EndStmt.o: EndStmt.cpp EndStmt.h \
@@ -1742,6 +2039,7 @@ EndStmt.o: EndStmt.cpp EndStmt.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qvarlengtharray.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qcontainerfwd.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qobject_impl.h \
+		Variable.h \
 		Operand.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonObject \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qjsonobject.h \
@@ -1751,6 +2049,140 @@ EndStmt.o: EndStmt.cpp EndStmt.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonDocument \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qjsondocument.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o EndStmt.o EndStmt.cpp
+
+JEqStmt.o: JEqStmt.cpp JEqStmt.h \
+		Statement.h \
+		Label.h \
+		Identifier.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/QObject \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qobject.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qobjectdefs.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qnamespace.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qglobal.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qconfig-bootstrapped.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qconfig.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qtcore-config.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsystemdetection.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qprocessordetection.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qcompilerdetection.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qtypeinfo.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsysinfo.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qlogging.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qflags.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qatomic.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qbasicatomic.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qatomic_bootstrap.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qgenericatomic.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qatomic_cxx11.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qatomic_msvc.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qglobalstatic.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qmutex.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qnumeric.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qversiontagging.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qobjectdefs_impl.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qstring.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qchar.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qbytearray.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qrefcount.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qarraydata.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qstringliteral.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qstringalgorithms.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qstringview.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qstringbuilder.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qlist.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qalgorithms.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qiterator.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qhashfunctions.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qpair.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qvector.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qpoint.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qbytearraylist.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qstringlist.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qregexp.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qstringmatcher.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qcoreevent.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qscopedpointer.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qmetatype.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qvarlengtharray.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qcontainerfwd.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qobject_impl.h \
+		Variable.h \
+		Operand.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonObject \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qjsonobject.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qjsonvalue.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonArray \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qjsonarray.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonDocument \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qjsondocument.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o JEqStmt.o JEqStmt.cpp
+
+JLessStmt.o: JLessStmt.cpp JLessStmt.h \
+		Statement.h \
+		Label.h \
+		Identifier.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/QObject \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qobject.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qobjectdefs.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qnamespace.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qglobal.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qconfig-bootstrapped.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qconfig.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qtcore-config.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsystemdetection.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qprocessordetection.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qcompilerdetection.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qtypeinfo.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsysinfo.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qlogging.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qflags.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qatomic.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qbasicatomic.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qatomic_bootstrap.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qgenericatomic.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qatomic_cxx11.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qatomic_msvc.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qglobalstatic.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qmutex.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qnumeric.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qversiontagging.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qobjectdefs_impl.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qstring.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qchar.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qbytearray.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qrefcount.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qarraydata.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qstringliteral.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qstringalgorithms.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qstringview.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qstringbuilder.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qlist.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qalgorithms.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qiterator.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qhashfunctions.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qpair.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qvector.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qpoint.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qbytearraylist.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qstringlist.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qregexp.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qstringmatcher.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qcoreevent.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qscopedpointer.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qmetatype.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qvarlengtharray.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qcontainerfwd.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qobject_impl.h \
+		Variable.h \
+		Operand.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonObject \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qjsonobject.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qjsonvalue.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonArray \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qjsonarray.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonDocument \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qjsondocument.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o JLessStmt.o JLessStmt.cpp
 
 JumpStmt.o: JumpStmt.cpp JumpStmt.h \
 		Statement.h \
@@ -1808,6 +2240,7 @@ JumpStmt.o: JumpStmt.cpp JumpStmt.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qvarlengtharray.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qcontainerfwd.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qobject_impl.h \
+		Variable.h \
 		Operand.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonObject \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qjsonobject.h \
@@ -1932,6 +2365,73 @@ Label.o: Label.cpp Label.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qobject_impl.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Label.o Label.cpp
 
+MovStmt.o: MovStmt.cpp MovStmt.h \
+		Statement.h \
+		Label.h \
+		Identifier.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/QObject \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qobject.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qobjectdefs.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qnamespace.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qglobal.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qconfig-bootstrapped.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qconfig.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qtcore-config.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsystemdetection.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qprocessordetection.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qcompilerdetection.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qtypeinfo.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsysinfo.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qlogging.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qflags.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qatomic.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qbasicatomic.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qatomic_bootstrap.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qgenericatomic.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qatomic_cxx11.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qatomic_msvc.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qglobalstatic.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qmutex.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qnumeric.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qversiontagging.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qobjectdefs_impl.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qstring.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qchar.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qbytearray.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qrefcount.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qarraydata.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qstringliteral.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qstringalgorithms.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qstringview.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qstringbuilder.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qlist.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qalgorithms.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qiterator.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qhashfunctions.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qpair.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qvector.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qpoint.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qbytearraylist.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qstringlist.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qregexp.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qstringmatcher.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qcoreevent.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qscopedpointer.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qmetatype.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qvarlengtharray.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qcontainerfwd.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qobject_impl.h \
+		Variable.h \
+		Operand.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonObject \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qjsonobject.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qjsonvalue.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonArray \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qjsonarray.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonDocument \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qjsondocument.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o MovStmt.o MovStmt.cpp
+
 Operand.o: Operand.cpp Operand.h \
 		Identifier.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QObject \
@@ -1988,7 +2488,9 @@ Operand.o: Operand.cpp Operand.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qobject_impl.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonObject \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qjsonobject.h \
-		../../Qt/5.13.0/gcc_64/include/QtCore/qjsonvalue.h
+		../../Qt/5.13.0/gcc_64/include/QtCore/qjsonvalue.h \
+		Variable.h \
+		Label.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Operand.o Operand.cpp
 
 Statement.o: Statement.cpp Statement.h \
@@ -2046,6 +2548,7 @@ Statement.o: Statement.cpp Statement.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qvarlengtharray.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qcontainerfwd.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qobject_impl.h \
+		Variable.h \
 		Operand.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonObject \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qjsonobject.h \
@@ -2314,8 +2817,7 @@ PrintStmt.o: PrintStmt.cpp Variable.h \
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o PrintStmt.o PrintStmt.cpp
 
 Program.o: Program.cpp DeclIntStmt.h \
-		Statement.h \
-		Label.h \
+		Variable.h \
 		Identifier.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QObject \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qobject.h \
@@ -2369,6 +2871,8 @@ Program.o: Program.cpp DeclIntStmt.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qvarlengtharray.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qcontainerfwd.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qobject_impl.h \
+		Statement.h \
+		Label.h \
 		Operand.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonObject \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qjsonobject.h \
@@ -2383,7 +2887,6 @@ Program.o: Program.cpp DeclIntStmt.h \
 		ReadStmt.h \
 		PrintStmt.h \
 		JumpMoreStmt.h \
-		Variable.h \
 		Program.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QVariant \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qvariant.h \
@@ -2397,7 +2900,13 @@ Program.o: Program.cpp DeclIntStmt.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qset.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qcontiguouscache.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qsharedpointer.h \
-		../../Qt/5.13.0/gcc_64/include/QtCore/qsharedpointer_impl.h
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		AddStmt.h \
+		DeclArrStmt.h \
+		JEqStmt.h \
+		JLessStmt.h \
+		MovStmt.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/QDebug
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Program.o Program.cpp
 
 moc_mainwindow.o: moc_mainwindow.cpp 

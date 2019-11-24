@@ -1,6 +1,6 @@
 #include "executioncontroller.h"
 
-ExecutionController::ExecutionController(){
+ExecutionController::ExecutionController(Ui::MainWindow*& uiPtr, QMainWindow* window) : ui(*uiPtr), win(window) {
 }
 
 bool ExecutionController::Run(QString fileName){
@@ -8,10 +8,13 @@ bool ExecutionController::Run(QString fileName){
     QJsonObject programJsonObj;
     repo.getCompiled(fileName,programJsonObj);
     Program program(programJsonObj);
+    program.setUIPointer(ui);
+    program.setWindowPointer(win);
     try {
         program.execute();
     } catch(std::string s) {
 	throw;
     }
+    return true;
 	    
 }

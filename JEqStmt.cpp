@@ -57,6 +57,8 @@ void JEqStmt::compile(std::string instr) {
 void JEqStmt::run() {
 	// nothing yet
 }
+void JEqStmt::run(std::set<Variable*>&){}
+void JEqStmt::run(std::set<Variable*>&, Ui::MainWindow*&, QMainWindow*){}
 
 std::string JEqStmt::toString() {
 	std::string output = "About the JEqStmt object: <";

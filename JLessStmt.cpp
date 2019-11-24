@@ -58,6 +58,10 @@ void JLessStmt::run() {
 	// nothing yet
 }
 
+void JLessStmt::run(std::set<Variable*>&){}
+void JLessStmt::run(std::set<Variable*>&, Ui::MainWindow*&, QMainWindow*){}
+
+
 std::string JLessStmt::toString() {
 	std::string output = "About the JLessStmt object: <";
 
