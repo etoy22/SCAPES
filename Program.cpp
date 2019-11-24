@@ -215,6 +215,11 @@ void Program::read(const QJsonObject &json){
 				prt->read(obj);
 				statements.push_back(prt);
 			}
+			else if (!instr.compare("cmp")) {
+				CompStmt* cmp = new CompStmt();
+				cmp->read(obj);
+				statements.push_back(cmp);
+			}
 			i++;
 		}
 		else {
@@ -274,7 +279,7 @@ bool Program::checkSyntax(){
 					result.erase(result.begin()+1);
 				}
 			}
-            		if(label.size() == 0){
+            	if(int(result[0].find(':')) != -1){
 					bool test = false;
 					try{
 						if(stoi(result[0].substr(0,result[0].find(':')))==0){}
@@ -567,7 +572,9 @@ void Program::execute(){
 		else if (typeid(*(statements.at(i))) == typeid(ReadStmt)) 
 			statements.at(i)->run(variables, ui, win);
 		
-		
+		else if (typeid(*(statements.at(i))) == typeid(CompStmt)) {
+			statements.at(i)->run(variables);
+		}
 	}
 
 	// debugging: remove later

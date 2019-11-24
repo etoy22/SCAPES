@@ -60,7 +60,39 @@ void CompStmt::run() {
 	// nothing yet
 }
 
-void CompStmt::run(std::set<Variable*>&){}
+void CompStmt::run(std::set<Variable*>& variableSet){
+	/*/std::set<Variable*>::iterator result = std::find_if(std::begin(variableSet), std::end(variableSet),
+		[&](Variable* const& v) { return v->getName() == operands[i]->getIdentifier()->getName();  });
+		*/
+
+	int values[2];
+
+	if (operands[0]->getIdentifier() != nullptr && operands[1]->getIdentifier() != nullptr) {
+		std::regex numRegex("[\\d]+");
+
+		for (unsigned int i = 0; i < 2; i++) {
+			if (std::regex_match(operands[i]->getIdentifier()->getName(), numRegex)) {
+				values[i] = std::stoi(operands[i]->getIdentifier()->getName());
+			}
+			else {
+				std::set<Variable*>::iterator result = std::find_if(std::begin(variableSet), std::end(variableSet),
+					[&](Variable* const& v) { return v->getName() == operands[i]->getIdentifier()->getName();  });
+				
+				if (result != variableSet.end()) {
+					values[i] = (*result)->getValue();
+				}
+				else {
+					throw "Variable undefined";
+				}
+			}
+		}
+
+		std::cout << std::endl;
+		std::cout << "Difference between : " + std::to_string(values[0] - values[1]) << std::endl;
+
+	}
+}
+
 void CompStmt::run(std::set<Variable*>&, Ui::MainWindow*&, QMainWindow*){}
 
 
