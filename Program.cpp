@@ -2,6 +2,7 @@
 #include <string>
 #include <iterator>
 #include <iomanip>
+#include <regex>
 #include "DeclIntStmt.h"
 #include "EndStmt.h"
 #include "JumpStmt.h"
@@ -242,6 +243,16 @@ void Program::read(const QJsonObject &json){
 				cmp->read(obj);
 				statements.push_back(cmp);
 			}
+			else if (!instr.compare("add")) {
+				AddStmt* add = new AddStmt();
+				add->read(obj);
+				statements.push_back(add);
+			}
+			else if (!instr.compare("mov")) {
+				MovStmt* mov = new MovStmt();
+				mov->read(obj);
+				statements.push_back(mov);
+			}
 			i++;
 		}
 		else {
@@ -302,7 +313,7 @@ bool Program::checkSyntax(){
 				result.erase(result.begin()+1);
 				}
 			}
-            		if (int(result[0].find(':')) != -1){
+            	if (int(result[0].find(':')) != -1){
 		        	if(label.size() == 0){
 				    label.insert(result[0].substr(0,result[0].find(':')));
 				    result.erase(result.begin());
@@ -417,14 +428,14 @@ bool Program::checkSyntax(){
 				}
 			}
 			else if(result[0] == "cmp"||result[0] == "add"||result[0] == "mov"){
-
-					if(var.count(result[1])== 0){
+				std::regex numRegex("[\\d]+");
+					if(var.count(result[1])== 0 && !std::regex_match(result[1], numRegex)){
 					message = "undeclaired varraible 1 called line ";
 					message += std::to_string(j+1);
 					throw message;
 				}
 
-				if(var.count(result[2])== 0){					
+				if(var.count(result[2])== 0 && !std::regex_match(result[1], numRegex)){
 					message = "undeclaired varraible 2 called line ";
 
 					message += std::to_string(j+1);
@@ -514,7 +525,13 @@ void Program::execute(){
             }
             else if (typeid (*(statements.at(i))) == typeid(CompStmt))
                 comparisonFlag = statements.at(i)->run(variables, ui, NULL, NULL);
-        }
+			else if (typeid(*(statements.at(i))) == typeid(AddStmt)) {
+				statements.at(i)->run(variables, ui, NULL, NULL);
+			}
+			else if (typeid(*(statements.at(i))) == typeid(MovStmt)) {
+				statements.at(i)->run(variables, ui, NULL, NULL);
+			}
+		}
     }
     catch (std::string exeError){
             throw;

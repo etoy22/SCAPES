@@ -26,31 +26,42 @@ PrintStmt::~PrintStmt() {
 }
 
 void PrintStmt::compile(std::string instr) {
+	// create regex to compare against instruction argument - no string argument but <var>
+	std::regex prtRegex("(([\\s]+?([^\\s])+([\\s]+?): )?)([\\s]+)?prt[\\s]+[^\\s]+([\\s]+)?");
 
-    // remove consecutive spaces
-    instr = removeConsecutiveSpaces(instr);
+	// create regex to compare against instruction argument - with string argument "<str>"
+	std::regex prtStrRegex("(([\\s]+?([^\\s])+([\\s]+?): )?)([\\s]+)?prt[\\s]+\"([\\s]+)?.+([\\s]+)?\"([\\s]+)?");
 
-    // create regex to compare against instruction argument
-    std::regex prtRegex("(([\\s]?([^\\s])+([\\s]?): )?)([\\s])?prt [^\\s]+([\\s])?");
+	// if instruction argument matches the above regex
+	if (std::regex_match(instr, prtRegex)) {
 
-    // if instruction argument matches the above regex
-    if (std::regex_match(instr, prtRegex)) {
+		// remove consecutive spaces
+		instr = removeConsecutiveSpaces(instr);
 
-        // removes characters until command
-        instr = removeLabelIfExists(instr);
+		// removes characters until command
+		instr = removeLabelIfExists(instr);
 
-        // remove prt from instruction
-        if (!instr.empty()) {
-            unsigned int index = instr.at(0) == ' ' ? 5 : 4;
-            instr = instr.substr(index, instr.length());
-        }
+		// remove prt from instruction
+		if (!instr.empty()) {
+			unsigned int index = instr.at(0) == ' ' ? 5 : 4;
+			instr = instr.substr(index, instr.length());
+		}
 
-        // create variable from instruction argument
-        std::string variableName = removeSpaces(instr.substr(0, instr.length()));
-        operands[0] = new Operand();
-        operands[0]->setIdentifier(new Variable(variableName));
-        numOperands = 1;
-    }
+		// create variable from instruction argument
+		std::string variableName = removeSpaces(instr.substr(0, instr.length()));
+		operands[0] = new Operand();
+		operands[0]->setIdentifier(new Variable(variableName));
+		numOperands = 1;
+	}
+	else if (std::regex_match(instr, prtStrRegex)) {
+		// create variable from instruction argument
+		int strLength = instr.find_last_of("\"") - instr.find_first_of("\"") - 1;
+		std::string variableName = instr.substr(instr.find_first_of("\"") + 1, strLength);
+
+		operands[0] = new Operand();
+		operands[0]->setIdentifier(new Variable(variableName));
+		numOperands = 1;
+	}
 }
 
 
