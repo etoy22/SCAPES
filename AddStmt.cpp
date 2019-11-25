@@ -59,12 +59,9 @@ void AddStmt::compile(std::string instr) {
   
 }
 
-void AddStmt::run() {
-	// nothing yet
+int AddStmt::run(std::set<Variable*>&, Ui::MainWindow*&, QMainWindow*, std::vector<std::pair<Identifier*,int>>*){
 }
 
-void AddStmt::run(std::set<Variable*>&){}
-void AddStmt::run(std::set<Variable*>&, Ui::MainWindow*&, QMainWindow*){}
 std::string AddStmt::toString() {
 	std::string output = "About the AddStmt object: <";
 

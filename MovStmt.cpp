@@ -59,13 +59,7 @@ void MovStmt::compile(std::string instr) {
   
 }
 
-void MovStmt::run() {
-	// nothing yet
-}
-
-void MovStmt::run(std::set<Variable*>&){}
-void MovStmt::run(std::set<Variable*>&, Ui::MainWindow*&, QMainWindow*){}
-
+int MovStmt::run(std::set<Variable*>&, Ui::MainWindow*&, QMainWindow*, std::vector<std::pair<Identifier*,int>>*){}
 
 std::string MovStmt::toString() {
     std::string output = "About the MovStmt object: <";

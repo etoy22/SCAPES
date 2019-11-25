@@ -15,7 +15,7 @@ EQ            = =
 CC            = gcc
 CXX           = g++
 DEFINES       = -DQT_DEPRECATED_WARNINGS -DQT_QML_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
-CFLAGS        = -pipe -g -Wall -W -D_REENTRANT -fPIC $(DEFINES)
+CFLAGS        = -pipe -g   -D_REENTRANT -fPIC $(DEFINES)
 CXXFLAGS      = -pipe -g -std=gnu++11 -Wall -W -D_REENTRANT -fPIC $(DEFINES)
 INCPATH       = -I. -I../../Qt/5.13.0/gcc_64/include -I../../Qt/5.13.0/gcc_64/include/QtWidgets -I../../Qt/5.13.0/gcc_64/include/QtGui -I../../Qt/5.13.0/gcc_64/include/QtCore -I. -isystem /usr/include/libdrm -I. -I../../Qt/5.13.0/gcc_64/mkspecs/linux-g++
 QMAKE         = /home/student/Qt/5.13.0/gcc_64/bin/qmake

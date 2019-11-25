@@ -54,9 +54,7 @@ void DeclIntStmt::compile(std::string instr) {
     }
 }
 
-void DeclIntStmt::run() {}
-
-void DeclIntStmt::run(std::set<Variable*>& variableSet) {
+int DeclIntStmt::run(std::set<Variable*>& variableSet, Ui::MainWindow*& ui, QMainWindow* win, std::vector<std::pair<Identifier*,int>>* id) {
 	bool variableExists = true;
 
 	if (operands[0] != nullptr && operands[0]->getIdentifier() != nullptr) {
@@ -71,8 +69,9 @@ void DeclIntStmt::run(std::set<Variable*>& variableSet) {
 	if (!variableExists) {
 		variableSet.insert((Variable*)operands[0]->getIdentifier());
 	}
+
+	return 0;
 }
-void DeclIntStmt::run(std::set<Variable*>& variableSet, Ui::MainWindow*& ui, QMainWindow* win){ }
 
 std::string DeclIntStmt::toString() {
     std::string output = "About the DeclIntStmt object: <";
