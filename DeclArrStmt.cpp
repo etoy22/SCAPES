@@ -61,11 +61,7 @@ void DeclArrStmt::compile(std::string instr) {
   
 }
 
-void DeclArrStmt::run() {
-	// nothing yet
-}
-
-void DeclArrStmt::run(std::set<Variable*>& variableSet) {
+int DeclArrStmt::run(std::set<Variable*>& variableSet, Ui::MainWindow*& ui, QMainWindow* window, std::vector<std::pair<Identifier*,int>>* id) {
 	bool variableExists = true;
 
 	for (int i = 0; i < numOperands; i++) {
@@ -79,13 +75,11 @@ void DeclArrStmt::run(std::set<Variable*>& variableSet) {
 		}
 
 		if (!variableExists) {
-			variableSet.insert((Variable*)operands[i]->getIdentifier());
+			variableSet.insert((Variable*)operands[i]->getIdentifier());                   
 		}
 	}
+	return 0;
 }
-
-void DeclArrStmt::run(std::set<Variable*>&, Ui::MainWindow*&, QMainWindow*){}
-
 
 std::string DeclArrStmt::toString() {
 	std::string output = "About the DeclArrStmt object: <";

@@ -54,11 +54,14 @@ void JEqStmt::compile(std::string instr) {
 	}
 }
 
-void JEqStmt::run() {
-	// nothing yet
+int JEqStmt::run(std::set<Variable*>&, Ui::MainWindow*&, QMainWindow*, std::vector<std::pair<Identifier*,int>>*id){
+    int result = -1;
+    for(unsigned int i =0; i<id->size(); i++){
+        if(id->at(i).first->getName()==this->getOperand(0)->getIdentifier()->getName())
+            result = id->at(i).second;
+    }
+    return result-1;
 }
-void JEqStmt::run(std::set<Variable*>&){}
-void JEqStmt::run(std::set<Variable*>&, Ui::MainWindow*&, QMainWindow*){}
 
 std::string JEqStmt::toString() {
 	std::string output = "About the JEqStmt object: <";

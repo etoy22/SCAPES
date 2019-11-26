@@ -1,12 +1,18 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <QScrollArea>
+#include <QTextEdit>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    this->setCentralWidget(ui->textEdit);
+    ui->Console->setReadOnly(true);
+    QPalette p = ui->Console->palette();
+    QColor colour(211,211,211);
+    p.setColor(QPalette::Base, colour);
+    ui->Console->setPalette(p);
 }
 
 MainWindow::~MainWindow()
@@ -14,14 +20,11 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-
-
 void MainWindow::on_actionNew_triggered()
 {
     currentFile.clear();
     ui->textEdit->setText(QString());
 }
-
 
 void MainWindow::on_actionOpen_triggered()
 {
@@ -66,7 +69,12 @@ void MainWindow::on_actionSave_As_triggered()
         currentFile = fileName;
         setWindowTitle(fileName);
     }
+}
 
+bool MainWindow::autoSave(){
+    repo.saveFile(currentFile, ui->textEdit->toPlainText());
+    setWindowTitle(currentFile);
+    return true;
 }
 
 void MainWindow::on_actionExit_triggered()
@@ -106,6 +114,11 @@ void MainWindow::on_actionDocumentation_triggered()
 
 void MainWindow::on_actionCompile_triggered()
 {
+    if(currentFile == "")
+        on_actionSave_As_triggered();
+    else
+        autoSave();
+
     CompilerController compiler;
     try {
         if(compiler.Run(currentFile)){
@@ -117,13 +130,39 @@ void MainWindow::on_actionCompile_triggered()
         result = "Program: " + currentFile + " has error: " + QString::fromStdString(error);
         QMessageBox::information(this,tr("Compilation Terminated"),result);
     }
+}
 
-
+bool MainWindow::autoCompile(){
+    CompilerController compiler;
+    try{
+        if(compiler.Run(currentFile))
+            return true;
+    } catch (std::string error){
+        throw;
+    }
+    return false;
 }
 
 void MainWindow::on_actionRun_triggered()
 {
-    //TODO: run compiled program
+    //auto save and compile
+    if(currentFile == "")
+        on_actionSave_As_triggered();
+    else
+        autoSave();
+
+    try {
+        if(autoCompile())
+            QMessageBox::information(this,tr("Compilation Successful"),tr("Compilation Done, now Executing..."));
+    } catch (std::string error) {
+        QString result ;
+        result = "Program: " + currentFile + " has error: " + QString::fromStdString(error) + "\n Execution Aborted";
+        QMessageBox::information(this,tr("Compilation Terminated"),result);
+        return;
+    }
+
+
+    // execution starts
     ExecutionController executor(ui,this);
     try { 
     	executor.Run(currentFile);

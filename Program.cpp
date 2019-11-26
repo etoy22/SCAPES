@@ -2,6 +2,7 @@
 #include <string>
 #include <iterator>
 #include <iomanip>
+#include <regex>
 #include "DeclIntStmt.h"
 #include "EndStmt.h"
 #include "JumpStmt.h"
@@ -29,11 +30,13 @@ Program::Program(std::string name, std::vector<std::string>& code){
 
 Program::Program(QJsonObject& code) {
 	read(code);
+    comparisonFlag = 0;  // jump more by default
 };
 
 Program::Program(std::string name, QJsonObject& code) {
 	setName(name);	
 	read(code);
+    comparisonFlag = 0; // jump more by befault
 };
 
 Program::~Program() {
@@ -184,7 +187,7 @@ bool Program::compile(){
 }
 
 void Program::read(const QJsonObject &json){
-	int i = 0;
+	int i = 0; int labelCount = 0;
 	QJsonArray array = json.value("Program").toArray();
 
 	foreach(const QJsonValue & v, array) {
@@ -215,6 +218,41 @@ void Program::read(const QJsonObject &json){
 				prt->read(obj);
 				statements.push_back(prt);
 			}
+			else if (!instr.compare("jmp")){
+				JumpStmt* jmp = new JumpStmt();
+				jmp->read(obj);
+				statements.push_back(jmp);
+			}
+			else if (!instr.compare("jmr")){
+				JumpMoreStmt* jmr = new JumpMoreStmt();
+				jmr->read(obj);
+				statements.push_back(jmr);
+			}
+			else if (!instr.compare("jls")){
+				JLessStmt* jls = new JLessStmt();
+				jls->read(obj);
+				statements.push_back(jls);
+			}
+			else if (!instr.compare("jeq")){
+				JEqStmt* jeq = new JEqStmt();
+				jeq->read(obj);
+				statements.push_back(jeq);
+			}
+			else if (!instr.compare("cmp")){
+				CompStmt* cmp = new CompStmt();
+				cmp->read(obj);
+				statements.push_back(cmp);
+			}
+			else if (!instr.compare("add")) {
+				AddStmt* add = new AddStmt();
+				add->read(obj);
+				statements.push_back(add);
+			}
+			else if (!instr.compare("mov")) {
+				MovStmt* mov = new MovStmt();
+				mov->read(obj);
+				statements.push_back(mov);
+			}
 			i++;
 		}
 		else {
@@ -223,6 +261,7 @@ void Program::read(const QJsonObject &json){
 			label->read(id);
 
 			pairs.push_back(std::make_pair(label, i));
+			labelCount++;
 		}
 
 	}
@@ -250,11 +289,11 @@ bool Program::checkSyntax(){
 	std::set <std::string> label;
 	std::string message ="";
     	std::string unavalible[12] = {"dci","dca","rdi","prt","mov","add","cmp", "jls", "jmr", "jeq", "jmp", "end"};
+
 	if(input.size() == 0){
 		message = "no code";
 		throw message;
 	}
-	
 	//Adds all decleration of varriables and labels to there sets
     	for(int j = 0; j < int(input.size());j++){
 		if(input[j].find('#') != std::string::npos){}
@@ -269,34 +308,26 @@ bool Program::checkSyntax(){
 			    std::istream_iterator<std::string>(iss), {}
 			};
 			if(result.size()>1){
-				if(int(result[1].find(':'))!= -1){
-					result[0] += ":";
-					result.erase(result.begin()+1);
+			if(int(result[1].find(':'))!= -1){
+				result[0] += ":";
+				result.erase(result.begin()+1);
 				}
 			}
-            		if(label.size() == 0){
-					bool test = false;
-					try{
-						if(stoi(result[0].substr(0,result[0].find(':')))==0){}
-					}
-					catch(std::invalid_argument& e)
-					{
-						test = true;
-					}
-					catch(std::out_of_range& e)
-					{
-						test = true;
-					}
-					if(!test){
-						message = "literal used as label on line ";
-				   		message += std::to_string(j+1);
-						throw message;
-					}
-				    	label.insert(result[0].substr(0,result[0].find(':')));
-				    	result.erase(result.begin());
+            	if (int(result[0].find(':')) != -1){
+		        	if(label.size() == 0){
+				    label.insert(result[0].substr(0,result[0].find(':')));
+				    result.erase(result.begin());
+				}
+				else if(label.find(result[0].substr(0,result[0].find(':')))!= label.end()){
+				    message = "two labels with the same name on line ";
+				    message += std::to_string(j+1);
+				    throw message;
+				}
+				else{
+				    label.insert(result[0].substr(0,result[0].find(':')));
+				    result.erase(result.begin());
+				}
 			}
-		
-			
 			//error checking
 			if(result[0] == "dci" && result.size() != 2){
 				message = "dci error on line ";
@@ -318,7 +349,9 @@ bool Program::checkSyntax(){
 				message += std::to_string(j+1);
 					throw message;
 			}
+
 			else if(j == int(input.size())-1 && result[0] != "end"){
+
 				message = "the last statement isn't end";
 				throw message;
 			}
@@ -327,6 +360,7 @@ bool Program::checkSyntax(){
 				message += std::to_string(j+1);
 				throw message;
 			}
+
 			else if (result[0] == "mov" && result.size() != 3){
 				message = "mov error on line ";
 				message += std::to_string(j+1);
@@ -342,33 +376,17 @@ bool Program::checkSyntax(){
 				message += std::to_string(j+1);
 				throw message;
 			}
-			
 			//Downloading into sets
-			if(result[0] == "dci"){	
-				if(var.count(result[1])){
+			if(result[0] == "dci"){
+				if(var.size()==0){
+					var.insert(result[1]);
+				}	
+				else if(var.count(result[1])){
 					message = "multiple of the same varriable declaired line ";
 					message += std::to_string(j+1);
 					throw message;
 				}
 				else{
-					bool test = false;
-					try{
-						int t = stoi(result[1]);
-						t++;
-					}
-					catch(std::invalid_argument& e)
-					{
-						test = true;
-					}
-						catch(std::out_of_range& e)
-					{
-						test = true;
-					}
-					if(!test){
-						message = "literal used as varriables on line ";
-						message += std::to_string(j+1);
-					   	throw message;
-					}
 					var.insert(result[1]);
 				}
 			}
@@ -380,26 +398,7 @@ bool Program::checkSyntax(){
 				}
 				else{
 					bool test = false;
-					bool test2 = false;
 					try{
-						int t = stoi(result[1]);
-						t++;
-					}
-					catch(std::invalid_argument& e)
-					{
-						test2 = true;
-					}
-						catch(std::out_of_range& e)
-					{
-						test2 = true;
-					}
-					if(!test2){
-						message = "literal used as varriables on line ";
-						message += std::to_string(j+1);
-					   	throw message;
-					}
-					try{
-						var.insert(result[1]);
 						for(int i = 0; i< stoi(result[2]);i++){
 							std::string temp = "$"+result[1]+"+"+std::to_string(i);
 							var.insert(temp);
@@ -419,89 +418,26 @@ bool Program::checkSyntax(){
 						throw message;
 					}
 				}
+
 			}
-			else if (result[0] == "rdi"){ 
+			else if (result[0] == "rdi" || result[0] == "prt"){
 				if(var.count(result[1])== 0){
 					message = "undeclaired varraible called line ";
 					message += std::to_string(j+1);
 					throw message;
 				}
 			}
-			else if (result[0] == "prt"){
-				bool test = false;
-				try{
-					if(stoi(result[1])==0){}
-				}
-				catch(std::invalid_argument& e)
-				{
-					test = true;
-				}
-				catch(std::out_of_range& e)
-				{
-					test = true;
-				}
-				if(var.count(result[1])== 0 && test){
-					message = "undeclaired varraible called line ";
-					message += std::to_string(j+1);
-					throw message;
-				}
-			}
-			else if(result[0] == "add"||result[0] == "mov"){
-				bool test = false;
-				try{
-					if(stoi(result[1])==0){}
-				}
-				catch(std::invalid_argument& e)
-				{
-					test = true;
-				}
-				catch(std::out_of_range& e)
-				{
-					test = true;
-				}
-				if(var.count(result[1])== 0 &&test){
+			else if(result[0] == "cmp"||result[0] == "add"||result[0] == "mov"){
+				std::regex numRegex("[\\d]+");
+					if(var.count(result[1])== 0 && !std::regex_match(result[1], numRegex)){
 					message = "undeclaired varraible 1 called line ";
 					message += std::to_string(j+1);
 					throw message;
 				}
-				if(var.count(result[2])== 0){					
+
+				if(var.count(result[2])== 0 && !std::regex_match(result[1], numRegex)){
 					message = "undeclaired varraible 2 called line ";
-					message += std::to_string(j+1);
-					throw message;
-				}
-			}
-			else if(result[0] == "cmp"){
-				bool test = false;
-				bool test2 = false;
-				try{
-					if(stoi(result[1])==0){}
-				}
-				catch(std::invalid_argument& e)
-				{
-					test = true;
-				}
-				catch(std::out_of_range& e)
-				{
-					test = true;
-				}
-				try{
-					if(stoi(result[2])==0){}
-				}
-				catch(std::invalid_argument& e)
-				{
-					test2 = true;
-				}
-				catch(std::out_of_range& e)
-				{
-					test2 = true;
-				}
-				if(var.count(result[1])== 0&&test){
-					message = "undeclaired varraible 1 called line ";
-					message += std::to_string(j+1);
-					throw message;
-				}
-				if(var.count(result[2])== 0&&test2){					
-					message = "undeclaired varraible 2 called line ";
+
 					message += std::to_string(j+1);
 					throw message;
 				}
@@ -514,16 +450,17 @@ bool Program::checkSyntax(){
 				throw message;	
 			}
 		}
-			
 	}
 	//second loop to see all labels
     	for(int j = 0; j < int(input.size());j++){
 		if(input[j].find_first_not_of(" \t") != std::string::npos){
 			std::string s = input[j];
+
 			std::istringstream iss(s);
 			std::vector<std::string> result{
 			    std::istream_iterator<std::string>(iss), {}
 			};
+
 			if(result[0] == "jmr"|| result[0] == "jmp"||result[0] == "jeq"||result[0] == "jls"){
 				if(label.count(result[1]) ==0){
 					message = "undeclaired label on line ";
@@ -533,17 +470,17 @@ bool Program::checkSyntax(){
 			}
 		}
 	}
-	//Loops to check if a statement is used as a label
 	for(int i = 0; i < 12;i++){
-		
 		if(label.count(unavalible[i])){
 		    message = "used a statement as a label ";
 		   throw message;
 		} 
 	}
-	
+
 	//Iterates through label to check if label and end are the same
 	std::set<std::string>::iterator it = label.begin();
+
+
 	while (it != label.end())
 	{
 		if(var.count(*it)){
@@ -552,23 +489,53 @@ bool Program::checkSyntax(){
 		}
 		it++;
 	}
-	return true;	
+	return true;
 }
 
 void Program::execute(){
 
-	for (unsigned int i = 0; i < statements.size(); i++) {
-		if (typeid(*(statements.at(i))) == typeid(DeclIntStmt)) 
-			statements.at(i)->run(variables);
-		
-		else if (typeid(*(statements.at(i))) == typeid(DeclArrStmt)) 
-			statements.at(i)->run(variables);
-		
-		else if (typeid(*(statements.at(i))) == typeid(ReadStmt)) 
-			statements.at(i)->run(variables, ui, win);
-		
-		
-	}
+    try{
+        for (unsigned int i = 0; i < statements.size(); i++) {
+            if (typeid(*(statements.at(i))) == typeid(DeclIntStmt))
+                statements.at(i)->run(variables,ui,NULL, NULL);
+
+            else if (typeid(*(statements.at(i))) == typeid(DeclArrStmt))
+                statements.at(i)->run(variables,ui,NULL, NULL);
+
+            else if (typeid(*(statements.at(i))) == typeid(ReadStmt))
+                statements.at(i)->run(variables, ui, win, NULL);
+
+            else if (typeid(*(statements.at(i))) == typeid(PrintStmt))
+                statements.at(i)->run(variables, ui, win, NULL);
+
+            else if (typeid(*(statements.at(i))) == typeid(JumpStmt))
+                i = statements.at(i)->run(variables, ui, win, &pairs);
+
+            else if (typeid(*(statements.at(i))) == typeid(JumpMoreStmt)){
+                if(comparisonFlag == 2)
+                    i = statements.at(i)->run(variables, ui, win, &pairs);
+            }
+            else if (typeid(*(statements.at(i))) == typeid(JEqStmt)){
+                if(comparisonFlag == 0)
+                    i = statements.at(i)->run(variables, ui, win, &pairs);
+            }
+            else if (typeid(*(statements.at(i))) == typeid(JLessStmt)){
+                if(comparisonFlag == 1)
+                    i = statements.at(i)->run(variables, ui, win, &pairs);
+            }
+            else if (typeid (*(statements.at(i))) == typeid(CompStmt))
+                comparisonFlag = statements.at(i)->run(variables, ui, NULL, NULL);
+			else if (typeid(*(statements.at(i))) == typeid(AddStmt)) {
+				statements.at(i)->run(variables, ui, NULL, NULL);
+			}
+			else if (typeid(*(statements.at(i))) == typeid(MovStmt)) {
+				statements.at(i)->run(variables, ui, NULL, NULL);
+			}
+		}
+    }
+    catch (std::string exeError){
+            throw;
+    }
 
 	// debugging: remove later
 	std::cout << std::endl;

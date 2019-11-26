@@ -8,15 +8,14 @@ class CompStmt : public Statement {
 
 
 private:
+    bool isNumber(std::string);
 protected:
 public:
 	CompStmt();
     ~CompStmt();
 
 	virtual void compile(std::string);
-	void run();
-void run(std::set<Variable*>&);
-        void run(std::set<Variable*>&, Ui::MainWindow*&, QMainWindow*);
+    int run(std::set<Variable*>&, Ui::MainWindow*&, QMainWindow*, std::vector<std::pair<Identifier*,int>>*);
 	std::string toString();
 };
 

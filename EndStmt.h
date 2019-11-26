@@ -9,11 +9,9 @@ private:
 protected:
 public:
 	EndStmt();
-    virtual ~EndStmt();
-    virtual void compile(std::string);
-	void run();
-	void run(std::set<Variable*>&);
-        void run(std::set<Variable*>&, Ui::MainWindow*&, QMainWindow*);
+    	virtual ~EndStmt();
+	virtual void compile(std::string);
+        int run(std::set<Variable*>&, Ui::MainWindow*&, QMainWindow*, std::vector<std::pair<Identifier*,int>>*);
 };
 
 #endif

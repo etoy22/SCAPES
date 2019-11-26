@@ -1,6 +1,7 @@
 #include <iostream>
 #include <regex>
 #include <QInputDialog>
+#include <QIntValidator>
 #include "Variable.h"
 #include "ReadStmt.h"
 
@@ -54,20 +55,18 @@ void ReadStmt::compile(std::string instr) {
     }
 }
 
-void ReadStmt::run(){}
-void ReadStmt::run(std::set<Variable*>&){}
-
-void ReadStmt::run(std::set<Variable*>& variableSet, Ui::MainWindow*& ui, QMainWindow* window) {
-	int input = QInputDialog::getInt(window, "variable input", "enter a number");
+int ReadStmt::run(std::set<Variable*>& variableSet, Ui::MainWindow*& , QMainWindow* window, std::vector<std::pair<Identifier*,int>>* ) {
 	 if (operands[0] != nullptr && operands[0]->getIdentifier() != nullptr) {
                 std::set<Variable*>::iterator result = std::find_if(std::begin(variableSet), std::end(variableSet),
                         [&](Variable* const& v) { return v->getName() == operands[0]->getIdentifier()->getName();  });
-
                 if (result != variableSet.end()) {
+                    QString message = "enter value for variable: " + QString::fromStdString((*result)->getName());
+                    int input = QInputDialog::getInt(window, "variable input", message);
+                    if(input > 0)
                         (*result)->setValue(input);
                 }
         }
-
+	return 0;
 }
 
 
