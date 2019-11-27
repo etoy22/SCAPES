@@ -68,7 +68,6 @@ bool Program::compile(){
     }
     if (result){
         //scan source
-
         for (unsigned long i =0; i<input.size(); i++) {
 		std::string in = input.at(i); //line 1-n
 		std::string temp = "x";
@@ -186,14 +185,11 @@ bool Program::compile(){
 void Program::read(const QJsonObject &json){
 	int i = 0;
 	QJsonArray array = json.value("Program").toArray();
-
 	foreach(const QJsonValue & v, array) {
 		QJsonObject obj = v.toObject();
-
 		if (obj.contains("Label")) {
 			QJsonValue name = (obj.value("Label")).toObject().value("name");
 			std::string instr = name.toString().toUtf8().constData();
-
 			// TODO: somehow improve this process?
 			if (!instr.compare("dci")) {
 				DeclIntStmt* dci = new DeclIntStmt();
@@ -217,16 +213,13 @@ void Program::read(const QJsonObject &json){
 			}
 			i++;
 		}
-		else {
+		/*else {
 			QJsonObject id = obj.value("Identifier").toObject();
 			Label* label = new Label();
 			label->read(id);
-
 			pairs.push_back(std::make_pair(label, i));
-		}
-
+		}*/
 	}
-
 	// just for debugging purposes
 	std::cout << std::endl;
 	std::cout << "Label objects: " << std::endl;
@@ -234,7 +227,6 @@ void Program::read(const QJsonObject &json){
 		std::cout << pairs.at(k).first->toString() << " | index (from 0) :" << pairs.at(k).second << std::endl;
 	}
 	// just for debugging purposes
-	std::cout << std::endl;
 	std::cout << "Instruction objects: " << std::endl;
 	for (unsigned int l = 0; l < statements.size(); l++) {
 		std::cout << statements.at(l)->toString() << std::endl;
@@ -268,36 +260,37 @@ bool Program::checkSyntax(){
 			std::vector<std::string> result{
 			    std::istream_iterator<std::string>(iss), {}
 			};
+			
+			//Checks for labels
 			if(result.size()>1){
 				if(int(result[1].find(':'))!= -1){
 					result[0] += ":";
 					result.erase(result.begin()+1);
 				}
 			}
-            		if(label.size() == 0){
-					bool test = false;
-					try{
-						if(stoi(result[0].substr(0,result[0].find(':')))==0){}
-					}
-					catch(std::invalid_argument& e)
-					{
-						test = true;
-					}
-					catch(std::out_of_range& e)
-					{
-						test = true;
-					}
-					if(!test){
-						message = "literal used as label on line ";
-				   		message += std::to_string(j+1);
-						throw message;
-					}
-				    	label.insert(result[0].substr(0,result[0].find(':')));
-				    	result.erase(result.begin());
+			if(int(result[0].find(':'))!= -1){
+				bool test = false;
+				try{
+					if(stoi(result[0].substr(0,result[0].find(':')))==0){}
+				}
+				catch(std::invalid_argument& e)
+				{
+					test = true;
+				}
+				catch(std::out_of_range& e)
+				{
+					test = true;
+				}
+				if(!test){
+					message = "literal used as label on line ";
+					message += std::to_string(j+1);
+					throw message;
+				}
+				label.insert(result[0].substr(0,result[0].find(':')));
+				result.erase(result.begin());
 			}
 		
-			
-			//error checking
+			//error checking for right size
 			if(result[0] == "dci" && result.size() != 2){
 				message = "dci error on line ";
 				message += std::to_string(j+1);
@@ -305,11 +298,6 @@ bool Program::checkSyntax(){
 			}
 			else if(result[0] == "rdi" && result.size() != 2){
 				message = "rdi error on line ";
-				message += std::to_string(j+1);
-				throw message;
-			}
-			else if(result[0] == "prt" && result.size() != 2){
-				message = "prt error on line ";
 				message += std::to_string(j+1);
 				throw message;
 			}
@@ -428,20 +416,38 @@ bool Program::checkSyntax(){
 				}
 			}
 			else if (result[0] == "prt"){
-				bool test = false;
-				try{
-					if(stoi(result[1])==0){}
+ 				if(result.size() == 1){
+					message = "invalid call for prt line ";
+					message += std::to_string(j+1);
+					throw message;
 				}
-				catch(std::invalid_argument& e)
-				{
-					test = true;
+				
+				std::string temp = "";
+				for(int x = 1; x < result.size(); x++){
+					temp = temp + " " + result[x];
 				}
-				catch(std::out_of_range& e)
-				{
-					test = true;
+				if(temp[1] == '\"' && temp[temp.size()-1]=='\"'){}
+				else if(result.size() == 2){
+					bool test = false;
+					try{
+						if(stoi(result[1])==0){}
+					}
+					catch(std::invalid_argument& e)
+					{
+						test = true;
+					}
+					catch(std::out_of_range& e)
+					{
+						test = true;
+					}
+					if(var.count(result[1])== 0 && test){
+						message = "undeclaired varraible called line ";
+						message += std::to_string(j+1);
+						throw message;
+					}
 				}
-				if(var.count(result[1])== 0 && test){
-					message = "undeclaired varraible called line ";
+				else{
+					message = "invalid call for prt line ";
 					message += std::to_string(j+1);
 					throw message;
 				}
@@ -556,7 +562,6 @@ bool Program::checkSyntax(){
 }
 
 void Program::execute(){
-
 	for (unsigned int i = 0; i < statements.size(); i++) {
 		if (typeid(*(statements.at(i))) == typeid(DeclIntStmt)) 
 			statements.at(i)->run(variables);
@@ -569,14 +574,12 @@ void Program::execute(){
 		
 		
 	}
-
 	// debugging: remove later
 	std::cout << std::endl;
 	std::cout << "Variable objects: " << std::endl;
 	for (Variable* v : variables) {
 		std::cout << "Variable: " + v->getName() + "   Value: " + std::to_string(v->getValue()) << std::endl;
 	}
-
 	
 }
 
