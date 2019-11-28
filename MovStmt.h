@@ -10,11 +10,9 @@ private:
 protected:
 public:
 	MovStmt();
-    ~MovStmt();
-    virtual void compile(std::string);
-	void run();
-void run(std::set<Variable*>&);
-        void run(std::set<Variable*>&, Ui::MainWindow*&, QMainWindow*);
+    	~MovStmt();
+    	virtual void compile(std::string);
+        int run(std::set<Variable*>&, Ui::MainWindow*&, QMainWindow*, std::vector<std::pair<Identifier*,int>>*);
 	std::string toString();
 };
 

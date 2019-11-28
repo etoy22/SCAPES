@@ -5,6 +5,7 @@ ExecutionController::ExecutionController(Ui::MainWindow*& uiPtr, QMainWindow* wi
 
 bool ExecutionController::Run(QString fileName){
     // get compiled
+    ui.Console->setText("");
     QJsonObject programJsonObj;
     repo.getCompiled(fileName,programJsonObj);
     Program program(programJsonObj);
@@ -13,7 +14,7 @@ bool ExecutionController::Run(QString fileName){
     try {
         program.execute();
     } catch(std::string s) {
-	throw;
+        throw;
     }
     return true;
 	    

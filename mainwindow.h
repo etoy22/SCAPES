@@ -50,6 +50,10 @@ private slots:
 
     void on_actionSave_As_triggered();
 
+    bool autoSave();
+
+    bool autoCompile();
+
 private:
     Ui::MainWindow *ui;
     QString currentFile = "";

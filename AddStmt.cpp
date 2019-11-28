@@ -59,12 +59,39 @@ void AddStmt::compile(std::string instr) {
   
 }
 
-void AddStmt::run() {
-	// nothing yet
+int AddStmt::run(std::set<Variable*>& variableSet, Ui::MainWindow*&, QMainWindow*, std::vector<std::pair<Identifier*,int>>*){
+
+	int values[2];
+
+	if (operands[0]->getIdentifier() != nullptr && operands[1]->getIdentifier() != nullptr) {
+		std::regex numRegex("[\\d]+");
+
+		for (unsigned int i = 0; i < 2; i++) {
+			if (std::regex_match(operands[i]->getIdentifier()->getName(), numRegex)) {
+				values[i] = std::stoi(operands[i]->getIdentifier()->getName());
+			}
+			else {
+				std::set<Variable*>::iterator result = std::find_if(std::begin(variableSet), std::end(variableSet),
+					[&](Variable* const& v) { return v->getName() == operands[i]->getIdentifier()->getName();  });
+
+				if (result != variableSet.end()) {
+					values[i] = (*result)->getValue();
+
+					if (i == 1) {
+						std::cout << "Before Add: " + std::to_string((*result)->getValue()) << std::endl;
+						(*result)->setValue(values[0] + values[1]);
+						std::cout << "After Add: " + std::to_string((*result)->getValue()) << std::endl;
+					}
+
+				}
+				else {
+					throw "Variable undefined";
+				}
+			}
+		}
+	}
 }
 
-void AddStmt::run(std::set<Variable*>&){}
-void AddStmt::run(std::set<Variable*>&, Ui::MainWindow*&, QMainWindow*){}
 std::string AddStmt::toString() {
 	std::string output = "About the AddStmt object: <";
 

@@ -19,13 +19,13 @@ class Statement{
 private:
 
 protected:
-    Label *label;
-    Operand** operands;
-    int numOperands;
+    	Label *label;
+    	Operand** operands;
+    	int numOperands;
 
-    std::string removeSpaces(std::string);
-    std::string removeConsecutiveSpaces(std::string);
-    std::string removeLabelIfExists(std::string);
+    	std::string removeSpaces(std::string);
+    	std::string removeConsecutiveSpaces(std::string);
+    	std::string removeLabelIfExists(std::string);
 
 public:
 	// constructors
@@ -34,22 +34,19 @@ public:
 
 	// class diagram methods
 	virtual void compile(std::string) = 0;
-	virtual void run() = 0;
-	virtual void run(std::set<Variable*>&) = 0;
-	virtual void run(std::set<Variable*>&, Ui::MainWindow*&, QMainWindow*) = 0;
-	//virtual void run(std::set<Variable*>&);
-	//virtual void run(std::set<Variable*>&, Ui::MainWindow*&);
-    void setLabel(Label*);
+	virtual int run(std::set<Variable*>&, Ui::MainWindow*&, QMainWindow*, std::vector<std::pair<Identifier*,int>>*) = 0;
+	
+        void setLabel(Label*);
 
-    void setOperand(Operand*, int);
+        void setOperand(Operand*, int);
 	void setNumOperands(int);
 
-    void read(const QJsonObject &json);
-    void write(QJsonObject &json) const;
+    	void read(const QJsonObject &json);
+    	void write(QJsonObject &json) const;
 
-    Label* getLabel();
-    Operand* getOperand(int);
-    Operand** getOperands();
+    	Label* getLabel();
+        Operand* getOperand(int);
+        Operand** getOperands();
 	int getNumOperands();
 	virtual std::string toString();
 };

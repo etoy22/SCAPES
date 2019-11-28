@@ -54,12 +54,15 @@ void JLessStmt::compile(std::string instr) {
 	}
 }
 
-void JLessStmt::run() {
-	// nothing yet
-}
 
-void JLessStmt::run(std::set<Variable*>&){}
-void JLessStmt::run(std::set<Variable*>&, Ui::MainWindow*&, QMainWindow*){}
+int JLessStmt::run(std::set<Variable*>&, Ui::MainWindow*&, QMainWindow*, std::vector<std::pair<Identifier*,int>>* id){
+    int result = -1;
+    for(unsigned int i =0; i<id->size(); i++){
+        if(id->at(i).first->getName()==this->getOperand(0)->getIdentifier()->getName())
+            result = id->at(i).second;
+    }
+    return result-1;
+}
 
 
 std::string JLessStmt::toString() {

@@ -55,12 +55,14 @@ void JumpMoreStmt::compile(std::string instr) {
 
 }
 
-void JumpMoreStmt::run() {
-	// nothing yet
+int JumpMoreStmt::run(std::set<Variable*>&, Ui::MainWindow*&, QMainWindow*, std::vector<std::pair<Identifier*,int>>* id){
+    int result = -1;
+    for(unsigned int i =0; i<id->size(); i++){
+        if(id->at(i).first->getName()==this->getOperand(0)->getIdentifier()->getName())
+            result = id->at(i).second;
+    }
+    return result-1;
 }
-
-void JumpMoreStmt::run(std::set<Variable*>&){}
-void JumpMoreStmt::run(std::set<Variable*>&, Ui::MainWindow*&, QMainWindow*){}
 
 
 std::string JumpMoreStmt::toString() {
