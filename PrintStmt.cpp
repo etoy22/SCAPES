@@ -33,8 +33,16 @@ void PrintStmt::compile(std::string instr) {
 	std::regex prtStrRegex("(([\\s]+?([^\\s])+([\\s]+?): )?)([\\s]+)?prt[\\s]+\"([\\s]+)?.+([\\s]+)?\"([\\s]+)?");
 
 	// if instruction argument matches the above regex
-	if (std::regex_match(instr, prtRegex)) {
+	if (std::regex_match(instr, prtStrRegex)) {
+		// create variable from instruction argument
+		int strLength = instr.find_last_of("\"") - instr.find_first_of("\"") - 1;
+		std::string variableName = instr.substr(instr.find_first_of("\"") + 1, strLength);
 
+		operands[0] = new Operand();
+		operands[0]->setIdentifier(new Variable(variableName));
+		numOperands = 1;
+	}
+	else if (std::regex_match(instr, prtRegex)) {
 		// remove consecutive spaces
 		instr = removeConsecutiveSpaces(instr);
 
@@ -49,15 +57,6 @@ void PrintStmt::compile(std::string instr) {
 
 		// create variable from instruction argument
 		std::string variableName = removeSpaces(instr.substr(0, instr.length()));
-		operands[0] = new Operand();
-		operands[0]->setIdentifier(new Variable(variableName));
-		numOperands = 1;
-	}
-	else if (std::regex_match(instr, prtStrRegex)) {
-		// create variable from instruction argument
-		int strLength = instr.find_last_of("\"") - instr.find_first_of("\"") - 1;
-		std::string variableName = instr.substr(instr.find_first_of("\"") + 1, strLength);
-
 		operands[0] = new Operand();
 		operands[0]->setIdentifier(new Variable(variableName));
 		numOperands = 1;
@@ -81,7 +80,7 @@ int PrintStmt::run(std::set<Variable*>& variableSet, Ui::MainWindow*& ui, QMainW
         }
 	if(isLiteral){
         QString consoleOut = ui->Console->toPlainText();
-        consoleOut.append(QString::fromStdString(this->getOperand(0)->getIdentifier()->getName())+" /n");
+        consoleOut.append(QString::fromStdString(this->getOperand(0)->getIdentifier()->getName())+" \n");
         ui->Console->setText(consoleOut);
 	}
 	return 0;
