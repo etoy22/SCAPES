@@ -289,11 +289,11 @@ bool Program::checkSyntax(){
 	std::set <std::string> label;
 	std::string message ="";
     	std::string unavalible[12] = {"dci","dca","rdi","prt","mov","add","cmp", "jls", "jmr", "jeq", "jmp", "end"};
-
 	if(input.size() == 0){
 		message = "no code";
 		throw message;
 	}
+	
 	//Adds all decleration of varriables and labels to there sets
     	for(int j = 0; j < int(input.size());j++){
 		if(input[j].find('#') != std::string::npos){}
@@ -307,90 +307,50 @@ bool Program::checkSyntax(){
 			std::vector<std::string> result{
 			    std::istream_iterator<std::string>(iss), {}
 			};
+			
+			//Checks for labels
 			if(result.size()>1){
-			if(int(result[1].find(':'))!= -1){
-				result[0] += ":";
-				result.erase(result.begin()+1);
+				if(int(result[1].find(':'))!= -1){
+					result[0] += ":";
+					result.erase(result.begin()+1);
 				}
 			}
-            	if (int(result[0].find(':')) != -1){
-		        	if(label.size() == 0){
-				    label.insert(result[0].substr(0,result[0].find(':')));
-				    result.erase(result.begin());
+			if(int(result[0].find(':'))!= -1){
+				bool test = false;
+				try{
+					if(stoi(result[0].substr(0,result[0].find(':')))==0){}
 				}
-				else if(label.find(result[0].substr(0,result[0].find(':')))!= label.end()){
-				    message = "two labels with the same name on line ";
-				    message += std::to_string(j+1);
-				    throw message;
+				catch(std::invalid_argument& e)
+				{
+					test = true;
 				}
-				else{
-				    label.insert(result[0].substr(0,result[0].find(':')));
-				    result.erase(result.begin());
+				catch(std::out_of_range& e)
+				{
+					test = true;
 				}
-			}
-			//error checking
-			if(result[0] == "dci" && result.size() != 2){
-				message = "dci error on line ";
-				message += std::to_string(j+1);
-				throw message;
-			}
-			else if(result[0] == "rdi" && result.size() != 2){
-				message = "rdi error on line ";
-				message += std::to_string(j+1);
-				throw message;
-			}
-			else if(result[0] == "prt" && result.size() != 2){
-				message = "prt error on line ";
-				message += std::to_string(j+1);
-				throw message;
-			}
-			else if(result[0] == "cmp" && result.size() != 3){
-				message = "cmp error on line ";
-				message += std::to_string(j+1);
-					throw message;
-			}
-
-			else if(j == int(input.size())-1 && result[0] != "end"){
-
-				message = "the last statement isn't end";
-				throw message;
-			}
-			else if(result[0] == "end" && result.size() != 1){
-				message = "end error on line ";
-				message += std::to_string(j+1);
-				throw message;
-			}
-
-			else if (result[0] == "mov" && result.size() != 3){
-				message = "mov error on line ";
-				message += std::to_string(j+1);
-				throw message;
-			}
-			else if (result[0] == "dca" && result.size() != 3){
-				message = "dca error on line ";
-				message += std::to_string(j+1);
-				throw message;
-			}
-			else if (result[0] == "add" && result.size() != 3){
-				message = "add error on line ";
-				message += std::to_string(j+1);
-				throw message;
-			}
-			//Downloading into sets
-			if(result[0] == "dci"){
-				if(var.size()==0){
-					var.insert(result[1]);
-				}	
-				else if(var.count(result[1])){
-					message = "multiple of the same varriable declaired line ";
+				if(!test){
+					message = "literal used as label on line ";
 					message += std::to_string(j+1);
 					throw message;
 				}
-				else{
-					var.insert(result[1]);
-				}
+				label.insert(result[0].substr(0,result[0].find(':')));
+				result.erase(result.begin());
 			}
-			else if(result[0] == "dca"){
+		
+			//error checking that it ends
+			if(j == int(input.size())-1 && result[0] != "end"){
+				message = "the last statement isn't end";
+				throw message;
+			}
+			
+			
+			//checking stmt
+			if(result[0] == "dci"){	
+				if(result.size() != 2){
+					message = "dci error on line ";
+					message += std::to_string(j+1);
+					throw message;
+				}
 				if(var.count(result[1])){
 					message = "multiple of the same varriable declaired line ";
 					message += std::to_string(j+1);
@@ -399,6 +359,58 @@ bool Program::checkSyntax(){
 				else{
 					bool test = false;
 					try{
+						int t = stoi(result[1]);
+						t++;
+					}
+					catch(std::invalid_argument& e)
+					{
+						test = true;
+					}
+						catch(std::out_of_range& e)
+					{
+						test = true;
+					}
+					if(!test){
+						message = "literal used as varriables on line ";
+						message += std::to_string(j+1);
+					   	throw message;
+					}
+					var.insert(result[1]);
+				}
+			}
+			else if(result[0] == "dca"){
+				if (result.size() != 3){
+					message = "dca error on line ";
+					message += std::to_string(j+1);
+					throw message;
+				}
+				if(var.count(result[1])){
+					message = "multiple of the same varriable declaired line ";
+					message += std::to_string(j+1);
+					throw message;
+				}
+				else{
+					bool test = false;
+					bool test2 = false;
+					try{
+						int t = stoi(result[1]);
+						t++;
+					}
+					catch(std::invalid_argument& e)
+					{
+						test2 = true;
+					}
+						catch(std::out_of_range& e)
+					{
+						test2 = true;
+					}
+					if(!test2){
+						message = "literal used as varriables on line ";
+						message += std::to_string(j+1);
+					   	throw message;
+					}
+					try{
+						var.insert(result[1]);
 						for(int i = 0; i< stoi(result[2]);i++){
 							std::string temp = "$"+result[1]+"+"+std::to_string(i);
 							var.insert(temp);
@@ -418,49 +430,151 @@ bool Program::checkSyntax(){
 						throw message;
 					}
 				}
-
 			}
-			else if (result[0] == "rdi" || result[0] == "prt"){
+			else if (result[0] == "rdi"){ 
+				if(result.size() != 2){
+					message = "rdi error on line ";
+					message += std::to_string(j+1);
+					throw message;
+				}
 				if(var.count(result[1])== 0){
 					message = "undeclaired varraible called line ";
 					message += std::to_string(j+1);
 					throw message;
 				}
 			}
-			else if(result[0] == "cmp"||result[0] == "add"||result[0] == "mov"){
-				std::regex numRegex("[\\d]+");
-					if(var.count(result[1])== 0 && !std::regex_match(result[1], numRegex)){
+			else if (result[0] == "prt"){
+ 				if(result.size() == 1){
+					message = "invalid call for prt line ";
+					message += std::to_string(j+1);
+					throw message;
+				}
+				
+				std::string temp = "";
+				for(int x = 1; x < result.size(); x++){
+					temp = temp + " " + result[x];
+				}
+				if(temp[1] == '\"' && temp[temp.size()-1]=='\"'){}
+				else if(result.size() == 2){
+					bool test = false;
+					try{
+						if(stoi(result[1])==0){}
+					}
+					catch(std::invalid_argument& e)
+					{
+						test = true;
+					}
+					catch(std::out_of_range& e)
+					{
+						test = true;
+					}
+					if(var.count(result[1])== 0 && test){
+						message = "undeclaired varraible called line ";
+						message += std::to_string(j+1);
+						throw message;
+					}
+				}
+				else{
+					message = "invalid call for prt line ";
+					message += std::to_string(j+1);
+					throw message;
+				}
+			}
+			else if(result[0] == "add"||result[0] == "mov"){
+				if (result.size() != 3){
+					message = result[0] +" error on line ";
+					message += std::to_string(j+1);
+					throw message;
+				}
+				bool test = false;
+				try{
+					if(stoi(result[1])==0){}
+				}
+				catch(std::invalid_argument& e)
+				{
+					test = true;
+				}
+				catch(std::out_of_range& e)
+				{
+					test = true;
+				}
+				if(var.count(result[1])== 0 &&test){
 					message = "undeclaired varraible 1 called line ";
 					message += std::to_string(j+1);
 					throw message;
 				}
-
-				if(var.count(result[2])== 0 && !std::regex_match(result[1], numRegex)){
+				if(var.count(result[2])== 0){					
 					message = "undeclaired varraible 2 called line ";
-
+					message += std::to_string(j+1);
+					throw message;
+				}
+			}
+			else if(result[0] == "cmp"){
+				if(result.size() != 3){
+					message = "cmp error on line ";
+					message += std::to_string(j+1);
+					throw message;
+				}
+				bool test = false;
+				bool test2 = false;
+				try{
+					if(stoi(result[1])==0){}
+				}
+				catch(std::invalid_argument& e)
+				{
+					test = true;
+				}
+				catch(std::out_of_range& e)
+				{
+					test = true;
+				}
+				try{
+					if(stoi(result[2])==0){}
+				}
+				catch(std::invalid_argument& e)
+				{
+					test2 = true;
+				}
+				catch(std::out_of_range& e)
+				{
+					test2 = true;
+				}
+				if(var.count(result[1])== 0&&test){
+					message = "undeclaired varraible 1 called line ";
+					message += std::to_string(j+1);
+					throw message;
+				}
+				if(var.count(result[2])== 0&&test2){					
+					message = "undeclaired varraible 2 called line ";
+					message += std::to_string(j+1);
+					throw message;
+				}
+			}
+			else if(result[0] == "end"){
+				if( result.size() != 1){
+					message = "end error on line ";
 					message += std::to_string(j+1);
 					throw message;
 				}
 			}
 			//Checks that all the following are counted as an error but has no 
-			else if(result[0] == "jmr"|| result[0] == "jmp"||result[0] == "end"||result[0] == "jeq"||result[0] == "jls"){}
+			else if(result[0] == "jmr"|| result[0] == "jmp"||result[0] == "jeq"||result[0] == "jls"){}
 			else{
 				message = "invalid call on line ";
 				message += std::to_string(j+1);
 				throw message;	
 			}
 		}
+			
 	}
 	//second loop to see all labels
     	for(int j = 0; j < int(input.size());j++){
 		if(input[j].find_first_not_of(" \t") != std::string::npos){
 			std::string s = input[j];
-
 			std::istringstream iss(s);
 			std::vector<std::string> result{
 			    std::istream_iterator<std::string>(iss), {}
 			};
-
 			if(result[0] == "jmr"|| result[0] == "jmp"||result[0] == "jeq"||result[0] == "jls"){
 				if(label.count(result[1]) ==0){
 					message = "undeclaired label on line ";
@@ -470,17 +584,17 @@ bool Program::checkSyntax(){
 			}
 		}
 	}
+	//Loops to check if a statement is used as a label
 	for(int i = 0; i < 12;i++){
+		
 		if(label.count(unavalible[i])){
 		    message = "used a statement as a label ";
 		   throw message;
 		} 
 	}
-
+	
 	//Iterates through label to check if label and end are the same
 	std::set<std::string>::iterator it = label.begin();
-
-
 	while (it != label.end())
 	{
 		if(var.count(*it)){
@@ -489,7 +603,7 @@ bool Program::checkSyntax(){
 		}
 		it++;
 	}
-	return true;
+	return true;	
 }
 
 void Program::execute(){
