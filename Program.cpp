@@ -297,10 +297,6 @@ bool Program::checkSyntax(){
 	//Adds all decleration of varriables and labels to there sets
     	for(int j = 0; j < int(input.size());j++){
 		if(input[j].find('#') != std::string::npos){}
-		else if(input[j].find('$') != std::string::npos){
-			message = "invalide character on line "+ std::to_string(j+1);
-			throw message;	
-		}
 		else if(input[j].find_first_not_of(" \t") != std::string::npos){
 			std::string s = input[j];
 			std::istringstream iss(s);
@@ -338,11 +334,11 @@ bool Program::checkSyntax(){
 			}
 		
 			//error checking that it ends
+			
 			if(j == int(input.size())-1 && result[0] != "end"){
 				message = "the last statement isn't end";
 				throw message;
 			}
-			
 			
 			//checking stmt
 			if(result[0] == "dci"){	
@@ -355,6 +351,10 @@ bool Program::checkSyntax(){
 					message = "multiple of the same varriable declaired line ";
 					message += std::to_string(j+1);
 					throw message;
+				}
+				else if(result[1].find('$') != std::string::npos){
+					message = "used an invalid char on line "+ std::to_string(j+1);
+					throw message;	
 				}
 				else{
 					bool test = false;
