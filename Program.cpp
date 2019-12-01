@@ -286,6 +286,7 @@ void Program::write(QJsonObject &json) const{
 
 bool Program::checkSyntax(){
 	std::set <std::string> var;
+	std::set <std::string> dvar;
 	std::set <std::string> label;
 	std::string message ="";
     	std::string unavalible[12] = {"dci","dca","rdi","prt","mov","add","cmp", "jls", "jmr", "jeq", "jmp", "end"};
@@ -347,7 +348,7 @@ bool Program::checkSyntax(){
 					message += std::to_string(j+1);
 					throw message;
 				}
-				if(var.count(result[1])){
+				if(var.count(result[1])||dvar.count(result[1])){
 					message = "multiple of the same varriable declaired line ";
 					message += std::to_string(j+1);
 					throw message;
@@ -384,7 +385,7 @@ bool Program::checkSyntax(){
 					message += std::to_string(j+1);
 					throw message;
 				}
-				if(var.count(result[1])){
+				if(var.count(result[1])||dvar.count(result[1])){
 					message = "multiple of the same varriable declaired line ";
 					message += std::to_string(j+1);
 					throw message;
@@ -410,7 +411,7 @@ bool Program::checkSyntax(){
 					   	throw message;
 					}
 					try{
-						var.insert(result[1]);
+						dvar.insert(result[1]);
 						for(int i = 0; i< stoi(result[2]);i++){
 							std::string temp = "$"+result[1]+"+"+std::to_string(i);
 							var.insert(temp);
