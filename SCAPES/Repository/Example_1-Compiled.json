@@ -1,0 +1,115 @@
+{
+    "Program": [
+        {
+            "Label": {
+                "name": "dci"
+            },
+            "Operands": [
+                {
+                    "Variable": {
+                        "name": "a"
+                    }
+                }
+            ]
+        },
+        {
+            "Label": {
+                "name": "dci"
+            },
+            "Operands": [
+                {
+                    "Variable": {
+                        "name": "b"
+                    }
+                }
+            ]
+        },
+        {
+            "Label": {
+                "name": "rdi"
+            },
+            "Operands": [
+                {
+                    "Variable": {
+                        "name": "b"
+                    }
+                }
+            ]
+        },
+        {
+            "Label": {
+                "name": "rdi"
+            },
+            "Operands": [
+                {
+                    "Variable": {
+                        "name": "a"
+                    }
+                }
+            ]
+        },
+        {
+            "Label": {
+                "name": "cmp"
+            },
+            "Operands": [
+                {
+                    "Variable": {
+                        "name": "a"
+                    }
+                },
+                {
+                    "Variable": {
+                        "name": "b"
+                    }
+                }
+            ]
+        },
+        {
+            "Label": {
+                "name": "jmr"
+            },
+            "Operands": [
+                {
+                    "Label": {
+                        "name": "L1"
+                    }
+                }
+            ]
+        },
+        {
+            "Label": {
+                "name": "prt"
+            },
+            "Operands": [
+                {
+                    "Variable": {
+                        "name": "a"
+                    }
+                }
+            ]
+        },
+        {
+            "Identifier": {
+                "name": " L1 "
+            }
+        },
+        {
+            "Label": {
+                "name": "prt"
+            },
+            "Operands": [
+                {
+                    "Variable": {
+                        "name": "b"
+                    }
+                }
+            ]
+        },
+        {
+            "Label": {
+                "name": "end"
+            }
+        }
+    ]
+}

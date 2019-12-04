@@ -1,0 +1,20 @@
+dca arr 10
+rdi $arr+0
+rdi $arr+1
+rdi $arr+2
+rdi $arr+3
+rdi $arr+4
+rdi $arr+5
+rdi $arr+6
+rdi $arr+7
+rdi $arr+8
+prt $arr+0
+prt $arr+1
+prt $arr+2
+prt $arr+3
+prt $arr+4
+prt $arr+5
+prt $arr+6
+prt $arr+7
+prt $arr+8
+end

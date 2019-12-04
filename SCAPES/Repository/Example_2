@@ -1,0 +1,25 @@
+# declare variables 'a' and then 'b'
+dci a
+dci b
+
+# read in values 'a' and 'b'
+L1: rdi a
+rdi b
+
+# compare 'a' and 'b'
+cmp a b
+
+# if 'a' > 'b' jump to 'L1' to read in values for 'a' and 'b' again
+jmr L1
+
+# else print 'b'
+prt b
+
+# jump to 'L2'
+jmp L2
+
+# print 'a'
+prt a
+
+# end prgram
+L2: end
