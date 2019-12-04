@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include <QScrollArea>
 #include <QTextEdit>
+#include <QIcon>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -14,6 +15,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QColor colour(211,211,211);
     p.setColor(QPalette::Base, colour);
     ui->Console->setPalette(p);
+    setWindowIcon(QIcon(":/Images/Icons/SCAPEGOAT.bmp"));
 }
 
 MainWindow::~MainWindow()
