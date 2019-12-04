@@ -57,20 +57,24 @@ void DeclIntStmt::compile(std::string instr) {
 int DeclIntStmt::run(std::set<Variable*>& variableSet, IOInterface*, std::vector<std::pair<Identifier*,int>>* id) {
 	bool variableExists = true;
 
-	if (operands[0] != nullptr && operands[0]->getIdentifier() != nullptr) {
-		std::set<Variable*>::iterator result = std::find_if(std::begin(variableSet), std::end(variableSet),
-			[&](Variable* const& v) { return v->getName() == operands[0]->getIdentifier()->getName();  });
+    if (operands[0] != nullptr && operands[0]->getIdentifier() != nullptr) {
+        try {   
+            Variable* result = getVariable(variableSet, operands[0]->getIdentifier()->getName());
+            if (result == nullptr) {
+                variableExists = false;
+            }
+        }
+        catch (std::string err) {
+            throw err;
+        }
+        
+    }
 
-		if (result == variableSet.end()) {
-			variableExists = false;
-		}
-	}
+    if (!variableExists) {
+        variableSet.insert((Variable*)operands[0]->getIdentifier());
+    }
 
-	if (!variableExists) {
-		variableSet.insert((Variable*)operands[0]->getIdentifier());
-	}
-
-	return 0;
+    return 0;
 }
 
 std::string DeclIntStmt::toString() {

@@ -33,8 +33,16 @@ void PrintStmt::compile(std::string instr) {
 	std::regex prtStrRegex("(([\\s]+?([^\\s])+([\\s]+?): )?)([\\s]+)?prt[\\s]+\"([\\s]+)?.+([\\s]+)?\"([\\s]+)?");
 
 	// if instruction argument matches the above regex
-	if (std::regex_match(instr, prtRegex)) {
+	if (std::regex_match(instr, prtStrRegex)) {
+		// create variable from instruction argument
+		int strLength = instr.find_last_of("\"") - instr.find_first_of("\"") - 1;
+		std::string variableName = instr.substr(instr.find_first_of("\"") + 1, strLength);
 
+		operands[0] = new Operand();
+		operands[0]->setIdentifier(new Variable(variableName));
+		numOperands = 1;
+	}
+	else if (std::regex_match(instr, prtRegex)) {
 		// remove consecutive spaces
 		instr = removeConsecutiveSpaces(instr);
 
@@ -53,37 +61,26 @@ void PrintStmt::compile(std::string instr) {
 		operands[0]->setIdentifier(new Variable(variableName));
 		numOperands = 1;
 	}
-	else if (std::regex_match(instr, prtStrRegex)) {
-		// create variable from instruction argument
-		int strLength = instr.find_last_of("\"") - instr.find_first_of("\"") - 1;
-		std::string variableName = instr.substr(instr.find_first_of("\"") + 1, strLength);
-
-		operands[0] = new Operand();
-		operands[0]->setIdentifier(new Variable(variableName));
-		numOperands = 1;
-	}
 }
 
 
 int PrintStmt::run(std::set<Variable*>& variableSet, IOInterface* io, std::vector<std::pair<Identifier*,int>>*){
 	bool isLiteral = true;
 	if (operands[0] != nullptr && operands[0]->getIdentifier() != nullptr) {
-            std::set<Variable*>::iterator result = std::find_if(std::begin(variableSet), std::end(variableSet),
-                [&](Variable* const& v) { return v->getName() == operands[0]->getIdentifier()->getName();  });
-
-            if (result != variableSet.end()) {   //is a variable operand
-                isLiteral = false;
-                io->displayProgramOutput(QString::number((*result)->getValue()));
-            }
-            else{
-                Variable* result2 = getVariable(variableSet,operands[0]->getIdentifier()->getName());
-                if(result2 != nullptr)
-                    io->displayProgramOutput(QString::number(result2->getValue()));
-            }
-    }
-    if(isLiteral){
+				try {
+					Variable* result = getVariable(variableSet, operands[0]->getIdentifier()->getName());
+					if (result != nullptr) {   //is a variable operand 
+						isLiteral = false;
+						io->displayProgramOutput(QString::number(result->getValue()));
+					}
+				}
+				catch (std::string err) {
+					throw err;
+				}
+        }
+	if(isLiteral){
         io->displayProgramOutput(QString::fromStdString(this->getOperand(0)->getIdentifier()->getName()));
-    }
+	}
 	return 0;
 }
 

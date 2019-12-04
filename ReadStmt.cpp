@@ -1,5 +1,6 @@
 #include <iostream>
 #include <regex>
+#include "Variable.h"
 #include "ReadStmt.h"
 
 ReadStmt::ReadStmt() {
@@ -23,6 +24,8 @@ ReadStmt::~ReadStmt() {
 	}
 	numOperands = 0;
 }
+
+
 
 void ReadStmt::compile(std::string instr) {
 
@@ -53,23 +56,22 @@ void ReadStmt::compile(std::string instr) {
 }
 
 int ReadStmt::run(std::set<Variable*>& variableSet, IOInterface* io, std::vector<std::pair<Identifier*,int>>* ) {
-	 if (operands[0] != nullptr && operands[0]->getIdentifier() != nullptr) {
-                std::set<Variable*>::iterator result = std::find_if(std::begin(variableSet), std::end(variableSet),
-                        [&](Variable* const& v) { return v->getName() == operands[0]->getIdentifier()->getName();  });
-                if (result != variableSet.end()) {
-                    QString message = "enter value for variable: " + QString::fromStdString((*result)->getName());
-                    int input = io->getUserInput(message);
-                    if(input >= 0)
-                        (*result)->setValue(input);
-                }
-                else{
-                    Variable* result2 = getVariable(variableSet,operands[0]->getIdentifier()->getName());
-                    if(result2 != nullptr){
-                        QString message = "enter value for variable: " + QString::fromStdString((*result)->getName());
+    if (operands[0] != nullptr && operands[0]->getIdentifier() != nullptr) {
+                try {
+                    Variable* result = getVariable(variableSet, operands[0]->getIdentifier()->getName());
+                    if (result != nullptr) {
+                        QString message = "enter value for variable: " + QString::fromStdString(result->getName());
                         int input = io->getUserInput(message);
-                        result2->setValue(input);
+                        if (input > 0)
+                            result->setValue(input);
+                    }
+                    else {
+                        throw std::string("Variable undeclared");
                     }
                 }
+                catch (std::string err) {
+                    throw err;
+                }               
         }
 	return 0;
 }
