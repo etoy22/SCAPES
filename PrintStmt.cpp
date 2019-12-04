@@ -35,8 +35,8 @@ void PrintStmt::compile(std::string instr) {
 	// if instruction argument matches the above regex
 	if (std::regex_match(instr, prtStrRegex)) {
 		// create variable from instruction argument
-		int strLength = instr.find_last_of("\"") - instr.find_first_of("\"") - 1;
-		std::string variableName = instr.substr(instr.find_first_of("\"") + 1, strLength);
+		int strLength = instr.find_last_of("\"") - instr.find_first_of("\"") + 1;
+		std::string variableName = instr.substr(instr.find_first_of("\""), strLength);
 
 		operands[0] = new Operand();
 		operands[0]->setIdentifier(new Variable(variableName));
@@ -64,24 +64,29 @@ void PrintStmt::compile(std::string instr) {
 }
 
 
-int PrintStmt::run(std::set<Variable*>& variableSet, Ui::MainWindow*& ui, QMainWindow*, std::vector<std::pair<Identifier*,int>>*){
+int PrintStmt::run(std::set<Variable*>& variableSet, IOInterface* io, std::vector<std::pair<Identifier*,int>>*){
 	bool isLiteral = true;
 	if (operands[0] != nullptr && operands[0]->getIdentifier() != nullptr) {
-                std::set<Variable*>::iterator result = std::find_if(std::begin(variableSet), std::end(variableSet),
-                        [&](Variable* const& v) { return v->getName() == operands[0]->getIdentifier()->getName();  });
-
-                if (result != variableSet.end()) {   //is a variable operand 
-                        isLiteral = false;
-                        QString consoleOut = ui->Console->toPlainText();
-                        consoleOut.append(QString::number((*result)->getValue()));
-                        consoleOut.append(" \n");
-                        ui->Console->setText(consoleOut);
-                }
+				try {
+					Variable* result = getVariable(variableSet, operands[0]->getIdentifier()->getName());
+					if (result != nullptr) {   //is a variable operand 
+						isLiteral = false;
+						io->displayProgramOutput(QString::number(result->getValue()));
+					}
+				}
+				catch (std::string err) {
+					throw err;
+				}
         }
 	if(isLiteral){
-        QString consoleOut = ui->Console->toPlainText();
-        consoleOut.append(QString::fromStdString(this->getOperand(0)->getIdentifier()->getName())+" \n");
-        ui->Console->setText(consoleOut);
+		std::regex strRegex("\"([\\s]+)?.+([\\s]+)?\"");
+		std::string outputStr = this->getOperand(0)->getIdentifier()->getName();
+
+		if (std::regex_match(outputStr, strRegex)) {
+			outputStr = outputStr.substr(1, outputStr.length() - 2);
+		}
+   
+		io->displayProgramOutput(QString::fromStdString(outputStr));
 	}
 	return 0;
 }

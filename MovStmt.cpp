@@ -2,7 +2,6 @@
 #include <string>
 #include <regex>
 #include "MovStmt.h"
-#include "Variable.h"
 
 MovStmt::MovStmt() {
 	label = new Label();
@@ -59,7 +58,7 @@ void MovStmt::compile(std::string instr) {
   
 }
 
-int MovStmt::run(std::set<Variable*>& variableSet, Ui::MainWindow*&, QMainWindow*, std::vector<std::pair<Identifier*,int>>*){
+int MovStmt::run(std::set<Variable*>& variableSet, IOInterface*, std::vector<std::pair<Identifier*,int>>*){
 	int values[2];
 
 	if (operands[0]->getIdentifier() != nullptr && operands[1]->getIdentifier() != nullptr) {
@@ -70,25 +69,30 @@ int MovStmt::run(std::set<Variable*>& variableSet, Ui::MainWindow*&, QMainWindow
 				values[i] = std::stoi(operands[i]->getIdentifier()->getName());
 			}
 			else {
-				std::set<Variable*>::iterator result = std::find_if(std::begin(variableSet), std::end(variableSet),
-					[&](Variable* const& v) { return v->getName() == operands[i]->getIdentifier()->getName();  });
+				try {
+					Variable* result = getVariable(variableSet, operands[i]->getIdentifier()->getName());
+					if (result != nullptr) {
+						values[i] = result->getValue();
 
-				if (result != variableSet.end()) {
-					values[i] = (*result)->getValue();
+						if (i == 1) {
+							std::cout << "Before Mov: " + std::to_string(result->getValue()) << std::endl;
+							result->setValue(values[0]);
+							std::cout << "After Mov: " + std::to_string(result->getValue()) << std::endl;
+						}
 
-					if (i == 1) {
-						std::cout << "Before Mov: " + std::to_string((*result)->getValue()) << std::endl;
-						(*result)->setValue(values[0]);
-						std::cout << "After Mov: " + std::to_string((*result)->getValue()) << std::endl;
 					}
+					else {
+						throw std::string("Variable undefined");
+					}
+				}
+				catch (std::string err) {
+					throw err;
+				}
 
-				}
-				else {
-					throw "Variable undefined";
-				}
 			}
 		}
 	}
+    return 0;
 }
 
 std::string MovStmt::toString() {

@@ -13,6 +13,7 @@
 #include <QJsonObject>
 #include "ui_mainwindow.h"
 #include <QMainWindow>
+#include "IOInterface.h"
 
 
 class Statement{
@@ -26,6 +27,7 @@ protected:
     	std::string removeSpaces(std::string);
     	std::string removeConsecutiveSpaces(std::string);
     	std::string removeLabelIfExists(std::string);
+        Variable* getVariable(std::set<Variable*>, std::string);
 
 public:
 	// constructors
@@ -34,7 +36,7 @@ public:
 
 	// class diagram methods
 	virtual void compile(std::string) = 0;
-	virtual int run(std::set<Variable*>&, Ui::MainWindow*&, QMainWindow*, std::vector<std::pair<Identifier*,int>>*) = 0;
+	virtual int run(std::set<Variable*>&, IOInterface*, std::vector<std::pair<Identifier*,int>>*) = 0;
 	
         void setLabel(Label*);
 

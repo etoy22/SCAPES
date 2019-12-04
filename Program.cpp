@@ -286,6 +286,7 @@ void Program::write(QJsonObject &json) const{
 
 bool Program::checkSyntax(){
 	std::set <std::string> var;
+	std::set <std::string> dvar;
 	std::set <std::string> label;
 	std::string message ="";
     	std::string unavalible[12] = {"dci","dca","rdi","prt","mov","add","cmp", "jls", "jmr", "jeq", "jmp", "end"};
@@ -347,7 +348,7 @@ bool Program::checkSyntax(){
 					message += std::to_string(j+1);
 					throw message;
 				}
-				if(var.count(result[1])){
+				if(var.count(result[1])||dvar.count(result[1])){
 					message = "multiple of the same varriable declaired line ";
 					message += std::to_string(j+1);
 					throw message;
@@ -384,7 +385,7 @@ bool Program::checkSyntax(){
 					message += std::to_string(j+1);
 					throw message;
 				}
-				if(var.count(result[1])){
+				if(var.count(result[1])||dvar.count(result[1])){
 					message = "multiple of the same varriable declaired line ";
 					message += std::to_string(j+1);
 					throw message;
@@ -410,7 +411,7 @@ bool Program::checkSyntax(){
 					   	throw message;
 					}
 					try{
-						var.insert(result[1]);
+						dvar.insert(result[1]);
 						for(int i = 0; i< stoi(result[2]);i++){
 							std::string temp = "$"+result[1]+"+"+std::to_string(i);
 							var.insert(temp);
@@ -437,25 +438,35 @@ bool Program::checkSyntax(){
 					message += std::to_string(j+1);
 					throw message;
 				}
-				if(var.count(result[1])== 0){
-					message = "undeclaired varraible called line ";
-					message += std::to_string(j+1);
-					throw message;
+				if(result[1][0] == '$'){
+					std::string sub = result[1].substr(1, result[1].find_last_of("+")-1);
+					if(dvar.count(sub)==0){
+						message = "undeclaired varraible called line ";
+						message += std::to_string(j+1);
+						throw message;	
+					}
+					sub = result[1].substr(result[1].find_last_of("+")+1, result[1].size()-1);
+					bool ending = false;
+					try{
+						if(stoi(sub)==0){}
+					}
+					catch(std::invalid_argument& e)
+					{
+						ending = true;
+					}
+					catch(std::out_of_range& e)
+					{
+						ending = true;
+					}
+					if(ending){
+						if(var.count(sub)== 0){
+							message = "undeclaired varraible called on line ";
+							message += std::to_string(j+1);
+							throw message;
+						}
+					}
 				}
-			}
-			else if (result[0] == "prt"){
- 				if(result.size() == 1){
-					message = "invalid call for prt line ";
-					message += std::to_string(j+1);
-					throw message;
-				}
-				
-				std::string temp = "";
-				for(int x = 1; x < result.size(); x++){
-					temp = temp + " " + result[x];
-				}
-				if(temp[1] == '\"' && temp[temp.size()-1]=='\"'){}
-				else if(result.size() == 2){
+				else{
 					bool test = false;
 					try{
 						if(stoi(result[1])==0){}
@@ -468,10 +479,77 @@ bool Program::checkSyntax(){
 					{
 						test = true;
 					}
-					if(var.count(result[1])== 0 && test){
+					if(!test){
+						message = "literal called on line ";
+						message += std::to_string(j+1);
+						throw message;
+					}
+					if(var.count(result[1])== 0){
 						message = "undeclaired varraible called line ";
 						message += std::to_string(j+1);
 						throw message;
+					}
+				}
+			}
+			else if (result[0] == "prt"){
+ 				if(result.size() == 1){
+					message = "invalid call for prt line ";
+					message += std::to_string(j+1);
+					throw message;
+				}
+				
+				std::string temp = "";
+				for(unsigned int x = 1; x < result.size(); x++){
+					temp = temp + " " + result[x];
+				}
+				if(temp[1] == '\"' && temp[temp.size()-1]=='\"'){}
+				else if(result.size() == 2){
+					if(result[1][0] == '$'){
+						std::string sub = result[1].substr(1, result[1].find_last_of("+")-1);
+						if(dvar.count(sub)==0){
+							message = "undeclaired varraible called line ";
+							message += std::to_string(j+1);
+							throw message;	
+						}
+						sub = result[1].substr(result[1].find_last_of("+")+1, result[1].size()-1);
+						bool ending = false;
+						try{
+							if(stoi(sub)==0){}
+						}
+						catch(std::invalid_argument& e)
+						{
+							ending = true;
+						}
+						catch(std::out_of_range& e)
+						{
+							ending = true;
+						}
+						if(ending){
+							if(var.count(sub)== 0){
+								message = "undeclaired varraible called on line ";
+								message += std::to_string(j+1);
+								throw message;
+							}
+						}
+					}
+					else{
+						bool test = false;
+						try{
+							if(stoi(result[1])==0){}
+						}
+						catch(std::invalid_argument& e)
+						{
+							test = true;
+						}
+						catch(std::out_of_range& e)
+						{
+							test = true;
+						}
+						if(var.count(result[1])== 0 && test){
+							message = "undeclaired varraible called line ";
+							message += std::to_string(j+1);
+							throw message;
+						}
 					}
 				}
 				else{
@@ -486,27 +564,89 @@ bool Program::checkSyntax(){
 					message += std::to_string(j+1);
 					throw message;
 				}
-				bool test = false;
-				try{
-					if(stoi(result[1])==0){}
+				if(result[1][0] == '$'){
+					std::string sub = result[1].substr(1, result[1].find_last_of("+")-1);
+					if(dvar.count(sub)==0){
+						message = "undeclaired varraible called line ";
+						message += std::to_string(j+1);
+						throw message;	
+					}
+					sub = result[1].substr(result[1].find_last_of("+")+1, result[1].size()-1);
+					bool ending = false;
+					try{
+						if(stoi(sub)==0){}
+					}
+					catch(std::invalid_argument& e)
+					{
+						ending = true;
+					}
+					catch(std::out_of_range& e)
+					{
+						ending = true;
+					}
+					if(ending){
+						if(var.count(sub)== 0){
+							message = "undeclaired varraible called on line ";
+							message += std::to_string(j+1);
+							throw message;
+						}
+					}
 				}
-				catch(std::invalid_argument& e)
+				else
 				{
-					test = true;
+					bool test = false;
+					try{
+						if(stoi(result[1])==0){}
+					}
+					catch(std::invalid_argument& e)
+					{
+						test = true;
+					}
+					catch(std::out_of_range& e)
+					{
+						test = true;
+					}
+					if(var.count(result[1])== 0 &&test){
+						message = "undeclaired varraible 1 called line ";
+						message += std::to_string(j+1);
+						throw message;
+					}
 				}
-				catch(std::out_of_range& e)
-				{
-					test = true;
+				if(result[2][0] == '$'){
+					std::string sub = result[2].substr(1, result[2].find_last_of("+")-1);
+					if(dvar.count(sub)==0){
+						message = "undeclaired varraible called line ";
+						message += std::to_string(j+1);
+						throw message;	
+					}
+					sub = result[2].substr(result[2].find_last_of("+")+1, result[2].size()-1);
+					bool ending = false;
+					try{
+						if(stoi(sub)==0){}
+					}
+					catch(std::invalid_argument& e)
+					{
+						ending = true;
+					}
+					catch(std::out_of_range& e)
+					{
+						ending = true;
+					}
+					if(ending){
+						if(var.count(sub)== 0){
+							message = "undeclaired varraible called on line ";
+							message += std::to_string(j+1);
+							throw message;
+						}
+					}
 				}
-				if(var.count(result[1])== 0 &&test){
-					message = "undeclaired varraible 1 called line ";
-					message += std::to_string(j+1);
-					throw message;
-				}
-				if(var.count(result[2])== 0){					
-					message = "undeclaired varraible 2 called line ";
-					message += std::to_string(j+1);
-					throw message;
+				else {
+				
+					if(var.count(result[2])== 0){					
+						message = "undeclaired varraible 2 called line ";
+						message += std::to_string(j+1);
+						throw message;
+					}
 				}
 			}
 			else if(result[0] == "cmp"){
@@ -515,39 +655,100 @@ bool Program::checkSyntax(){
 					message += std::to_string(j+1);
 					throw message;
 				}
-				bool test = false;
-				bool test2 = false;
-				try{
-					if(stoi(result[1])==0){}
+				if(result[1][0] == '$'){
+					std::string sub = result[1].substr(1, result[1].find_last_of("+")-1);
+					if(dvar.count(sub)==0){
+						message = "undeclaired varraible called line ";
+						message += std::to_string(j+1);
+						throw message;	
+					}
+					sub = result[1].substr(result[1].find_last_of("+")+1, result[1].size()-1);
+					bool ending = false;
+					try{
+						if(stoi(sub)==0){}
+					}
+					catch(std::invalid_argument& e)
+					{
+						ending = true;
+					}
+					catch(std::out_of_range& e)
+					{
+						ending = true;
+					}
+					if(ending){
+						if(var.count(sub)== 0){
+							message = "undeclaired varraible called on line ";
+							message += std::to_string(j+1);
+							throw message;
+						}
+					}
 				}
-				catch(std::invalid_argument& e)
-				{
-					test = true;
+				else{
+					bool test = false;
+					try{
+						if(stoi(result[1])==0){}
+					}
+					catch(std::invalid_argument& e)
+					{
+						test = true;
+					}
+					catch(std::out_of_range& e)
+					{
+						test = true;
+					}
+					if(var.count(result[1])== 0&&test){
+						message = "undeclaired varraible 1 called line ";
+						message += std::to_string(j+1);
+						throw message;
+					}
 				}
-				catch(std::out_of_range& e)
-				{
-					test = true;
+				if(result[2][0] == '$'){
+					std::string sub = result[2].substr(1, result[2].find_last_of("+")-1);
+					if(dvar.count(sub)==0){
+						message = "undeclaired varraible called line ";
+						message += std::to_string(j+1);
+						throw message;	
+					}
+					sub = result[2].substr(result[2].find_last_of("+")+1, result[2].size()-1);
+					bool ending = false;
+					try{
+						if(stoi(sub)==0){}
+					}
+					catch(std::invalid_argument& e)
+					{
+						ending = true;
+					}
+					catch(std::out_of_range& e)
+					{
+						ending = true;
+					}
+					if(ending){
+						if(var.count(sub)== 0){
+							message = "undeclaired varraible called on line ";
+							message += std::to_string(j+1);
+							throw message;
+						}
+					}
 				}
-				try{
-					if(stoi(result[2])==0){}
-				}
-				catch(std::invalid_argument& e)
-				{
-					test2 = true;
-				}
-				catch(std::out_of_range& e)
-				{
-					test2 = true;
-				}
-				if(var.count(result[1])== 0&&test){
-					message = "undeclaired varraible 1 called line ";
-					message += std::to_string(j+1);
-					throw message;
-				}
-				if(var.count(result[2])== 0&&test2){					
-					message = "undeclaired varraible 2 called line ";
-					message += std::to_string(j+1);
-					throw message;
+				else{
+					bool test2 = false;
+					try{
+						if(stoi(result[2])==0){}
+					}
+					catch(std::invalid_argument& e)
+					{
+						test2 = true;
+					}
+					catch(std::out_of_range& e)
+					{
+						test2 = true;
+					}
+					
+					if(var.count(result[2])== 0&&test2){					
+						message = "undeclaired varraible 2 called line ";
+						message += std::to_string(j+1);
+						throw message;
+					}
 				}
 			}
 			else if(result[0] == "end"){
@@ -611,39 +812,39 @@ void Program::execute(){
     try{
         for (unsigned int i = 0; i < statements.size(); i++) {
             if (typeid(*(statements.at(i))) == typeid(DeclIntStmt))
-                statements.at(i)->run(variables,ui,NULL, NULL);
+                statements.at(i)->run(variables,io, NULL);
 
             else if (typeid(*(statements.at(i))) == typeid(DeclArrStmt))
-                statements.at(i)->run(variables,ui,NULL, NULL);
+                statements.at(i)->run(variables,io, NULL);
 
             else if (typeid(*(statements.at(i))) == typeid(ReadStmt))
-                statements.at(i)->run(variables, ui, win, NULL);
+                statements.at(i)->run(variables, io, NULL);
 
             else if (typeid(*(statements.at(i))) == typeid(PrintStmt))
-                statements.at(i)->run(variables, ui, win, NULL);
+                statements.at(i)->run(variables, io, NULL);
 
             else if (typeid(*(statements.at(i))) == typeid(JumpStmt))
-                i = statements.at(i)->run(variables, ui, win, &pairs);
+                i = statements.at(i)->run(variables, io, &pairs);
 
             else if (typeid(*(statements.at(i))) == typeid(JumpMoreStmt)){
                 if(comparisonFlag == 2)
-                    i = statements.at(i)->run(variables, ui, win, &pairs);
+                    i = statements.at(i)->run(variables, io, &pairs);
             }
             else if (typeid(*(statements.at(i))) == typeid(JEqStmt)){
                 if(comparisonFlag == 0)
-                    i = statements.at(i)->run(variables, ui, win, &pairs);
+                    i = statements.at(i)->run(variables, io, &pairs);
             }
             else if (typeid(*(statements.at(i))) == typeid(JLessStmt)){
                 if(comparisonFlag == 1)
-                    i = statements.at(i)->run(variables, ui, win, &pairs);
+                    i = statements.at(i)->run(variables, io, &pairs);
             }
             else if (typeid (*(statements.at(i))) == typeid(CompStmt))
-                comparisonFlag = statements.at(i)->run(variables, ui, NULL, NULL);
+                comparisonFlag = statements.at(i)->run(variables, io, NULL);
 			else if (typeid(*(statements.at(i))) == typeid(AddStmt)) {
-				statements.at(i)->run(variables, ui, NULL, NULL);
+                statements.at(i)->run(variables, io, NULL);
 			}
 			else if (typeid(*(statements.at(i))) == typeid(MovStmt)) {
-				statements.at(i)->run(variables, ui, NULL, NULL);
+                statements.at(i)->run(variables, io, NULL);
 			}
 		}
     }
@@ -664,12 +865,8 @@ void Program::execute(){
 void Program::print(){
 }
 
-void Program::setUIPointer(Ui::MainWindow& ptr){
-	ui = &ptr;
-}
-
-void Program::setWindowPointer(QMainWindow* window){
-	win = window;
+void Program::setIO(IOInterface& ptr){
+    io = &ptr;
 }
 
 std::string Program::getFileName(){

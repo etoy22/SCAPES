@@ -25,8 +25,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
-    compilercontroller.cpp \
-    executioncontroller.cpp \
+        compilercontroller.cpp \
+        executioncontroller.cpp \
         main.cpp \
         mainwindow.cpp \
         repositoryinterface.cpp \
@@ -47,12 +47,13 @@ SOURCES += \
 	JumpMoreStmt.cpp \
 	ReadStmt.cpp \
 	PrintStmt.cpp \
-	Program.cpp
+	Program.cpp \
+	IOInterface.cpp \
 	
 
 HEADERS += \
-    compilercontroller.h \
-    executioncontroller.h \
+        compilercontroller.h \
+        executioncontroller.h \
         mainwindow.h \
         repositoryinterface.h \
 	AddStmt.h \
@@ -72,10 +73,14 @@ HEADERS += \
 	JumpMoreStmt.h \
 	ReadStmt.h \
 	PrintStmt.h \
-	Program.h
+	Program.h \
+        IOInterface.h \
 
 FORMS += \
         mainwindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
+
+RESOURCES += \
+    resources.qrc

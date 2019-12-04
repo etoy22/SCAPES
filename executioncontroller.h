@@ -6,6 +6,7 @@
 #include <QMainWindow>
 #include <vector>
 #include <iostream>
+#include "IOInterface.h"
 
 class ExecutionController{
     public:
@@ -15,8 +16,8 @@ class ExecutionController{
     private:
         RepositoryInterface repo;
         std::string currentFile;
-	Ui::MainWindow ui;
-	QMainWindow* win;
+		Ui::MainWindow ui;
+		QMainWindow* win;
 };
 
 

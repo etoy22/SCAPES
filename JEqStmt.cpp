@@ -2,7 +2,7 @@
 #include <string>
 #include <regex>
 #include "JEqStmt.h"
-#include "Variable.h"
+
 
 JEqStmt::JEqStmt() {
 	label = new Label();
@@ -54,7 +54,7 @@ void JEqStmt::compile(std::string instr) {
 	}
 }
 
-int JEqStmt::run(std::set<Variable*>&, Ui::MainWindow*&, QMainWindow*, std::vector<std::pair<Identifier*,int>>*id){
+int JEqStmt::run(std::set<Variable*>&, IOInterface*, std::vector<std::pair<Identifier*,int>>*id){
     int result = -1;
     for(unsigned int i =0; i<id->size(); i++){
         if(id->at(i).first->getName()==this->getOperand(0)->getIdentifier()->getName())

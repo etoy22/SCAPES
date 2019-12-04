@@ -12,8 +12,7 @@
 #include <QObject>
 #include <QJsonArray>
 #include <QJsonObject>
-#include "ui_mainwindow.h"
-#include <QMainWindow>
+#include "IOInterface.h"
 
 class Program {
 private:
@@ -26,8 +25,7 @@ private:
     std::set<Variable*> variables;
     QJsonArray out;
     QJsonObject program;
-    Ui::MainWindow* ui;
-    QMainWindow* win;
+    IOInterface* io;
     bool checkSyntax();
 
 protected:
@@ -56,7 +54,6 @@ public:
 	std::string getFileName();
 	int getComparisonFlag();
 	void setName(std::string);
-	void setUIPointer(Ui::MainWindow&);
-	void setWindowPointer(QMainWindow*);
+	void setIO(IOInterface&);
 };
 #endif

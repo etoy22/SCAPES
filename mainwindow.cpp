@@ -2,17 +2,20 @@
 #include "ui_mainwindow.h"
 #include <QScrollArea>
 #include <QTextEdit>
+#include <QIcon>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    setWindowTitle("SCAPES");
     ui->Console->setReadOnly(true);
     QPalette p = ui->Console->palette();
     QColor colour(211,211,211);
     p.setColor(QPalette::Base, colour);
     ui->Console->setPalette(p);
+    setWindowIcon(QIcon(":/Images/Icons/SCAPEGOAT.bmp"));
 }
 
 MainWindow::~MainWindow()
@@ -23,6 +26,7 @@ MainWindow::~MainWindow()
 void MainWindow::on_actionNew_triggered()
 {
     currentFile.clear();
+    setWindowTitle("SCAPES");
     ui->textEdit->setText(QString());
 }
 
@@ -37,8 +41,8 @@ void MainWindow::on_actionOpen_triggered()
     }
     else{
         currentFile = fileName;
-        setWindowTitle(fileName);
-        ui->textEdit->setText(input);
+        setWindowTitle(currentFile);
+            ui->textEdit->setText(input);
     }
 }
 
@@ -66,7 +70,7 @@ void MainWindow::on_actionSave_As_triggered()
     }
     else{
         QMessageBox::information(this, "Save Successful", "File Saved!");
-        currentFile = fileName;
+	currentFile = fileName;
         setWindowTitle(fileName);
     }
 }
@@ -127,8 +131,8 @@ void MainWindow::on_actionCompile_triggered()
         }
     } catch (std::string error){
         QString result ;
-        result = "Program: " + currentFile + " has error: " + QString::fromStdString(error);
-        QMessageBox::information(this,tr("Compilation Terminated"),result);
+        result = "Compilation Terminated \nProgram: " + currentFile + " has error: " + QString::fromStdString(error);
+        ui->Console->setText(result);
     }
 }
 
@@ -156,8 +160,8 @@ void MainWindow::on_actionRun_triggered()
             QMessageBox::information(this,tr("Compilation Successful"),tr("Compilation Done, now Executing..."));
     } catch (std::string error) {
         QString result ;
-        result = "Program: " + currentFile + " has error: " + QString::fromStdString(error) + "\n Execution Aborted";
-        QMessageBox::information(this,tr("Compilation Terminated"),result);
+        result = "Compilation Terminated \nProgram: " + currentFile + " has error: " + QString::fromStdString(error) + "\n Execution Aborted";
+        ui->Console->setText(result);
         return;
     }
 
@@ -167,8 +171,8 @@ void MainWindow::on_actionRun_triggered()
     try { 
     	executor.Run(currentFile);
     } catch(std::string error){
-		QString result = "Program: " + currentFile + "has runtime error: " + QString::fromStdString(error);
-		QMessageBox::information(this, tr("Execution Terminated"), result);
+		QString result = "Execution Terminated \nProgram: " + currentFile + "has runtime error: " + QString::fromStdString(error);
+		ui->Console->setText(result);
     } 
 }
 

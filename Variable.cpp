@@ -1,15 +1,22 @@
 #include <iostream>
 #include <string>
+#include <random>
 #include "Variable.h"
 
 Variable::Variable() {
-	value = 0;
+	std::default_random_engine generator(std::random_device{}());
+	std::uniform_int_distribution<int> distribution(0,INT_MAX - 1);
+
+	value = distribution(generator);
 	name = "";
 }
 
 Variable::Variable(std::string nameParam) {
+	std::default_random_engine generator(std::random_device{}());
+	std::uniform_int_distribution<int> distribution(0,INT_MAX - 1);
+	
 	name = nameParam;
-	value = 0;
+	value = distribution(generator);
 }
 
 Variable::Variable(int valueParam) {

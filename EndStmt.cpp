@@ -27,6 +27,6 @@ void EndStmt::compile(std::string instr) {
 }
 
 
-int EndStmt::run(std::set<Variable*>&, Ui::MainWindow*&, QMainWindow*, std::vector<std::pair<Identifier*,int>>*){}
+int EndStmt::run(std::set<Variable*>&, IOInterface*, std::vector<std::pair<Identifier*,int>>*){}
 
 

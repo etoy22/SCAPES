@@ -15,7 +15,7 @@ EQ            = =
 CC            = gcc
 CXX           = g++
 DEFINES       = -DQT_DEPRECATED_WARNINGS -DQT_QML_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
-CFLAGS        = -pipe -g   -D_REENTRANT -fPIC $(DEFINES)
+CFLAGS        = -pipe -g -Wall -W -D_REENTRANT -fPIC $(DEFINES)
 CXXFLAGS      = -pipe -g -std=gnu++11 -Wall -W -D_REENTRANT -fPIC $(DEFINES)
 INCPATH       = -I. -I../../Qt/5.13.0/gcc_64/include -I../../Qt/5.13.0/gcc_64/include/QtWidgets -I../../Qt/5.13.0/gcc_64/include/QtGui -I../../Qt/5.13.0/gcc_64/include/QtCore -I. -isystem /usr/include/libdrm -I. -I../../Qt/5.13.0/gcc_64/mkspecs/linux-g++
 QMAKE         = /home/student/Qt/5.13.0/gcc_64/bin/qmake
@@ -37,7 +37,7 @@ MOVE          = mv -f
 TAR           = tar -cf
 COMPRESS      = gzip -9f
 DISTNAME      = SCAPES1.0.0
-DISTDIR = /home/student/Desktop/SCAPES-master/.tmp/SCAPES1.0.0
+DISTDIR = /home/student/Desktop/SCAPES-anant-raymond-ethan-current-Dec4th/.tmp/SCAPES1.0.0
 LINK          = g++
 LFLAGS        = -Wl,-rpath,/home/student/Qt/5.13.0/gcc_64/lib
 LIBS          = $(SUBLIBS) /home/student/Qt/5.13.0/gcc_64/lib/libQt5Widgets.so /home/student/Qt/5.13.0/gcc_64/lib/libQt5Gui.so /home/student/Qt/5.13.0/gcc_64/lib/libQt5Core.so -lGL -lpthread   
@@ -74,7 +74,9 @@ SOURCES       = compilercontroller.cpp \
 		JumpMoreStmt.cpp \
 		ReadStmt.cpp \
 		PrintStmt.cpp \
-		Program.cpp moc_mainwindow.cpp \
+		Program.cpp \
+		IOInterface.cpp qrc_resources.cpp \
+		moc_mainwindow.cpp \
 		moc_Identifier.cpp
 OBJECTS       = compilercontroller.o \
 		executioncontroller.o \
@@ -99,6 +101,8 @@ OBJECTS       = compilercontroller.o \
 		ReadStmt.o \
 		PrintStmt.o \
 		Program.o \
+		IOInterface.o \
+		qrc_resources.o \
 		moc_mainwindow.o \
 		moc_Identifier.o
 DIST          = ../../Qt/5.13.0/gcc_64/mkspecs/features/spec_pre.prf \
@@ -313,7 +317,8 @@ DIST          = ../../Qt/5.13.0/gcc_64/mkspecs/features/spec_pre.prf \
 		JumpMoreStmt.h \
 		ReadStmt.h \
 		PrintStmt.h \
-		Program.h compilercontroller.cpp \
+		Program.h \
+		IOInterface.h compilercontroller.cpp \
 		executioncontroller.cpp \
 		main.cpp \
 		mainwindow.cpp \
@@ -335,7 +340,8 @@ DIST          = ../../Qt/5.13.0/gcc_64/mkspecs/features/spec_pre.prf \
 		JumpMoreStmt.cpp \
 		ReadStmt.cpp \
 		PrintStmt.cpp \
-		Program.cpp
+		Program.cpp \
+		IOInterface.cpp
 QMAKE_TARGET  = SCAPES
 DESTDIR       = 
 TARGET        = SCAPES
@@ -538,7 +544,8 @@ Makefile: SCAPES.pro ../../Qt/5.13.0/gcc_64/mkspecs/linux-g++/qmake.conf ../../Q
 		../../Qt/5.13.0/gcc_64/mkspecs/features/exceptions.prf \
 		../../Qt/5.13.0/gcc_64/mkspecs/features/yacc.prf \
 		../../Qt/5.13.0/gcc_64/mkspecs/features/lex.prf \
-		SCAPES.pro
+		SCAPES.pro \
+		resources.qrc
 	$(QMAKE) -o Makefile SCAPES.pro -spec linux-g++ CONFIG+=debug CONFIG+=qml_debug
 ../../Qt/5.13.0/gcc_64/mkspecs/features/spec_pre.prf:
 ../../Qt/5.13.0/gcc_64/mkspecs/common/unix.conf:
@@ -732,6 +739,7 @@ Makefile: SCAPES.pro ../../Qt/5.13.0/gcc_64/mkspecs/linux-g++/qmake.conf ../../Q
 ../../Qt/5.13.0/gcc_64/mkspecs/features/yacc.prf:
 ../../Qt/5.13.0/gcc_64/mkspecs/features/lex.prf:
 SCAPES.pro:
+resources.qrc:
 qmake: FORCE
 	@$(QMAKE) -o Makefile SCAPES.pro -spec linux-g++ CONFIG+=debug CONFIG+=qml_debug
 
@@ -746,9 +754,10 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
+	$(COPY_FILE) --parents resources.qrc $(DISTDIR)/
 	$(COPY_FILE) --parents ../../Qt/5.13.0/gcc_64/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents compilercontroller.h executioncontroller.h mainwindow.h repositoryinterface.h AddStmt.h CompStmt.h DeclArrStmt.h DeclIntStmt.h EndStmt.h JEqStmt.h JLessStmt.h JumpStmt.h Identifier.h Label.h MovStmt.h Operand.h Statement.h Variable.h JumpMoreStmt.h ReadStmt.h PrintStmt.h Program.h $(DISTDIR)/
-	$(COPY_FILE) --parents compilercontroller.cpp executioncontroller.cpp main.cpp mainwindow.cpp repositoryinterface.cpp AddStmt.cpp CompStmt.cpp DeclArrStmt.cpp DeclIntStmt.cpp EndStmt.cpp JEqStmt.cpp JLessStmt.cpp JumpStmt.cpp Identifier.cpp Label.cpp MovStmt.cpp Operand.cpp Statement.cpp Variable.cpp JumpMoreStmt.cpp ReadStmt.cpp PrintStmt.cpp Program.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents compilercontroller.h executioncontroller.h mainwindow.h repositoryinterface.h AddStmt.h CompStmt.h DeclArrStmt.h DeclIntStmt.h EndStmt.h JEqStmt.h JLessStmt.h JumpStmt.h Identifier.h Label.h MovStmt.h Operand.h Statement.h Variable.h JumpMoreStmt.h ReadStmt.h PrintStmt.h Program.h IOInterface.h $(DISTDIR)/
+	$(COPY_FILE) --parents compilercontroller.cpp executioncontroller.cpp main.cpp mainwindow.cpp repositoryinterface.cpp AddStmt.cpp CompStmt.cpp DeclArrStmt.cpp DeclIntStmt.cpp EndStmt.cpp JEqStmt.cpp JLessStmt.cpp JumpStmt.cpp Identifier.cpp Label.cpp MovStmt.cpp Operand.cpp Statement.cpp Variable.cpp JumpMoreStmt.cpp ReadStmt.cpp PrintStmt.cpp Program.cpp IOInterface.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents mainwindow.ui $(DISTDIR)/
 
 
@@ -773,8 +782,27 @@ check: first
 
 benchmark: first
 
-compiler_rcc_make_all:
+compiler_rcc_make_all: qrc_resources.cpp
 compiler_rcc_clean:
+	-$(DEL_FILE) qrc_resources.cpp
+qrc_resources.cpp: resources.qrc \
+		../../Qt/5.13.0/gcc_64/bin/rcc \
+		Icons/exit.bmp \
+		Icons/execute.bmp \
+		Icons/SCAPEGOAT.bmp \
+		Icons/Save.bmp \
+		Icons/Open.bmp \
+		Icons/New.bmp \
+		Icons/SaveAs.bmp \
+		Icons/help.bmp \
+		Icons/undo.bmp \
+		Icons/Copy.bmp \
+		Icons/Cut.bmp \
+		Icons/Paste.bmp \
+		Icons/redo.bmp \
+		Icons/build.bmp
+	/home/student/Qt/5.13.0/gcc_64/bin/rcc -name resources resources.qrc -o qrc_resources.cpp
+
 compiler_moc_predefs_make_all: moc_predefs.h
 compiler_moc_predefs_clean:
 	-$(DEL_FILE) moc_predefs.h
@@ -908,27 +936,61 @@ moc_mainwindow.cpp: mainwindow.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonDocument \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qjsondocument.h \
 		compilercontroller.h \
-		DeclIntStmt.h \
-		Variable.h \
-		Identifier.h \
-		../../Qt/5.13.0/gcc_64/include/QtCore/QObject \
+		Program.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/QVariant \
 		Statement.h \
 		Label.h \
+		Identifier.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/QObject \
+		Variable.h \
 		Operand.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonArray \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qjsonarray.h \
-		EndStmt.h \
-		JumpStmt.h \
-		CompStmt.h \
-		ReadStmt.h \
-		PrintStmt.h \
-		JumpMoreStmt.h \
-		Program.h \
-		../../Qt/5.13.0/gcc_64/include/QtCore/QVariant \
+		ui_mainwindow.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QAction \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qaction.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qactiongroup.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QApplication \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qapplication.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qcoreapplication.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qeventloop.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qdesktopwidget.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qguiapplication.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qinputmethod.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QMenu \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qmenu.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QMenuBar \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qmenubar.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QStatusBar \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qstatusbar.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QTextEdit \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtextedit.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qabstractscrollarea.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qframe.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextdocument.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextoption.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextcursor.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextformat.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpen.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QToolBar \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtoolbar.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QVBoxLayout \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qboxlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlayoutitem.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qgridlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QWidget \
+		IOInterface.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QInputDialog \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qinputdialog.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlineedit.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/QIntValidator \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qvalidator.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qregularexpression.h \
 		executioncontroller.h \
 		moc_predefs.h \
 		../../Qt/5.13.0/gcc_64/bin/moc
-	/home/student/Qt/5.13.0/gcc_64/bin/moc $(DEFINES) --include /home/student/Desktop/SCAPES-master/moc_predefs.h -I/home/student/Qt/5.13.0/gcc_64/mkspecs/linux-g++ -I/home/student/Desktop/SCAPES-master -I/home/student/Qt/5.13.0/gcc_64/include -I/home/student/Qt/5.13.0/gcc_64/include/QtWidgets -I/home/student/Qt/5.13.0/gcc_64/include/QtGui -I/home/student/Qt/5.13.0/gcc_64/include/QtCore -I/usr/include/c++/7 -I/usr/include/x86_64-linux-gnu/c++/7 -I/usr/include/c++/7/backward -I/usr/lib/gcc/x86_64-linux-gnu/7/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include mainwindow.h -o moc_mainwindow.cpp
+	/home/student/Qt/5.13.0/gcc_64/bin/moc $(DEFINES) --include /home/student/Desktop/SCAPES-anant-raymond-ethan-current-Dec4th/moc_predefs.h -I/home/student/Qt/5.13.0/gcc_64/mkspecs/linux-g++ -I/home/student/Desktop/SCAPES-anant-raymond-ethan-current-Dec4th -I/home/student/Qt/5.13.0/gcc_64/include -I/home/student/Qt/5.13.0/gcc_64/include/QtWidgets -I/home/student/Qt/5.13.0/gcc_64/include/QtGui -I/home/student/Qt/5.13.0/gcc_64/include/QtCore -I/usr/include/c++/7 -I/usr/include/x86_64-linux-gnu/c++/7 -I/usr/include/c++/7/backward -I/usr/lib/gcc/x86_64-linux-gnu/7/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include mainwindow.h -o moc_mainwindow.cpp
 
 moc_Identifier.cpp: Identifier.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QObject \
@@ -985,7 +1047,7 @@ moc_Identifier.cpp: Identifier.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qobject_impl.h \
 		moc_predefs.h \
 		../../Qt/5.13.0/gcc_64/bin/moc
-	/home/student/Qt/5.13.0/gcc_64/bin/moc $(DEFINES) --include /home/student/Desktop/SCAPES-master/moc_predefs.h -I/home/student/Qt/5.13.0/gcc_64/mkspecs/linux-g++ -I/home/student/Desktop/SCAPES-master -I/home/student/Qt/5.13.0/gcc_64/include -I/home/student/Qt/5.13.0/gcc_64/include/QtWidgets -I/home/student/Qt/5.13.0/gcc_64/include/QtGui -I/home/student/Qt/5.13.0/gcc_64/include/QtCore -I/usr/include/c++/7 -I/usr/include/x86_64-linux-gnu/c++/7 -I/usr/include/c++/7/backward -I/usr/lib/gcc/x86_64-linux-gnu/7/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include Identifier.h -o moc_Identifier.cpp
+	/home/student/Qt/5.13.0/gcc_64/bin/moc $(DEFINES) --include /home/student/Desktop/SCAPES-anant-raymond-ethan-current-Dec4th/moc_predefs.h -I/home/student/Qt/5.13.0/gcc_64/mkspecs/linux-g++ -I/home/student/Desktop/SCAPES-anant-raymond-ethan-current-Dec4th -I/home/student/Qt/5.13.0/gcc_64/include -I/home/student/Qt/5.13.0/gcc_64/include/QtWidgets -I/home/student/Qt/5.13.0/gcc_64/include/QtGui -I/home/student/Qt/5.13.0/gcc_64/include/QtCore -I/usr/include/c++/7 -I/usr/include/x86_64-linux-gnu/c++/7 -I/usr/include/c++/7/backward -I/usr/lib/gcc/x86_64-linux-gnu/7/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include Identifier.h -o moc_Identifier.cpp
 
 compiler_moc_objc_header_make_all:
 compiler_moc_objc_header_clean:
@@ -1004,7 +1066,7 @@ compiler_yacc_impl_make_all:
 compiler_yacc_impl_clean:
 compiler_lex_make_all:
 compiler_lex_clean:
-compiler_clean: compiler_moc_predefs_clean compiler_moc_header_clean compiler_uic_clean 
+compiler_clean: compiler_rcc_clean compiler_moc_predefs_clean compiler_moc_header_clean compiler_uic_clean 
 
 ####### Compile
 
@@ -1125,23 +1187,61 @@ compilercontroller.o: compilercontroller.cpp compilercontroller.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qjsonvalue.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonDocument \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qjsondocument.h \
-		DeclIntStmt.h \
-		Variable.h \
-		Identifier.h \
-		../../Qt/5.13.0/gcc_64/include/QtCore/QObject \
+		Program.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/QVariant \
 		Statement.h \
 		Label.h \
+		Identifier.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/QObject \
+		Variable.h \
 		Operand.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonArray \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qjsonarray.h \
-		EndStmt.h \
-		JumpStmt.h \
-		CompStmt.h \
-		ReadStmt.h \
-		PrintStmt.h \
-		JumpMoreStmt.h \
-		Program.h \
-		../../Qt/5.13.0/gcc_64/include/QtCore/QVariant
+		ui_mainwindow.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QAction \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qaction.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qicon.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qactiongroup.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QApplication \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qapplication.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qcoreapplication.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qeventloop.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qdesktopwidget.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qguiapplication.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qinputmethod.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QMainWindow \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qmainwindow.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtabwidget.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QMenu \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qmenu.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QMenuBar \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qmenubar.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QStatusBar \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qstatusbar.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QTextEdit \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtextedit.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qabstractscrollarea.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qframe.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextdocument.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextoption.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextcursor.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextformat.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpen.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QToolBar \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtoolbar.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QVBoxLayout \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qboxlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlayoutitem.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qgridlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QWidget \
+		IOInterface.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QInputDialog \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qinputdialog.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlineedit.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/QIntValidator \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qvalidator.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qregularexpression.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o compilercontroller.o compilercontroller.cpp
 
 executioncontroller.o: executioncontroller.cpp executioncontroller.h \
@@ -1270,7 +1370,52 @@ executioncontroller.o: executioncontroller.cpp executioncontroller.h \
 		Variable.h \
 		Operand.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonArray \
-		../../Qt/5.13.0/gcc_64/include/QtCore/qjsonarray.h
+		../../Qt/5.13.0/gcc_64/include/QtCore/qjsonarray.h \
+		ui_mainwindow.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QAction \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qaction.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qicon.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qactiongroup.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QApplication \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qapplication.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qcoreapplication.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qeventloop.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qdesktopwidget.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qguiapplication.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qinputmethod.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QMainWindow \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qmainwindow.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtabwidget.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QMenu \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qmenu.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QMenuBar \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qmenubar.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QStatusBar \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qstatusbar.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QTextEdit \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtextedit.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qabstractscrollarea.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qframe.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextdocument.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextoption.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextcursor.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextformat.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpen.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QToolBar \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtoolbar.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QVBoxLayout \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qboxlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlayoutitem.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qgridlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QWidget \
+		IOInterface.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QInputDialog \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qinputdialog.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlineedit.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/QIntValidator \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qvalidator.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qregularexpression.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o executioncontroller.o executioncontroller.cpp
 
 main.o: main.cpp mainwindow.h \
@@ -1397,31 +1542,58 @@ main.o: main.cpp mainwindow.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonDocument \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qjsondocument.h \
 		compilercontroller.h \
-		DeclIntStmt.h \
-		Variable.h \
-		Identifier.h \
-		../../Qt/5.13.0/gcc_64/include/QtCore/QObject \
+		Program.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/QVariant \
 		Statement.h \
 		Label.h \
+		Identifier.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/QObject \
+		Variable.h \
 		Operand.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonArray \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qjsonarray.h \
-		EndStmt.h \
-		JumpStmt.h \
-		CompStmt.h \
-		ReadStmt.h \
-		PrintStmt.h \
-		JumpMoreStmt.h \
-		Program.h \
-		../../Qt/5.13.0/gcc_64/include/QtCore/QVariant \
-		executioncontroller.h \
+		ui_mainwindow.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QAction \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qaction.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qactiongroup.h \
 		../../Qt/5.13.0/gcc_64/include/QtWidgets/QApplication \
 		../../Qt/5.13.0/gcc_64/include/QtWidgets/qapplication.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qcoreapplication.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qeventloop.h \
 		../../Qt/5.13.0/gcc_64/include/QtWidgets/qdesktopwidget.h \
 		../../Qt/5.13.0/gcc_64/include/QtGui/qguiapplication.h \
-		../../Qt/5.13.0/gcc_64/include/QtGui/qinputmethod.h
+		../../Qt/5.13.0/gcc_64/include/QtGui/qinputmethod.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QMenu \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qmenu.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QMenuBar \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qmenubar.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QStatusBar \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qstatusbar.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QTextEdit \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtextedit.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qabstractscrollarea.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qframe.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextdocument.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextoption.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextcursor.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextformat.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpen.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QToolBar \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtoolbar.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QVBoxLayout \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qboxlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlayoutitem.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qgridlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QWidget \
+		IOInterface.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QInputDialog \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qinputdialog.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlineedit.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/QIntValidator \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qvalidator.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qregularexpression.h \
+		executioncontroller.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o main.cpp
 
 mainwindow.o: mainwindow.cpp mainwindow.h \
@@ -1548,24 +1720,16 @@ mainwindow.o: mainwindow.cpp mainwindow.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonDocument \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qjsondocument.h \
 		compilercontroller.h \
-		DeclIntStmt.h \
-		Variable.h \
-		Identifier.h \
-		../../Qt/5.13.0/gcc_64/include/QtCore/QObject \
+		Program.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/QVariant \
 		Statement.h \
 		Label.h \
+		Identifier.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/QObject \
+		Variable.h \
 		Operand.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonArray \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qjsonarray.h \
-		EndStmt.h \
-		JumpStmt.h \
-		CompStmt.h \
-		ReadStmt.h \
-		PrintStmt.h \
-		JumpMoreStmt.h \
-		Program.h \
-		../../Qt/5.13.0/gcc_64/include/QtCore/QVariant \
-		executioncontroller.h \
 		ui_mainwindow.h \
 		../../Qt/5.13.0/gcc_64/include/QtWidgets/QAction \
 		../../Qt/5.13.0/gcc_64/include/QtWidgets/qaction.h \
@@ -1594,7 +1758,23 @@ mainwindow.o: mainwindow.cpp mainwindow.h \
 		../../Qt/5.13.0/gcc_64/include/QtGui/qpen.h \
 		../../Qt/5.13.0/gcc_64/include/QtWidgets/QToolBar \
 		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtoolbar.h \
-		../../Qt/5.13.0/gcc_64/include/QtWidgets/QWidget
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QVBoxLayout \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qboxlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlayoutitem.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qgridlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QWidget \
+		IOInterface.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QInputDialog \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qinputdialog.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlineedit.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/QIntValidator \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qvalidator.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qregularexpression.h \
+		executioncontroller.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QScrollArea \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qscrollarea.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/QIcon
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o mainwindow.cpp
 
 repositoryinterface.o: repositoryinterface.cpp repositoryinterface.h \
@@ -1779,7 +1959,105 @@ AddStmt.o: AddStmt.cpp AddStmt.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonArray \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qjsonarray.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonDocument \
-		../../Qt/5.13.0/gcc_64/include/QtCore/qjsondocument.h
+		../../Qt/5.13.0/gcc_64/include/QtCore/qjsondocument.h \
+		ui_mainwindow.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/QVariant \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qvariant.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qmap.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qdebug.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qhash.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qtextstream.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qiodevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qlocale.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qshareddata.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qset.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qcontiguouscache.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsharedpointer.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QAction \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qaction.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtwidgetsglobal.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtguiglobal.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtgui-config.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtwidgets-config.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qkeysequence.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qwidget.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qwindowdefs.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qwindowdefs_win.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qmargins.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpaintdevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qrect.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsize.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpalette.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qcolor.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qrgb.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qrgba64.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qbrush.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qmatrix.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpolygon.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qregion.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qdatastream.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qline.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtransform.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpainterpath.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qimage.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpixelformat.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpixmap.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qfont.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qfontmetrics.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qfontinfo.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qsizepolicy.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qcursor.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qevent.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qurl.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qurlquery.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qfile.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qfiledevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qvector2d.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtouchdevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qicon.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qactiongroup.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QApplication \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qapplication.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qcoreapplication.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qeventloop.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qdesktopwidget.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qguiapplication.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qinputmethod.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QMainWindow \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qmainwindow.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtabwidget.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QMenu \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qmenu.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QMenuBar \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qmenubar.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QStatusBar \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qstatusbar.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QTextEdit \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtextedit.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qabstractscrollarea.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qframe.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextdocument.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextoption.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextcursor.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextformat.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpen.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QToolBar \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtoolbar.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QVBoxLayout \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qboxlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlayoutitem.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qgridlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QWidget \
+		IOInterface.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QInputDialog \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qinputdialog.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlineedit.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qdialog.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/QIntValidator \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qvalidator.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qregularexpression.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o AddStmt.o AddStmt.cpp
 
 CompStmt.o: CompStmt.cpp CompStmt.h \
@@ -1846,7 +2124,105 @@ CompStmt.o: CompStmt.cpp CompStmt.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonArray \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qjsonarray.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonDocument \
-		../../Qt/5.13.0/gcc_64/include/QtCore/qjsondocument.h
+		../../Qt/5.13.0/gcc_64/include/QtCore/qjsondocument.h \
+		ui_mainwindow.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/QVariant \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qvariant.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qmap.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qdebug.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qhash.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qtextstream.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qiodevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qlocale.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qshareddata.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qset.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qcontiguouscache.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsharedpointer.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QAction \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qaction.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtwidgetsglobal.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtguiglobal.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtgui-config.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtwidgets-config.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qkeysequence.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qwidget.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qwindowdefs.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qwindowdefs_win.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qmargins.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpaintdevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qrect.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsize.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpalette.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qcolor.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qrgb.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qrgba64.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qbrush.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qmatrix.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpolygon.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qregion.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qdatastream.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qline.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtransform.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpainterpath.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qimage.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpixelformat.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpixmap.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qfont.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qfontmetrics.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qfontinfo.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qsizepolicy.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qcursor.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qevent.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qurl.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qurlquery.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qfile.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qfiledevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qvector2d.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtouchdevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qicon.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qactiongroup.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QApplication \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qapplication.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qcoreapplication.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qeventloop.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qdesktopwidget.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qguiapplication.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qinputmethod.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QMainWindow \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qmainwindow.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtabwidget.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QMenu \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qmenu.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QMenuBar \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qmenubar.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QStatusBar \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qstatusbar.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QTextEdit \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtextedit.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qabstractscrollarea.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qframe.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextdocument.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextoption.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextcursor.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextformat.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpen.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QToolBar \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtoolbar.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QVBoxLayout \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qboxlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlayoutitem.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qgridlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QWidget \
+		IOInterface.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QInputDialog \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qinputdialog.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlineedit.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qdialog.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/QIntValidator \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qvalidator.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qregularexpression.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o CompStmt.o CompStmt.cpp
 
 DeclArrStmt.o: DeclArrStmt.cpp DeclArrStmt.h \
@@ -1913,7 +2289,105 @@ DeclArrStmt.o: DeclArrStmt.cpp DeclArrStmt.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonArray \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qjsonarray.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonDocument \
-		../../Qt/5.13.0/gcc_64/include/QtCore/qjsondocument.h
+		../../Qt/5.13.0/gcc_64/include/QtCore/qjsondocument.h \
+		ui_mainwindow.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/QVariant \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qvariant.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qmap.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qdebug.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qhash.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qtextstream.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qiodevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qlocale.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qshareddata.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qset.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qcontiguouscache.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsharedpointer.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QAction \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qaction.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtwidgetsglobal.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtguiglobal.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtgui-config.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtwidgets-config.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qkeysequence.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qwidget.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qwindowdefs.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qwindowdefs_win.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qmargins.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpaintdevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qrect.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsize.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpalette.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qcolor.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qrgb.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qrgba64.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qbrush.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qmatrix.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpolygon.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qregion.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qdatastream.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qline.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtransform.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpainterpath.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qimage.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpixelformat.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpixmap.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qfont.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qfontmetrics.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qfontinfo.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qsizepolicy.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qcursor.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qevent.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qurl.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qurlquery.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qfile.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qfiledevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qvector2d.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtouchdevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qicon.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qactiongroup.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QApplication \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qapplication.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qcoreapplication.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qeventloop.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qdesktopwidget.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qguiapplication.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qinputmethod.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QMainWindow \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qmainwindow.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtabwidget.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QMenu \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qmenu.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QMenuBar \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qmenubar.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QStatusBar \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qstatusbar.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QTextEdit \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtextedit.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qabstractscrollarea.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qframe.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextdocument.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextoption.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextcursor.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextformat.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpen.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QToolBar \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtoolbar.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QVBoxLayout \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qboxlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlayoutitem.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qgridlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QWidget \
+		IOInterface.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QInputDialog \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qinputdialog.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlineedit.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qdialog.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/QIntValidator \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qvalidator.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qregularexpression.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o DeclArrStmt.o DeclArrStmt.cpp
 
 DeclIntStmt.o: DeclIntStmt.cpp DeclIntStmt.h \
@@ -1980,7 +2454,105 @@ DeclIntStmt.o: DeclIntStmt.cpp DeclIntStmt.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonArray \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qjsonarray.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonDocument \
-		../../Qt/5.13.0/gcc_64/include/QtCore/qjsondocument.h
+		../../Qt/5.13.0/gcc_64/include/QtCore/qjsondocument.h \
+		ui_mainwindow.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/QVariant \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qvariant.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qmap.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qdebug.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qhash.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qtextstream.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qiodevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qlocale.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qshareddata.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qset.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qcontiguouscache.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsharedpointer.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QAction \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qaction.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtwidgetsglobal.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtguiglobal.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtgui-config.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtwidgets-config.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qkeysequence.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qwidget.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qwindowdefs.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qwindowdefs_win.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qmargins.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpaintdevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qrect.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsize.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpalette.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qcolor.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qrgb.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qrgba64.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qbrush.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qmatrix.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpolygon.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qregion.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qdatastream.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qline.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtransform.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpainterpath.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qimage.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpixelformat.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpixmap.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qfont.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qfontmetrics.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qfontinfo.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qsizepolicy.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qcursor.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qevent.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qurl.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qurlquery.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qfile.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qfiledevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qvector2d.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtouchdevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qicon.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qactiongroup.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QApplication \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qapplication.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qcoreapplication.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qeventloop.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qdesktopwidget.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qguiapplication.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qinputmethod.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QMainWindow \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qmainwindow.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtabwidget.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QMenu \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qmenu.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QMenuBar \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qmenubar.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QStatusBar \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qstatusbar.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QTextEdit \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtextedit.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qabstractscrollarea.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qframe.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextdocument.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextoption.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextcursor.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextformat.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpen.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QToolBar \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtoolbar.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QVBoxLayout \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qboxlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlayoutitem.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qgridlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QWidget \
+		IOInterface.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QInputDialog \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qinputdialog.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlineedit.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qdialog.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/QIntValidator \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qvalidator.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qregularexpression.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o DeclIntStmt.o DeclIntStmt.cpp
 
 EndStmt.o: EndStmt.cpp EndStmt.h \
@@ -2047,7 +2619,105 @@ EndStmt.o: EndStmt.cpp EndStmt.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonArray \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qjsonarray.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonDocument \
-		../../Qt/5.13.0/gcc_64/include/QtCore/qjsondocument.h
+		../../Qt/5.13.0/gcc_64/include/QtCore/qjsondocument.h \
+		ui_mainwindow.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/QVariant \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qvariant.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qmap.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qdebug.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qhash.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qtextstream.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qiodevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qlocale.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qshareddata.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qset.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qcontiguouscache.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsharedpointer.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QAction \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qaction.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtwidgetsglobal.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtguiglobal.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtgui-config.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtwidgets-config.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qkeysequence.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qwidget.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qwindowdefs.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qwindowdefs_win.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qmargins.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpaintdevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qrect.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsize.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpalette.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qcolor.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qrgb.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qrgba64.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qbrush.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qmatrix.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpolygon.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qregion.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qdatastream.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qline.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtransform.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpainterpath.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qimage.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpixelformat.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpixmap.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qfont.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qfontmetrics.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qfontinfo.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qsizepolicy.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qcursor.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qevent.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qurl.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qurlquery.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qfile.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qfiledevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qvector2d.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtouchdevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qicon.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qactiongroup.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QApplication \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qapplication.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qcoreapplication.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qeventloop.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qdesktopwidget.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qguiapplication.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qinputmethod.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QMainWindow \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qmainwindow.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtabwidget.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QMenu \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qmenu.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QMenuBar \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qmenubar.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QStatusBar \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qstatusbar.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QTextEdit \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtextedit.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qabstractscrollarea.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qframe.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextdocument.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextoption.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextcursor.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextformat.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpen.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QToolBar \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtoolbar.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QVBoxLayout \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qboxlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlayoutitem.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qgridlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QWidget \
+		IOInterface.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QInputDialog \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qinputdialog.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlineedit.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qdialog.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/QIntValidator \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qvalidator.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qregularexpression.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o EndStmt.o EndStmt.cpp
 
 JEqStmt.o: JEqStmt.cpp JEqStmt.h \
@@ -2114,7 +2784,105 @@ JEqStmt.o: JEqStmt.cpp JEqStmt.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonArray \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qjsonarray.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonDocument \
-		../../Qt/5.13.0/gcc_64/include/QtCore/qjsondocument.h
+		../../Qt/5.13.0/gcc_64/include/QtCore/qjsondocument.h \
+		ui_mainwindow.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/QVariant \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qvariant.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qmap.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qdebug.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qhash.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qtextstream.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qiodevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qlocale.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qshareddata.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qset.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qcontiguouscache.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsharedpointer.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QAction \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qaction.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtwidgetsglobal.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtguiglobal.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtgui-config.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtwidgets-config.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qkeysequence.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qwidget.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qwindowdefs.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qwindowdefs_win.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qmargins.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpaintdevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qrect.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsize.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpalette.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qcolor.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qrgb.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qrgba64.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qbrush.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qmatrix.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpolygon.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qregion.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qdatastream.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qline.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtransform.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpainterpath.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qimage.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpixelformat.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpixmap.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qfont.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qfontmetrics.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qfontinfo.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qsizepolicy.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qcursor.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qevent.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qurl.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qurlquery.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qfile.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qfiledevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qvector2d.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtouchdevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qicon.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qactiongroup.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QApplication \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qapplication.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qcoreapplication.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qeventloop.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qdesktopwidget.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qguiapplication.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qinputmethod.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QMainWindow \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qmainwindow.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtabwidget.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QMenu \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qmenu.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QMenuBar \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qmenubar.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QStatusBar \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qstatusbar.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QTextEdit \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtextedit.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qabstractscrollarea.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qframe.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextdocument.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextoption.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextcursor.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextformat.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpen.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QToolBar \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtoolbar.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QVBoxLayout \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qboxlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlayoutitem.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qgridlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QWidget \
+		IOInterface.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QInputDialog \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qinputdialog.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlineedit.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qdialog.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/QIntValidator \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qvalidator.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qregularexpression.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o JEqStmt.o JEqStmt.cpp
 
 JLessStmt.o: JLessStmt.cpp JLessStmt.h \
@@ -2181,7 +2949,105 @@ JLessStmt.o: JLessStmt.cpp JLessStmt.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonArray \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qjsonarray.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonDocument \
-		../../Qt/5.13.0/gcc_64/include/QtCore/qjsondocument.h
+		../../Qt/5.13.0/gcc_64/include/QtCore/qjsondocument.h \
+		ui_mainwindow.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/QVariant \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qvariant.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qmap.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qdebug.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qhash.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qtextstream.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qiodevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qlocale.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qshareddata.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qset.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qcontiguouscache.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsharedpointer.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QAction \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qaction.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtwidgetsglobal.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtguiglobal.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtgui-config.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtwidgets-config.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qkeysequence.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qwidget.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qwindowdefs.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qwindowdefs_win.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qmargins.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpaintdevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qrect.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsize.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpalette.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qcolor.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qrgb.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qrgba64.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qbrush.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qmatrix.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpolygon.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qregion.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qdatastream.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qline.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtransform.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpainterpath.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qimage.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpixelformat.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpixmap.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qfont.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qfontmetrics.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qfontinfo.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qsizepolicy.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qcursor.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qevent.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qurl.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qurlquery.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qfile.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qfiledevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qvector2d.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtouchdevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qicon.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qactiongroup.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QApplication \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qapplication.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qcoreapplication.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qeventloop.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qdesktopwidget.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qguiapplication.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qinputmethod.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QMainWindow \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qmainwindow.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtabwidget.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QMenu \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qmenu.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QMenuBar \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qmenubar.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QStatusBar \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qstatusbar.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QTextEdit \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtextedit.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qabstractscrollarea.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qframe.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextdocument.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextoption.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextcursor.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextformat.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpen.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QToolBar \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtoolbar.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QVBoxLayout \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qboxlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlayoutitem.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qgridlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QWidget \
+		IOInterface.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QInputDialog \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qinputdialog.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlineedit.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qdialog.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/QIntValidator \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qvalidator.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qregularexpression.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o JLessStmt.o JLessStmt.cpp
 
 JumpStmt.o: JumpStmt.cpp JumpStmt.h \
@@ -2248,7 +3114,105 @@ JumpStmt.o: JumpStmt.cpp JumpStmt.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonArray \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qjsonarray.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonDocument \
-		../../Qt/5.13.0/gcc_64/include/QtCore/qjsondocument.h
+		../../Qt/5.13.0/gcc_64/include/QtCore/qjsondocument.h \
+		ui_mainwindow.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/QVariant \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qvariant.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qmap.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qdebug.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qhash.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qtextstream.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qiodevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qlocale.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qshareddata.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qset.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qcontiguouscache.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsharedpointer.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QAction \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qaction.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtwidgetsglobal.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtguiglobal.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtgui-config.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtwidgets-config.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qkeysequence.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qwidget.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qwindowdefs.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qwindowdefs_win.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qmargins.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpaintdevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qrect.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsize.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpalette.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qcolor.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qrgb.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qrgba64.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qbrush.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qmatrix.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpolygon.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qregion.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qdatastream.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qline.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtransform.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpainterpath.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qimage.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpixelformat.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpixmap.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qfont.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qfontmetrics.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qfontinfo.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qsizepolicy.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qcursor.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qevent.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qurl.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qurlquery.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qfile.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qfiledevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qvector2d.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtouchdevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qicon.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qactiongroup.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QApplication \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qapplication.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qcoreapplication.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qeventloop.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qdesktopwidget.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qguiapplication.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qinputmethod.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QMainWindow \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qmainwindow.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtabwidget.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QMenu \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qmenu.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QMenuBar \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qmenubar.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QStatusBar \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qstatusbar.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QTextEdit \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtextedit.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qabstractscrollarea.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qframe.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextdocument.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextoption.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextcursor.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextformat.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpen.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QToolBar \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtoolbar.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QVBoxLayout \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qboxlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlayoutitem.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qgridlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QWidget \
+		IOInterface.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QInputDialog \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qinputdialog.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlineedit.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qdialog.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/QIntValidator \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qvalidator.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qregularexpression.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o JumpStmt.o JumpStmt.cpp
 
 Identifier.o: Identifier.cpp Identifier.h \
@@ -2429,7 +3393,105 @@ MovStmt.o: MovStmt.cpp MovStmt.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonArray \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qjsonarray.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonDocument \
-		../../Qt/5.13.0/gcc_64/include/QtCore/qjsondocument.h
+		../../Qt/5.13.0/gcc_64/include/QtCore/qjsondocument.h \
+		ui_mainwindow.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/QVariant \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qvariant.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qmap.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qdebug.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qhash.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qtextstream.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qiodevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qlocale.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qshareddata.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qset.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qcontiguouscache.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsharedpointer.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QAction \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qaction.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtwidgetsglobal.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtguiglobal.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtgui-config.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtwidgets-config.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qkeysequence.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qwidget.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qwindowdefs.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qwindowdefs_win.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qmargins.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpaintdevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qrect.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsize.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpalette.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qcolor.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qrgb.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qrgba64.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qbrush.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qmatrix.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpolygon.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qregion.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qdatastream.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qline.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtransform.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpainterpath.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qimage.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpixelformat.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpixmap.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qfont.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qfontmetrics.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qfontinfo.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qsizepolicy.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qcursor.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qevent.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qurl.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qurlquery.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qfile.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qfiledevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qvector2d.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtouchdevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qicon.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qactiongroup.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QApplication \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qapplication.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qcoreapplication.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qeventloop.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qdesktopwidget.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qguiapplication.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qinputmethod.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QMainWindow \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qmainwindow.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtabwidget.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QMenu \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qmenu.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QMenuBar \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qmenubar.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QStatusBar \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qstatusbar.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QTextEdit \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtextedit.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qabstractscrollarea.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qframe.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextdocument.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextoption.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextcursor.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextformat.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpen.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QToolBar \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtoolbar.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QVBoxLayout \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qboxlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlayoutitem.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qgridlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QWidget \
+		IOInterface.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QInputDialog \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qinputdialog.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlineedit.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qdialog.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/QIntValidator \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qvalidator.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qregularexpression.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o MovStmt.o MovStmt.cpp
 
 Operand.o: Operand.cpp Operand.h \
@@ -2556,7 +3618,105 @@ Statement.o: Statement.cpp Statement.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonArray \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qjsonarray.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonDocument \
-		../../Qt/5.13.0/gcc_64/include/QtCore/qjsondocument.h
+		../../Qt/5.13.0/gcc_64/include/QtCore/qjsondocument.h \
+		ui_mainwindow.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/QVariant \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qvariant.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qmap.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qdebug.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qhash.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qtextstream.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qiodevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qlocale.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qshareddata.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qset.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qcontiguouscache.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsharedpointer.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QAction \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qaction.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtwidgetsglobal.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtguiglobal.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtgui-config.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtwidgets-config.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qkeysequence.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qwidget.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qwindowdefs.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qwindowdefs_win.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qmargins.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpaintdevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qrect.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsize.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpalette.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qcolor.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qrgb.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qrgba64.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qbrush.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qmatrix.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpolygon.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qregion.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qdatastream.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qline.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtransform.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpainterpath.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qimage.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpixelformat.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpixmap.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qfont.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qfontmetrics.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qfontinfo.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qsizepolicy.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qcursor.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qevent.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qurl.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qurlquery.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qfile.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qfiledevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qvector2d.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtouchdevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qicon.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qactiongroup.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QApplication \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qapplication.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qcoreapplication.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qeventloop.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qdesktopwidget.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qguiapplication.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qinputmethod.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QMainWindow \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qmainwindow.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtabwidget.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QMenu \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qmenu.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QMenuBar \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qmenubar.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QStatusBar \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qstatusbar.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QTextEdit \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtextedit.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qabstractscrollarea.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qframe.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextdocument.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextoption.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextcursor.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextformat.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpen.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QToolBar \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtoolbar.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QVBoxLayout \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qboxlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlayoutitem.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qgridlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QWidget \
+		IOInterface.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QInputDialog \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qinputdialog.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlineedit.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qdialog.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/QIntValidator \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qvalidator.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qregularexpression.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Statement.o Statement.cpp
 
 Variable.o: Variable.cpp Variable.h \
@@ -2679,7 +3839,105 @@ JumpMoreStmt.o: JumpMoreStmt.cpp Variable.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonArray \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qjsonarray.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonDocument \
-		../../Qt/5.13.0/gcc_64/include/QtCore/qjsondocument.h
+		../../Qt/5.13.0/gcc_64/include/QtCore/qjsondocument.h \
+		ui_mainwindow.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/QVariant \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qvariant.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qmap.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qdebug.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qhash.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qtextstream.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qiodevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qlocale.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qshareddata.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qset.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qcontiguouscache.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsharedpointer.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QAction \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qaction.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtwidgetsglobal.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtguiglobal.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtgui-config.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtwidgets-config.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qkeysequence.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qwidget.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qwindowdefs.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qwindowdefs_win.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qmargins.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpaintdevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qrect.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsize.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpalette.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qcolor.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qrgb.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qrgba64.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qbrush.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qmatrix.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpolygon.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qregion.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qdatastream.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qline.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtransform.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpainterpath.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qimage.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpixelformat.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpixmap.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qfont.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qfontmetrics.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qfontinfo.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qsizepolicy.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qcursor.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qevent.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qurl.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qurlquery.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qfile.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qfiledevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qvector2d.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtouchdevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qicon.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qactiongroup.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QApplication \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qapplication.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qcoreapplication.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qeventloop.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qdesktopwidget.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qguiapplication.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qinputmethod.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QMainWindow \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qmainwindow.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtabwidget.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QMenu \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qmenu.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QMenuBar \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qmenubar.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QStatusBar \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qstatusbar.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QTextEdit \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtextedit.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qabstractscrollarea.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qframe.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextdocument.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextoption.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextcursor.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextformat.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpen.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QToolBar \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtoolbar.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QVBoxLayout \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qboxlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlayoutitem.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qgridlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QWidget \
+		IOInterface.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QInputDialog \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qinputdialog.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlineedit.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qdialog.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/QIntValidator \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qvalidator.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qregularexpression.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o JumpMoreStmt.o JumpMoreStmt.cpp
 
 ReadStmt.o: ReadStmt.cpp Variable.h \
@@ -2746,7 +4004,105 @@ ReadStmt.o: ReadStmt.cpp Variable.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonArray \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qjsonarray.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonDocument \
-		../../Qt/5.13.0/gcc_64/include/QtCore/qjsondocument.h
+		../../Qt/5.13.0/gcc_64/include/QtCore/qjsondocument.h \
+		ui_mainwindow.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/QVariant \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qvariant.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qmap.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qdebug.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qhash.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qtextstream.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qiodevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qlocale.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qshareddata.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qset.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qcontiguouscache.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsharedpointer.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QAction \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qaction.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtwidgetsglobal.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtguiglobal.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtgui-config.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtwidgets-config.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qkeysequence.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qwidget.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qwindowdefs.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qwindowdefs_win.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qmargins.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpaintdevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qrect.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsize.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpalette.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qcolor.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qrgb.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qrgba64.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qbrush.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qmatrix.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpolygon.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qregion.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qdatastream.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qline.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtransform.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpainterpath.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qimage.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpixelformat.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpixmap.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qfont.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qfontmetrics.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qfontinfo.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qsizepolicy.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qcursor.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qevent.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qurl.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qurlquery.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qfile.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qfiledevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qvector2d.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtouchdevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qicon.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qactiongroup.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QApplication \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qapplication.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qcoreapplication.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qeventloop.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qdesktopwidget.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qguiapplication.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qinputmethod.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QMainWindow \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qmainwindow.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtabwidget.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QMenu \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qmenu.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QMenuBar \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qmenubar.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QStatusBar \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qstatusbar.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QTextEdit \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtextedit.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qabstractscrollarea.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qframe.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextdocument.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextoption.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextcursor.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextformat.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpen.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QToolBar \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtoolbar.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QVBoxLayout \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qboxlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlayoutitem.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qgridlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QWidget \
+		IOInterface.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QInputDialog \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qinputdialog.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlineedit.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qdialog.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/QIntValidator \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qvalidator.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qregularexpression.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o ReadStmt.o ReadStmt.cpp
 
 PrintStmt.o: PrintStmt.cpp Variable.h \
@@ -2813,7 +4169,105 @@ PrintStmt.o: PrintStmt.cpp Variable.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonArray \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qjsonarray.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonDocument \
-		../../Qt/5.13.0/gcc_64/include/QtCore/qjsondocument.h
+		../../Qt/5.13.0/gcc_64/include/QtCore/qjsondocument.h \
+		ui_mainwindow.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/QVariant \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qvariant.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qmap.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qdebug.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qhash.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qtextstream.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qiodevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qlocale.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qshareddata.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qset.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qcontiguouscache.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsharedpointer.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QAction \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qaction.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtwidgetsglobal.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtguiglobal.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtgui-config.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtwidgets-config.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qkeysequence.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qwidget.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qwindowdefs.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qwindowdefs_win.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qmargins.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpaintdevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qrect.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsize.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpalette.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qcolor.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qrgb.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qrgba64.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qbrush.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qmatrix.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpolygon.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qregion.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qdatastream.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qline.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtransform.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpainterpath.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qimage.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpixelformat.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpixmap.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qfont.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qfontmetrics.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qfontinfo.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qsizepolicy.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qcursor.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qevent.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qurl.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qurlquery.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qfile.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qfiledevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qvector2d.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtouchdevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qicon.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qactiongroup.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QApplication \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qapplication.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qcoreapplication.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qeventloop.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qdesktopwidget.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qguiapplication.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qinputmethod.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QMainWindow \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qmainwindow.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtabwidget.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QMenu \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qmenu.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QMenuBar \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qmenubar.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QStatusBar \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qstatusbar.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QTextEdit \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtextedit.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qabstractscrollarea.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qframe.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextdocument.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextoption.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextcursor.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextformat.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpen.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QToolBar \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtoolbar.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QVBoxLayout \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qboxlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlayoutitem.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qgridlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QWidget \
+		IOInterface.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QInputDialog \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qinputdialog.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlineedit.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qdialog.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/QIntValidator \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qvalidator.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qregularexpression.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o PrintStmt.o PrintStmt.cpp
 
 Program.o: Program.cpp DeclIntStmt.h \
@@ -2881,13 +4335,7 @@ Program.o: Program.cpp DeclIntStmt.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qjsonarray.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonDocument \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qjsondocument.h \
-		EndStmt.h \
-		JumpStmt.h \
-		CompStmt.h \
-		ReadStmt.h \
-		PrintStmt.h \
-		JumpMoreStmt.h \
-		Program.h \
+		ui_mainwindow.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QVariant \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qvariant.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qmap.h \
@@ -2901,6 +4349,97 @@ Program.o: Program.cpp DeclIntStmt.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qcontiguouscache.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qsharedpointer.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QAction \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qaction.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtwidgetsglobal.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtguiglobal.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtgui-config.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtwidgets-config.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qkeysequence.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qwidget.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qwindowdefs.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qwindowdefs_win.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qmargins.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpaintdevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qrect.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsize.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpalette.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qcolor.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qrgb.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qrgba64.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qbrush.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qmatrix.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpolygon.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qregion.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qdatastream.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qline.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtransform.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpainterpath.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qimage.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpixelformat.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpixmap.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qfont.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qfontmetrics.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qfontinfo.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qsizepolicy.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qcursor.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qevent.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qurl.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qurlquery.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qfile.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qfiledevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qvector2d.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtouchdevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qicon.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qactiongroup.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QApplication \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qapplication.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qcoreapplication.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qeventloop.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qdesktopwidget.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qguiapplication.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qinputmethod.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QMainWindow \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qmainwindow.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtabwidget.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QMenu \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qmenu.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QMenuBar \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qmenubar.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QStatusBar \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qstatusbar.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QTextEdit \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtextedit.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qabstractscrollarea.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qframe.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextdocument.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextoption.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextcursor.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextformat.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpen.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QToolBar \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtoolbar.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QVBoxLayout \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qboxlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlayoutitem.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qgridlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QWidget \
+		IOInterface.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QInputDialog \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qinputdialog.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlineedit.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qdialog.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/QIntValidator \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qvalidator.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qregularexpression.h \
+		EndStmt.h \
+		JumpStmt.h \
+		CompStmt.h \
+		ReadStmt.h \
+		PrintStmt.h \
+		JumpMoreStmt.h \
+		Program.h \
 		AddStmt.h \
 		DeclArrStmt.h \
 		JEqStmt.h \
@@ -2908,6 +4447,160 @@ Program.o: Program.cpp DeclIntStmt.h \
 		MovStmt.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QDebug
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Program.o Program.cpp
+
+IOInterface.o: IOInterface.cpp IOInterface.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QMainWindow \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qmainwindow.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtwidgetsglobal.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtguiglobal.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qglobal.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qconfig-bootstrapped.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qconfig.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qtcore-config.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsystemdetection.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qprocessordetection.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qcompilerdetection.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qtypeinfo.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsysinfo.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qlogging.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qflags.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qatomic.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qbasicatomic.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qatomic_bootstrap.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qgenericatomic.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qatomic_cxx11.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qatomic_msvc.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qglobalstatic.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qmutex.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qnumeric.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qversiontagging.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtgui-config.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtwidgets-config.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qwidget.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qwindowdefs.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qobjectdefs.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qnamespace.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qobjectdefs_impl.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qwindowdefs_win.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qobject.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qstring.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qchar.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qbytearray.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qrefcount.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qarraydata.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qstringliteral.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qstringalgorithms.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qstringview.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qstringbuilder.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qlist.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qalgorithms.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qiterator.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qhashfunctions.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qpair.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qvector.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qpoint.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qbytearraylist.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qstringlist.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qregexp.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qstringmatcher.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qcoreevent.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qscopedpointer.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qmetatype.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qvarlengtharray.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qcontainerfwd.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qobject_impl.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qmargins.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpaintdevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qrect.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsize.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpalette.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qcolor.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qrgb.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qrgba64.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qbrush.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qmatrix.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpolygon.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qregion.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qdatastream.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qiodevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qline.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtransform.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpainterpath.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qimage.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpixelformat.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpixmap.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsharedpointer.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qshareddata.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qhash.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qfont.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qfontmetrics.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qfontinfo.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qsizepolicy.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qcursor.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qkeysequence.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qevent.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qvariant.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qmap.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qdebug.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qtextstream.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qlocale.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qset.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qcontiguouscache.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qurl.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qurlquery.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qfile.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qfiledevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qvector2d.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtouchdevice.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtabwidget.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qicon.h \
+		ui_mainwindow.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/QVariant \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QAction \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qaction.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qactiongroup.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QApplication \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qapplication.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qcoreapplication.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qeventloop.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qdesktopwidget.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qguiapplication.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qinputmethod.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QMenu \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qmenu.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QMenuBar \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qmenubar.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QStatusBar \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qstatusbar.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QTextEdit \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtextedit.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qabstractscrollarea.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qframe.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextdocument.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextoption.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextcursor.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qtextformat.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qpen.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QToolBar \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qtoolbar.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QVBoxLayout \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qboxlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlayoutitem.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qgridlayout.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QWidget \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/QInputDialog \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qinputdialog.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qlineedit.h \
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qdialog.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/QIntValidator \
+		../../Qt/5.13.0/gcc_64/include/QtGui/qvalidator.h \
+		../../Qt/5.13.0/gcc_64/include/QtCore/qregularexpression.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o IOInterface.o IOInterface.cpp
+
+qrc_resources.o: qrc_resources.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o qrc_resources.o qrc_resources.cpp
 
 moc_mainwindow.o: moc_mainwindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_mainwindow.o moc_mainwindow.cpp
