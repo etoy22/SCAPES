@@ -70,21 +70,26 @@ int MovStmt::run(std::set<Variable*>& variableSet, Ui::MainWindow*&, QMainWindow
 				values[i] = std::stoi(operands[i]->getIdentifier()->getName());
 			}
 			else {
-				Variable* result = getVariable(variableSet, operands[i]->getIdentifier()->getName());
+				try {
+					Variable* result = getVariable(variableSet, operands[i]->getIdentifier()->getName());
+					if (result != nullptr) {
+						values[i] = result->getValue();
 
-				if (result != nullptr) {
-					values[i] = result->getValue();
+						if (i == 1) {
+							std::cout << "Before Mov: " + std::to_string(result->getValue()) << std::endl;
+							result->setValue(values[0]);
+							std::cout << "After Mov: " + std::to_string(result->getValue()) << std::endl;
+						}
 
-					if (i == 1) {
-						std::cout << "Before Mov: " + std::to_string(result->getValue()) << std::endl;
-						result->setValue(values[0]);
-						std::cout << "After Mov: " + std::to_string(result->getValue()) << std::endl;
 					}
+					else {
+						throw std::string("Variable undefined");
+					}
+				}
+				catch (std::string err) {
+					throw err;
+				}
 
-				}
-				else {
-					throw "Variable undefined";
-				}
 			}
 		}
 	}

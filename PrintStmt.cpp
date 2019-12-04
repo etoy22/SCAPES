@@ -67,15 +67,19 @@ void PrintStmt::compile(std::string instr) {
 int PrintStmt::run(std::set<Variable*>& variableSet, Ui::MainWindow*& ui, QMainWindow*, std::vector<std::pair<Identifier*,int>>*){
 	bool isLiteral = true;
 	if (operands[0] != nullptr && operands[0]->getIdentifier() != nullptr) {
-				Variable* result = getVariable(variableSet, operands[0]->getIdentifier()->getName());
-
-                if (result != nullptr) {   //is a variable operand 
-                        isLiteral = false;
-                        QString consoleOut = ui->Console->toPlainText();
-                        consoleOut.append(QString::number(result->getValue()));
-                        consoleOut.append(" \n");
-                        ui->Console->setText(consoleOut);
-                }
+				try {
+					Variable* result = getVariable(variableSet, operands[0]->getIdentifier()->getName());
+					if (result != nullptr) {   //is a variable operand 
+						isLiteral = false;
+						QString consoleOut = ui->Console->toPlainText();
+						consoleOut.append(QString::number(result->getValue()));
+						consoleOut.append(" \n");
+						ui->Console->setText(consoleOut);
+					}
+				}
+				catch (std::string err) {
+					throw err;
+				}
         }
 	if(isLiteral){
         QString consoleOut = ui->Console->toPlainText();

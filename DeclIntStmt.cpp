@@ -58,11 +58,16 @@ int DeclIntStmt::run(std::set<Variable*>& variableSet, Ui::MainWindow*& ui, QMai
 	bool variableExists = true;
 
 	if (operands[0] != nullptr && operands[0]->getIdentifier() != nullptr) {
-		Variable* result = getVariable(variableSet, operands[0]->getIdentifier()->getName());
-		
-		if (result == nullptr) {
-			variableExists = false;
+		try {	
+			Variable* result = getVariable(variableSet, operands[0]->getIdentifier()->getName());
+			if (result == nullptr) {
+				variableExists = false;
+			}
 		}
+		catch (std::string err) {
+			throw err;
+		}
+		
 	}
 
 	if (!variableExists) {

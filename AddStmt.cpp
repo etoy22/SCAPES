@@ -71,21 +71,25 @@ int AddStmt::run(std::set<Variable*>& variableSet, Ui::MainWindow*&, QMainWindow
 				values[i] = std::stoi(operands[i]->getIdentifier()->getName());
 			}
 			else {
-				Variable* result = getVariable(variableSet, operands[i]->getIdentifier()->getName());
+				try {
+					Variable* result = getVariable(variableSet, operands[i]->getIdentifier()->getName());
+					if (result != nullptr) {
+						values[i] = result->getValue();
 
-				if (result != nullptr) {
-					values[i] = result->getValue();
+						if (i == 1) {
+							std::cout << "Before Add: " + std::to_string(result->getValue()) << std::endl;
+							result->setValue(values[0] + values[1]);
+							std::cout << "After Add: " + std::to_string(result->getValue()) << std::endl;
+						}
 
-					if (i == 1) {
-						std::cout << "Before Add: " + std::to_string(result->getValue()) << std::endl;
-						result->setValue(values[0] + values[1]);
-						std::cout << "After Add: " + std::to_string(result->getValue()) << std::endl;
 					}
-
+					else {
+						throw std::string("Variable undefined");
+					}
 				}
-				else {
-					throw "Variable undefined";
-				}
+				catch (std::string err) {
+					throw err;
+				}				
 			}
 		}
 	}

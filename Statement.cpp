@@ -142,9 +142,12 @@ int Statement::getNumOperands() {
 				if (variable != variableSet.end()) {
 					return (*variable);
 				}
+				else {
+					throw std::string("Index out of bounds");
+				}
 			}
 			else {
-				throw "Index out of bounds";
+				throw std::string("Variable not declared");
 			}
 		}
 	}

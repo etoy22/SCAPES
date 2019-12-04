@@ -849,7 +849,7 @@ void Program::execute(){
 		}
     }
     catch (std::string exeError){
-            throw;
+            throw exeError;
     }
 
 	// debugging: remove later

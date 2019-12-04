@@ -77,27 +77,35 @@ int DeclArrStmt::run(std::set<Variable*>& variableSet, Ui::MainWindow*& ui, QMai
 		}
 		// otherwise size is stored in a variable
 		else {
-			Variable* result = getVariable(variableSet, operands[1]->getIdentifier()->getName());
-
-			if (result != nullptr) {
-				size = result->getValue();
+			try {
+				Variable* result = getVariable(variableSet, operands[1]->getIdentifier()->getName());
+				if (result != nullptr) {
+					size = result->getValue();
+				}
+				else {
+					throw "Variable not declared";
+				}
 			}
-			else {
-				throw "Variable not declared";
+			catch (std::string err) {
+				throw err;
 			}
 		}
 
 		std::string arrName = "$" + operands[0]->getIdentifier()->getName() + "+";
 		for (int i = 0; i < size; i++) {
-			Variable* result = getVariable(variableSet, arrName + std::to_string(i));
+			try {
+				Variable* result = getVariable(variableSet, arrName + std::to_string(i));
+				if (result == nullptr) {
+					variableExists = false;
+				}
 
-			if (result == nullptr) {
-				variableExists = false;
+				if (!variableExists) {
+					variableSet.insert(new Variable(arrName + std::to_string(i)));
+				}
 			}
-
-			if (!variableExists) {
-				variableSet.insert(new Variable(arrName + std::to_string(i)));
-			}
+			catch (std::string err) {
+				throw err;
+			}			
 		}
 	}
 	

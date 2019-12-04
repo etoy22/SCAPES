@@ -72,13 +72,17 @@ int CompStmt::run(std::set<Variable*>& variableSet, Ui::MainWindow*&, QMainWindo
 				values[i] = std::stoi(operands[i]->getIdentifier()->getName());
 			}
 			else {
-				Variable* result = getVariable(variableSet, operands[i]->getIdentifier()->getName());
-
-				if (result != nullptr) {
-					values[i] = result->getValue();
+				try {
+					Variable* result = getVariable(variableSet, operands[i]->getIdentifier()->getName());
+					if (result != nullptr) {
+						values[i] = result->getValue();
+					}
+					else {
+						throw std::string("Variable undefined");
+					}
 				}
-				else {
-					throw "Variable undefined";
+				catch (std::string err) {
+					throw err;
 				}
 			}
 		}
