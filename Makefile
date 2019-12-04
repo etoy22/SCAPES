@@ -37,7 +37,7 @@ MOVE          = mv -f
 TAR           = tar -cf
 COMPRESS      = gzip -9f
 DISTNAME      = SCAPES1.0.0
-DISTDIR = /home/student/Desktop/SCAPES-Anant-current-Raymond-current/.tmp/SCAPES1.0.0
+DISTDIR = /home/student/Desktop/SCAPES-anant-raymond-ethan-current-Dec4th/.tmp/SCAPES1.0.0
 LINK          = g++
 LFLAGS        = -Wl,-rpath,/home/student/Qt/5.13.0/gcc_64/lib
 LIBS          = $(SUBLIBS) /home/student/Qt/5.13.0/gcc_64/lib/libQt5Widgets.so /home/student/Qt/5.13.0/gcc_64/lib/libQt5Gui.so /home/student/Qt/5.13.0/gcc_64/lib/libQt5Core.so -lGL -lpthread   
@@ -788,16 +788,19 @@ compiler_rcc_clean:
 qrc_resources.cpp: resources.qrc \
 		../../Qt/5.13.0/gcc_64/bin/rcc \
 		Icons/exit.bmp \
+		Icons/execute.bmp \
 		Icons/SCAPEGOAT.bmp \
 		Icons/Save.bmp \
 		Icons/Open.bmp \
 		Icons/New.bmp \
 		Icons/SaveAs.bmp \
+		Icons/help.bmp \
 		Icons/undo.bmp \
 		Icons/Copy.bmp \
 		Icons/Cut.bmp \
 		Icons/Paste.bmp \
-		Icons/redo.bmp
+		Icons/redo.bmp \
+		Icons/build.bmp
 	/home/student/Qt/5.13.0/gcc_64/bin/rcc -name resources resources.qrc -o qrc_resources.cpp
 
 compiler_moc_predefs_make_all: moc_predefs.h
@@ -987,7 +990,7 @@ moc_mainwindow.cpp: mainwindow.h \
 		executioncontroller.h \
 		moc_predefs.h \
 		../../Qt/5.13.0/gcc_64/bin/moc
-	/home/student/Qt/5.13.0/gcc_64/bin/moc $(DEFINES) --include /home/student/Desktop/SCAPES-Anant-current-Raymond-current/moc_predefs.h -I/home/student/Qt/5.13.0/gcc_64/mkspecs/linux-g++ -I/home/student/Desktop/SCAPES-Anant-current-Raymond-current -I/home/student/Qt/5.13.0/gcc_64/include -I/home/student/Qt/5.13.0/gcc_64/include/QtWidgets -I/home/student/Qt/5.13.0/gcc_64/include/QtGui -I/home/student/Qt/5.13.0/gcc_64/include/QtCore -I/usr/include/c++/7 -I/usr/include/x86_64-linux-gnu/c++/7 -I/usr/include/c++/7/backward -I/usr/lib/gcc/x86_64-linux-gnu/7/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include mainwindow.h -o moc_mainwindow.cpp
+	/home/student/Qt/5.13.0/gcc_64/bin/moc $(DEFINES) --include /home/student/Desktop/SCAPES-anant-raymond-ethan-current-Dec4th/moc_predefs.h -I/home/student/Qt/5.13.0/gcc_64/mkspecs/linux-g++ -I/home/student/Desktop/SCAPES-anant-raymond-ethan-current-Dec4th -I/home/student/Qt/5.13.0/gcc_64/include -I/home/student/Qt/5.13.0/gcc_64/include/QtWidgets -I/home/student/Qt/5.13.0/gcc_64/include/QtGui -I/home/student/Qt/5.13.0/gcc_64/include/QtCore -I/usr/include/c++/7 -I/usr/include/x86_64-linux-gnu/c++/7 -I/usr/include/c++/7/backward -I/usr/lib/gcc/x86_64-linux-gnu/7/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include mainwindow.h -o moc_mainwindow.cpp
 
 moc_Identifier.cpp: Identifier.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QObject \
@@ -1044,7 +1047,7 @@ moc_Identifier.cpp: Identifier.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qobject_impl.h \
 		moc_predefs.h \
 		../../Qt/5.13.0/gcc_64/bin/moc
-	/home/student/Qt/5.13.0/gcc_64/bin/moc $(DEFINES) --include /home/student/Desktop/SCAPES-Anant-current-Raymond-current/moc_predefs.h -I/home/student/Qt/5.13.0/gcc_64/mkspecs/linux-g++ -I/home/student/Desktop/SCAPES-Anant-current-Raymond-current -I/home/student/Qt/5.13.0/gcc_64/include -I/home/student/Qt/5.13.0/gcc_64/include/QtWidgets -I/home/student/Qt/5.13.0/gcc_64/include/QtGui -I/home/student/Qt/5.13.0/gcc_64/include/QtCore -I/usr/include/c++/7 -I/usr/include/x86_64-linux-gnu/c++/7 -I/usr/include/c++/7/backward -I/usr/lib/gcc/x86_64-linux-gnu/7/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include Identifier.h -o moc_Identifier.cpp
+	/home/student/Qt/5.13.0/gcc_64/bin/moc $(DEFINES) --include /home/student/Desktop/SCAPES-anant-raymond-ethan-current-Dec4th/moc_predefs.h -I/home/student/Qt/5.13.0/gcc_64/mkspecs/linux-g++ -I/home/student/Desktop/SCAPES-anant-raymond-ethan-current-Dec4th -I/home/student/Qt/5.13.0/gcc_64/include -I/home/student/Qt/5.13.0/gcc_64/include/QtWidgets -I/home/student/Qt/5.13.0/gcc_64/include/QtGui -I/home/student/Qt/5.13.0/gcc_64/include/QtCore -I/usr/include/c++/7 -I/usr/include/x86_64-linux-gnu/c++/7 -I/usr/include/c++/7/backward -I/usr/lib/gcc/x86_64-linux-gnu/7/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include Identifier.h -o moc_Identifier.cpp
 
 compiler_moc_objc_header_make_all:
 compiler_moc_objc_header_clean:
@@ -1770,7 +1773,8 @@ mainwindow.o: mainwindow.cpp mainwindow.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qregularexpression.h \
 		executioncontroller.h \
 		../../Qt/5.13.0/gcc_64/include/QtWidgets/QScrollArea \
-		../../Qt/5.13.0/gcc_64/include/QtWidgets/qscrollarea.h
+		../../Qt/5.13.0/gcc_64/include/QtWidgets/qscrollarea.h \
+		../../Qt/5.13.0/gcc_64/include/QtGui/QIcon
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o mainwindow.cpp
 
 repositoryinterface.o: repositoryinterface.cpp repositoryinterface.h \
@@ -3936,9 +3940,7 @@ JumpMoreStmt.o: JumpMoreStmt.cpp Variable.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qregularexpression.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o JumpMoreStmt.o JumpMoreStmt.cpp
 
-ReadStmt.o: ReadStmt.cpp ReadStmt.h \
-		Statement.h \
-		Label.h \
+ReadStmt.o: ReadStmt.cpp Variable.h \
 		Identifier.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QObject \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qobject.h \
@@ -3992,7 +3994,9 @@ ReadStmt.o: ReadStmt.cpp ReadStmt.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qvarlengtharray.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qcontainerfwd.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qobject_impl.h \
-		Variable.h \
+		ReadStmt.h \
+		Statement.h \
+		Label.h \
 		Operand.h \
 		../../Qt/5.13.0/gcc_64/include/QtCore/QJsonObject \
 		../../Qt/5.13.0/gcc_64/include/QtCore/qjsonobject.h \

@@ -11,5 +11,8 @@
         <file>Icons/Paste.bmp</file>
         <file>Icons/redo.bmp</file>
         <file>Icons/undo.bmp</file>
+	<file>Icons/execute.bmp</file>
+	<file>Icons/build.bmp</file>
+	<file>Icons/help.bmp</file>
     </qresource>
 </RCC>
