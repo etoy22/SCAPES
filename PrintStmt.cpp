@@ -35,8 +35,8 @@ void PrintStmt::compile(std::string instr) {
 	// if instruction argument matches the above regex
 	if (std::regex_match(instr, prtStrRegex)) {
 		// create variable from instruction argument
-		int strLength = instr.find_last_of("\"") - instr.find_first_of("\"") - 1;
-		std::string variableName = instr.substr(instr.find_first_of("\"") + 1, strLength);
+		int strLength = instr.find_last_of("\"") - instr.find_first_of("\"") + 1;
+		std::string variableName = instr.substr(instr.find_first_of("\""), strLength);
 
 		operands[0] = new Operand();
 		operands[0]->setIdentifier(new Variable(variableName));
@@ -79,7 +79,14 @@ int PrintStmt::run(std::set<Variable*>& variableSet, IOInterface* io, std::vecto
 				}
         }
 	if(isLiteral){
-        io->displayProgramOutput(QString::fromStdString(this->getOperand(0)->getIdentifier()->getName()));
+		std::regex strRegex("\"([\\s]+)?.+([\\s]+)?\"");
+		std::string outputStr = this->getOperand(0)->getIdentifier()->getName();
+
+		if (std::regex_match(outputStr, strRegex)) {
+			outputStr = outputStr.substr(1, outputStr.length() - 2);
+		}
+   
+		io->displayProgramOutput(QString::fromStdString(outputStr));
 	}
 	return 0;
 }
