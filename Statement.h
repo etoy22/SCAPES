@@ -27,6 +27,8 @@ protected:
     	std::string removeConsecutiveSpaces(std::string);
     	std::string removeLabelIfExists(std::string);
 
+		Variable* getVariable(std::set<Variable*>, std::string);
+
 public:
 	// constructors
 	Statement();
