@@ -48,36 +48,59 @@ void DeclArrStmt::compile(std::string instr) {
 
 		// retrieve variable string names
 		std::string variableName = removeSpaces(instr.substr(0, instr.find(" ")));
-		int amount = std::stoi(removeSpaces(instr.substr(instr.find(" ") + 1, instr.length())));
+		std::string amount = removeSpaces(instr.substr(instr.find(" ") + 1, instr.length()));
 
-		numOperands = 0;
-		operands = new Operand*[amount];
-		
-		for (int i = 0; i < amount; i++) {
-			operands[numOperands] = new Operand();
-			operands[numOperands++]->setIdentifier(new Variable("$"+variableName+"+"+std::to_string(i)));
-		}
+		numOperands = 2;
+		operands = new Operand*[numOperands];
+
+		operands[0] = new Operand();
+		operands[0]->setIdentifier(new Variable(variableName));
+
+		operands[1] = new Operand();
+		operands[1]->setIdentifier(new Variable(amount));
+
 	}
   
 }
 
 int DeclArrStmt::run(std::set<Variable*>& variableSet, Ui::MainWindow*& ui, QMainWindow* window, std::vector<std::pair<Identifier*,int>>* id) {
 	bool variableExists = true;
+	int size = 0;
+	std::regex digit("[\\d]+");
 
-	for (int i = 0; i < numOperands; i++) {
-		if (operands[i] != nullptr && operands[i]->getIdentifier() != nullptr) {
-			std::set<Variable*>::iterator result = std::find_if(std::begin(variableSet), std::end(variableSet),
-				[&](Variable* const& v) { return v->getName() == operands[i]->getIdentifier()->getName();  });
+	if (operands[0] != nullptr && operands[0]->getIdentifier() != nullptr
+		&& operands[1] != nullptr && operands[1]->getIdentifier() != nullptr) {
 
-			if (result == variableSet.end()) {
-				variableExists = false;
+		// if size is a literal
+		if (std::regex_match(operands[1]->getIdentifier()->getName(), digit)) {
+			size = std::stoi(operands[1]->getIdentifier()->getName());
+		}
+		// otherwise size is stored in a variable
+		else {
+			Variable* result = getVariable(variableSet, operands[1]->getIdentifier()->getName());
+
+			if (result != nullptr) {
+				size = result->getValue();
+			}
+			else {
+				throw "Variable not declared";
 			}
 		}
 
-		if (!variableExists) {
-			variableSet.insert((Variable*)operands[i]->getIdentifier());                   
+		std::string arrName = "$" + operands[0]->getIdentifier()->getName() + "+";
+		for (int i = 0; i < size; i++) {
+			Variable* result = getVariable(variableSet, arrName + std::to_string(i));
+
+			if (result == nullptr) {
+				variableExists = false;
+			}
+
+			if (!variableExists) {
+				variableSet.insert(new Variable(arrName + std::to_string(i)));
+			}
 		}
 	}
+	
 	return 0;
 }
 

@@ -103,6 +103,64 @@ int Statement::getNumOperands() {
      return instr;
  }
 
+ Variable* Statement::getVariable(std::set<Variable*> variableSet, std::string name) {
+	 std::regex digit("[\\d]+");
+	 std::regex arrayElement("\\$[^\\s]+\\+[^\\s]+");
+
+	 name = removeSpaces(name);
+
+	if (std::regex_match(name, arrayElement)) {
+
+		// extract index
+		std::string varName = name.substr(name.find_last_of("+") + 1, name.length() - 1);
+
+		// if index is literal (e.g. 4)
+		if (std::regex_match(varName, digit)) {
+			// find and return $<arr>+<literal>
+			std::set<Variable*>::iterator result = std::find_if(std::begin(variableSet), std::end(variableSet),
+				[&](Variable* const& v) { return v->getName() == name;  });
+			
+			if (result != variableSet.end()) {
+				return (*result);
+			}
+		}
+		// if index is variable
+		else {
+			// find variable
+			std::set<Variable*>::iterator result = std::find_if(std::begin(variableSet), std::end(variableSet),
+				[&](Variable* const& v) { return v->getName() == varName;  });
+
+			// get value of variable + return associated array element
+			if (result != variableSet.end()) {
+				int value = (*result)->getValue();
+
+				std::string varName2 = name.substr(0, name.find_last_of("+") + 1) + std::to_string(value);
+
+				std::set<Variable*>::iterator variable = std::find_if(std::begin(variableSet), std::end(variableSet),
+					[&](Variable* const& v) { return v->getName() == varName2;  });
+
+				if (variable != variableSet.end()) {
+					return (*variable);
+				}
+			}
+			else {
+				throw "Index out of bounds";
+			}
+		}
+	}
+	else if (!regex_match(name, arrayElement)) {
+
+		std::set<Variable*>::iterator result = std::find_if(std::begin(variableSet), std::end(variableSet),
+			[&](Variable* const& v) { return v->getName() == name;  });
+
+		if (result != variableSet.end()) {
+			return (*result);
+		}
+	}	 
+
+	return nullptr;
+ }
+
  std::string Statement::toString() {
 	 std::string output = "About the PrintStmt object: <";
 

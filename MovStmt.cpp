@@ -70,16 +70,15 @@ int MovStmt::run(std::set<Variable*>& variableSet, Ui::MainWindow*&, QMainWindow
 				values[i] = std::stoi(operands[i]->getIdentifier()->getName());
 			}
 			else {
-				std::set<Variable*>::iterator result = std::find_if(std::begin(variableSet), std::end(variableSet),
-					[&](Variable* const& v) { return v->getName() == operands[i]->getIdentifier()->getName();  });
+				Variable* result = getVariable(variableSet, operands[i]->getIdentifier()->getName());
 
-				if (result != variableSet.end()) {
-					values[i] = (*result)->getValue();
+				if (result != nullptr) {
+					values[i] = result->getValue();
 
 					if (i == 1) {
-						std::cout << "Before Mov: " + std::to_string((*result)->getValue()) << std::endl;
-						(*result)->setValue(values[0]);
-						std::cout << "After Mov: " + std::to_string((*result)->getValue()) << std::endl;
+						std::cout << "Before Mov: " + std::to_string(result->getValue()) << std::endl;
+						result->setValue(values[0]);
+						std::cout << "After Mov: " + std::to_string(result->getValue()) << std::endl;
 					}
 
 				}

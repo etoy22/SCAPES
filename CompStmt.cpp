@@ -62,27 +62,37 @@ void CompStmt::compile(std::string instr) {
 // return 2 if operand[0] > operand{1]
 int CompStmt::run(std::set<Variable*>& variableSet, Ui::MainWindow*&, QMainWindow*, std::vector<std::pair<Identifier*,int>>*){
 
-    int valueOne ; int valueTwo ;
+	int values[2];
 
-       std::set<Variable*>::iterator result = std::find_if(std::begin(variableSet), std::end(variableSet),
-               [&](Variable* const& v) { return v->getName() == operands[0]->getIdentifier()->getName();  });
-       if (result != variableSet.end()) {
-           valueOne = (*result)->getValue();
-       }
+	if (operands[0]->getIdentifier() != nullptr && operands[1]->getIdentifier() != nullptr) {
+		std::regex numRegex("[\\d]+");
 
-        std::set<Variable*>::iterator result2 = std::find_if(std::begin(variableSet), std::end(variableSet),
-                [&](Variable* const& v) { return v->getName() == operands[1]->getIdentifier()->getName();  });
-        if (result2 != variableSet.end()) {
-            valueTwo = (*result2)->getValue();
-        }
-	std::cout << "V1: " << valueOne << std::endl;
-	std::cout << "V2: " << valueTwo << std::endl;
-    if(valueOne == valueTwo)
-        return 0;
-    else if(valueOne < valueTwo)
-        return 1;
-    else
-        return 2;
+		for (unsigned int i = 0; i < 2; i++) {
+			if (std::regex_match(operands[i]->getIdentifier()->getName(), numRegex)) {
+				values[i] = std::stoi(operands[i]->getIdentifier()->getName());
+			}
+			else {
+				Variable* result = getVariable(variableSet, operands[i]->getIdentifier()->getName());
+
+				if (result != nullptr) {
+					values[i] = result->getValue();
+				}
+				else {
+					throw "Variable undefined";
+				}
+			}
+		}
+
+		std::cout << "V1: " << values[0] << std::endl;
+		std::cout << "V2: " << values[1] << std::endl;
+
+		if (values[0] == values[1])
+			return 0;
+		else if (values[0] < values[1])
+			return 1;
+		else
+			return 2;
+	}
 }
 
 

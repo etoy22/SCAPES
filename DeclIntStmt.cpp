@@ -58,10 +58,9 @@ int DeclIntStmt::run(std::set<Variable*>& variableSet, Ui::MainWindow*& ui, QMai
 	bool variableExists = true;
 
 	if (operands[0] != nullptr && operands[0]->getIdentifier() != nullptr) {
-		std::set<Variable*>::iterator result = std::find_if(std::begin(variableSet), std::end(variableSet),
-			[&](Variable* const& v) { return v->getName() == operands[0]->getIdentifier()->getName();  });
-
-		if (result == variableSet.end()) {
+		Variable* result = getVariable(variableSet, operands[0]->getIdentifier()->getName());
+		
+		if (result == nullptr) {
 			variableExists = false;
 		}
 	}
