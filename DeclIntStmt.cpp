@@ -2,7 +2,7 @@
 #include <string>
 #include <regex>
 #include "DeclIntStmt.h"
-#include "Variable.h"
+
 
 DeclIntStmt::DeclIntStmt() {
     label = new Label();
@@ -54,20 +54,16 @@ void DeclIntStmt::compile(std::string instr) {
     }
 }
 
-int DeclIntStmt::run(std::set<Variable*>& variableSet, Ui::MainWindow*& ui, QMainWindow* win, std::vector<std::pair<Identifier*,int>>* id) {
+int DeclIntStmt::run(std::set<Variable*>& variableSet, IOInterface*, std::vector<std::pair<Identifier*,int>>* id) {
 	bool variableExists = true;
 
 	if (operands[0] != nullptr && operands[0]->getIdentifier() != nullptr) {
-		try {	
-			Variable* result = getVariable(variableSet, operands[0]->getIdentifier()->getName());
-			if (result == nullptr) {
-				variableExists = false;
-			}
+		std::set<Variable*>::iterator result = std::find_if(std::begin(variableSet), std::end(variableSet),
+			[&](Variable* const& v) { return v->getName() == operands[0]->getIdentifier()->getName();  });
+
+		if (result == variableSet.end()) {
+			variableExists = false;
 		}
-		catch (std::string err) {
-			throw err;
-		}
-		
 	}
 
 	if (!variableExists) {

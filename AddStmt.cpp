@@ -59,7 +59,7 @@ void AddStmt::compile(std::string instr) {
   
 }
 
-int AddStmt::run(std::set<Variable*>& variableSet, Ui::MainWindow*&, QMainWindow*, std::vector<std::pair<Identifier*,int>>*){
+int AddStmt::run(std::set<Variable*>& variableSet, IOInterface*, std::vector<std::pair<Identifier*,int>>*){
 
 	int values[2];
 
@@ -71,28 +71,26 @@ int AddStmt::run(std::set<Variable*>& variableSet, Ui::MainWindow*&, QMainWindow
 				values[i] = std::stoi(operands[i]->getIdentifier()->getName());
 			}
 			else {
-				try {
-					Variable* result = getVariable(variableSet, operands[i]->getIdentifier()->getName());
-					if (result != nullptr) {
-						values[i] = result->getValue();
+				std::set<Variable*>::iterator result = std::find_if(std::begin(variableSet), std::end(variableSet),
+					[&](Variable* const& v) { return v->getName() == operands[i]->getIdentifier()->getName();  });
 
-						if (i == 1) {
-							std::cout << "Before Add: " + std::to_string(result->getValue()) << std::endl;
-							result->setValue(values[0] + values[1]);
-							std::cout << "After Add: " + std::to_string(result->getValue()) << std::endl;
-						}
+				if (result != variableSet.end()) {
+					values[i] = (*result)->getValue();
 
+					if (i == 1) {
+						std::cout << "Before Add: " + std::to_string((*result)->getValue()) << std::endl;
+						(*result)->setValue(values[0] + values[1]);
+						std::cout << "After Add: " + std::to_string((*result)->getValue()) << std::endl;
 					}
-					else {
-						throw std::string("Variable undefined");
-					}
+
 				}
-				catch (std::string err) {
-					throw err;
-				}				
+				else {
+					throw "Variable undefined";
+				}
 			}
 		}
 	}
+    return  0;
 }
 
 std::string AddStmt::toString() {

@@ -5,6 +5,7 @@
 #include <set> 
 #include "Variable.h"
 #include "Statement.h"
+#include "IOInterface.h"
 
 class DeclIntStmt : public Statement {
 
@@ -14,7 +15,7 @@ public:
 	DeclIntStmt();
     	~DeclIntStmt();
    	virtual void compile(std::string);
-	int run(std::set<Variable*>&, Ui::MainWindow*&, QMainWindow*, std::vector<std::pair<Identifier*,int>>*);
+	int run(std::set<Variable*>&, IOInterface*, std::vector<std::pair<Identifier*,int>>*);
 	std::string toString();
 };
 

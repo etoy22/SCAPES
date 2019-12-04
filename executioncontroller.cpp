@@ -9,8 +9,8 @@ bool ExecutionController::Run(QString fileName){
     QJsonObject programJsonObj;
     repo.getCompiled(fileName,programJsonObj);
     Program program(programJsonObj);
-    program.setUIPointer(ui);
-    program.setWindowPointer(win);
+    IOInterface io(ui,win);
+    program.setIO(io);
     try {
         program.execute();
     } catch(std::string s) {
